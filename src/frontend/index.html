@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claude Code Manager</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #1a1a1a;
+            color: #e0e0e0;
+        }
+        h1 {
+            color: #ffffff;
+            border-bottom: 2px solid #4a9eff;
+            padding-bottom: 10px;
+        }
+        .status {
+            background: #2a2a2a;
+            border-left: 4px solid #4a9eff;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        .status h2 {
+            margin-top: 0;
+            color: #4a9eff;
+        }
+        .endpoint {
+            font-family: 'Courier New', monospace;
+            background: #333;
+            padding: 5px 10px;
+            border-radius: 3px;
+            display: inline-block;
+            margin: 5px 0;
+            font-size: 14px;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            padding: 8px 0;
+            border-bottom: 1px solid #333;
+        }
+        a {
+            color: #4a9eff;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .note {
+            background: #2a2a2a;
+            border-left: 4px solid #ffa500;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Claude Code Manager - Backend API</h1>
+
+    <div class="status">
+        <h2>Server Status: Running</h2>
+        <p>The backend API server is operational and ready to serve requests.</p>
+        <p><strong>Base URL:</strong> <span class="endpoint">http://localhost:8420/api</span></p>
+    </div>
+
+    <div class="note">
+        <strong>Note:</strong> This is a placeholder page. The frontend UI will be implemented by the frontend team.
+    </div>
+
+    <h2>Available API Endpoints</h2>
+
+    <ul>
+        <li>
+            <span class="endpoint">GET /api/health</span><br>
+            <small>Health check endpoint</small><br>
+            <a href="/api/health" target="_blank">Test endpoint →</a>
+        </li>
+        <li>
+            <span class="endpoint">GET /api/projects</span><br>
+            <small>List all Claude Code projects</small><br>
+            <a href="/api/projects" target="_blank">Test endpoint →</a>
+        </li>
+        <li>
+            <span class="endpoint">POST /api/projects/scan</span><br>
+            <small>Rescan projects from ~/.claude.json</small>
+        </li>
+        <li>
+            <span class="endpoint">GET /api/projects/:projectId/agents</span><br>
+            <small>Get project subagents</small>
+        </li>
+        <li>
+            <span class="endpoint">GET /api/projects/:projectId/commands</span><br>
+            <small>Get project slash commands</small>
+        </li>
+        <li>
+            <span class="endpoint">GET /api/projects/:projectId/hooks</span><br>
+            <small>Get project hooks</small>
+        </li>
+        <li>
+            <span class="endpoint">GET /api/projects/:projectId/mcp</span><br>
+            <small>Get project MCP servers</small>
+        </li>
+        <li>
+            <span class="endpoint">GET /api/user/agents</span><br>
+            <small>Get user-level subagents</small><br>
+            <a href="/api/user/agents" target="_blank">Test endpoint →</a>
+        </li>
+        <li>
+            <span class="endpoint">GET /api/user/commands</span><br>
+            <small>Get user-level slash commands</small><br>
+            <a href="/api/user/commands" target="_blank">Test endpoint →</a>
+        </li>
+        <li>
+            <span class="endpoint">GET /api/user/hooks</span><br>
+            <small>Get user-level hooks</small><br>
+            <a href="/api/user/hooks" target="_blank">Test endpoint →</a>
+        </li>
+        <li>
+            <span class="endpoint">GET /api/user/mcp</span><br>
+            <small>Get user-level MCP servers</small><br>
+            <a href="/api/user/mcp" target="_blank">Test endpoint →</a>
+        </li>
+    </ul>
+
+    <h2>Documentation</h2>
+    <p>See <code>src/backend/README.md</code> for complete API documentation.</p>
+</body>
+</html>
