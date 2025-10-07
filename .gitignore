@@ -151,3 +151,6 @@ $RECYCLE.BIN/
 
 # local user only files
 *.local.*
+
+# Files marked for deletion
+*.delete

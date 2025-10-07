@@ -1,6 +1,6 @@
 const fs = require('fs').promises;
 const path = require('path');
-const YAML = require('yaml');
+const matter = require('gray-matter');
 
 /**
  * Reads a file and returns its contents
@@ -47,31 +47,17 @@ async function readMarkdownWithFrontmatter(filePath) {
   const content = await readFile(filePath);
   if (content === null) return null;
 
-  // Check for YAML frontmatter (between --- markers)
-  const frontmatterRegex = /^---\s*\n([\s\S]*?)\n---\s*\n([\s\S]*)$/;
-  const match = content.match(frontmatterRegex);
+  try {
+    const parsed = matter(content);
 
-  if (match) {
-    try {
-      const frontmatter = YAML.parse(match[1]);
-      const markdownContent = match[2];
-
-      return {
-        frontmatter: frontmatter || {},
-        content: markdownContent,
-        raw: content
-      };
-    } catch (error) {
-      throw new Error(`Invalid YAML frontmatter in ${filePath}: ${error.message}`);
-    }
+    return {
+      frontmatter: parsed.data || {},
+      content: parsed.content,
+      raw: content
+    };
+  } catch (error) {
+    throw new Error(`Invalid YAML frontmatter in ${filePath}: ${error.message}`);
   }
-
-  // No frontmatter found
-  return {
-    frontmatter: {},
-    content: content,
-    raw: content
-  };
 }
 
 /**
