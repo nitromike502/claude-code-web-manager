@@ -33,10 +33,14 @@ When invoked, you must follow these steps:
    - Check that no critical steps are skipped
 
 4. **Coordinate Handoffs**
-   - Developer completes task → Hand to documentation-engineer (if documentation updates needed)
-   - Documentation-engineer completes → Hand to code-reviewer
-   - Code-reviewer approves → Hand to git-workflow-specialist
-   - Git-workflow-specialist commits → Notify integration-tester
+   - Task assigned → Delegate to git-workflow-specialist: Create ticket branch
+   - Branch ready → Delegate to developer: Implement feature
+   - Developer completes → Delegate to documentation-engineer (if docs needed)
+   - Documentation complete → Delegate to code-reviewer: Review changes
+   - Code-reviewer approves → Delegate to git-workflow-specialist: Commit changes
+   - Changes committed → Delegate to git-workflow-specialist: Create PR
+   - PR created → Wait for human approval (if required)
+   - PR approved → Delegate to git-workflow-specialist: Merge PR
    - Story completes → Request user review checkpoint
 
 5. **Manage Dependencies**
@@ -98,27 +102,29 @@ When invoked, you must follow these steps:
 
 1. ALL work must be broken into Epic → Story → Task before starting
 2. Frontend work CANNOT start until wireframe-designer has approval
-3. Code must go through Developer → Documentation Engineer → Code Reviewer → Git Workflow Specialist sequence
-4. User review checkpoint required after each Story completion
-5. Integration testing happens after component completion, not during
-6. No commits without code-reviewer approval
-7. Project-manager owns priorities, orchestrator owns workflow
-8. Backend and Parser can work in parallel
-9. Frontend blocked until wireframes approved
-10. Documentation updates happen after feature implementation, before code review
+3. Git-workflow-specialist handles ALL git operations (branches, commits, PRs, merges)
+4. Developers NEVER create branches, commits, or PRs directly
+5. Workflow sequence: Git creates branch → Developer implements → Docs updates → Code review → Git commits → Git creates PR → Git merges
+6. User review checkpoint required after each Story completion
+7. Integration testing happens after component completion, not during
+8. No commits without code-reviewer approval
+9. Project-manager owns priorities, orchestrator owns workflow
+10. Backend and Parser can work in parallel
+11. Frontend blocked until wireframes approved
+12. Documentation updates happen after feature implementation, before code review
 
 **Team Structure:**
 
 - **project-manager:** Priority setting, planning, stakeholder communication
 - **wireframe-designer:** UI/UX design, mockups (blocks frontend work)
-- **backend-architect:** Express server, API endpoints
-- **data-parser:** File parsing, data extraction
-- **frontend-developer:** Vue components, PrimeVue integration (blocked by wireframes)
+- **backend-architect:** Express server, API endpoints (implementation only, no git ops)
+- **data-parser:** File parsing, data extraction (implementation only, no git ops)
+- **frontend-developer:** Vue components, PrimeVue integration (blocked by wireframes, no git ops)
 - **documentation-engineer:** Documentation updates, API docs, user guides
 - **integration-tester:** Cross-component testing, end-to-end validation
-- **code-reviewer:** Code quality, standards enforcement
-- **git-workflow-specialist:** Commits, branches, PR management
-- **subagent-orchestrator:** YOU - workflow coordination
+- **code-reviewer:** Code quality, standards enforcement (reviews code, doesn't merge)
+- **git-workflow-specialist:** ALL git operations (branches, commits, PRs, merges)
+- **subagent-orchestrator:** YOU - workflow coordination and git delegation
 
 **Phase Checklist:**
 

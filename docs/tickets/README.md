@@ -121,12 +121,45 @@ Backend setup can proceed in parallel with wireframe design.
 3. **Track progress** - Update ticket status as work progresses
 4. **Phase gate checkpoint** - Project Manager must approve wireframes (TASK-1.6.2) before frontend development begins
 
+## Ticket-Based Branch Workflow
+
+### Branch Naming Convention
+
+ALL feature branches MUST follow this format:
+```
+feature/TASK-X.X.X-description
+```
+
+**Examples:**
+- `feature/TASK-2.3.4-project-scanner`
+- `feature/TASK-1.5.2-dark-theme-palette`
+- `feature/TASK-2.4.1-api-router-setup`
+
+### Workflow Process
+
+1. **Orchestrator** assigns ticket (TASK-X.X.X)
+2. **Git-workflow-specialist** creates ticket branch
+3. **Developer** implements (no git operations)
+4. **Documentation-engineer** updates docs (if needed)
+5. **Code-reviewer** reviews code (pre-PR review)
+6. **Git-workflow-specialist** commits changes
+7. **Git-workflow-specialist** creates PR to `main`
+8. **Human** reviews PR on GitHub (for critical PRs)
+9. **Git-workflow-specialist** squash-merges to `main`
+
+### Key Principles
+
+- **Developers NEVER perform git operations** - git-workflow-specialist handles all branches, commits, PRs, and merges
+- **Code review happens BEFORE PR creation** - code-reviewer approves before PR
+- **Consistent ticket-based naming** - Every branch includes ticket reference
+- **Centralized git operations** - Single source of truth for all git commands
+
 ## Pull Request Workflow
 
 **Human Approval Required:** PRs #1-9 (Epic 1 + first 3 stories of Epic 2)
 **Automated Review Only:** PRs #10-11 (remaining Epic 2 stories)
 
-All PRs must be approved by `code-reviewer` agent before human review. See [PR-Workflow.md](PR-Workflow.md) for complete details.
+All code must pass code-reviewer checks before PR creation. See [PR-Workflow.md](PR-Workflow.md) for complete details.
 
 ### PR Checkpoints
 - **PR #1-6** - Epic 1 wireframe work (requires human approval)

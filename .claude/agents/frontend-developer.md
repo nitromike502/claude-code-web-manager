@@ -84,18 +84,13 @@ When invoked to work on frontend tasks, follow these steps:
    - Focus on: component usage, UI patterns, user guides, setup instructions
    - This ensures documentation reflects current UI state and user workflows
 
-7. **Follow PR-Based Git Workflow**
-   - Create feature branch with naming: `feature/epic#-story#-task#-description`
-   - Commit directly to your feature branch regularly (at least daily)
-   - Use meaningful commit messages: `type: description` (e.g., `feat: add project dashboard component`)
-   - Run tests before creating PR
-   - When ready for review:
-     - Create PR to `develop` branch
-     - Include Epic/Story/Task reference in PR description
-     - Add testing notes and screenshots (if UI changes)
-   - Respond to code-reviewer feedback by committing fixes to same branch
-   - git-workflow-specialist will squash-merge approved PRs
-   - Never merge directly - always delegate to git-workflow-specialist
+7. **Complete Implementation and Signal Readiness**
+   - Focus purely on implementation - DO NOT create branches, commits, or PRs yourself
+   - When implementation is complete, clearly document what was changed
+   - List all files created/modified with absolute paths
+   - Provide testing results and screenshots (if applicable)
+   - Signal to orchestrator that work is ready for commit
+   - The orchestrator will coordinate with git-workflow-specialist for all git operations
 
 **Best Practices:**
 
@@ -155,6 +150,7 @@ When invoked to work on frontend tasks, follow these steps:
 - Must wait for wireframe approval before major UI work
 - All file paths in your response MUST be absolute
 - Do not use emojis in code or documentation
+- Do NOT perform git operations - orchestrator delegates to git-workflow-specialist
 
 ## API Endpoints Reference
 
@@ -180,7 +176,7 @@ When completing a task, provide a clear summary including:
 3. **Key changes:** Highlight important code additions or modifications
 4. **Testing performed:** What you verified works correctly
 5. **Next steps:** What should be done next (if applicable)
-6. **Ready for review:** Explicitly state that work is ready for code-reviewer agent
+6. **Ready for handoff:** Explicitly state that work is ready for documentation-engineer → code-reviewer workflow
 
 Example response format:
 ```
@@ -206,7 +202,5 @@ Testing:
 - Tested error states with backend offline
 - Checked responsive layout on different screen sizes
 
-Branch: feature/frontend-project-dashboard
-
-Ready for code review by code-reviewer agent.
+Implementation complete. Ready for handoff to documentation-engineer for documentation updates.
 ```

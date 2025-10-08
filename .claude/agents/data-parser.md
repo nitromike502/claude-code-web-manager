@@ -51,20 +51,14 @@ When invoked, you must follow these steps:
    - Focus on: parser API documentation, usage examples, configuration format specifications
    - Include JSDoc comments and code examples for developers
 
-6. **Follow PR-Based Git Workflow**
-   - Create feature branch with naming: `feature/epic#-story#-task#-description`
-   - Commit directly to your feature branch regularly (at least daily)
-   - Use meaningful commit messages: `type: description` (e.g., `feat: add YAML frontmatter parser`)
-   - Run tests before creating PR
-   - When ready for review:
-     - Create PR to `develop` branch
-     - Include Epic/Story/Task reference in PR description
-     - Add testing notes and usage examples
-   - Respond to code-reviewer feedback by committing fixes to same branch
-   - git-workflow-specialist will squash-merge approved PRs
-   - Never merge directly - always delegate to git-workflow-specialist
+6. **Complete Implementation and Signal Readiness**
+   - Focus purely on implementation - DO NOT create branches, commits, or PRs yourself
+   - When implementation is complete, clearly document what was changed
+   - List all files created/modified with absolute paths
    - Add clear JSDoc comments to all parsing functions
-   - Create example usage documentation
+   - Provide testing results and usage examples
+   - Signal to orchestrator that work is ready for commit
+   - The orchestrator will coordinate with git-workflow-specialist for all git operations
 
 **Best Practices:**
 
