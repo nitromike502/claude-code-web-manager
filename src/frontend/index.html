@@ -1,136 +1,45 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Claude Code Manager</title>
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            max-width: 800px;
-            margin: 50px auto;
-            padding: 20px;
-            background: #1a1a1a;
-            color: #e0e0e0;
-        }
-        h1 {
-            color: #ffffff;
-            border-bottom: 2px solid #4a9eff;
-            padding-bottom: 10px;
-        }
-        .status {
-            background: #2a2a2a;
-            border-left: 4px solid #4a9eff;
-            padding: 15px;
-            margin: 20px 0;
-            border-radius: 4px;
-        }
-        .status h2 {
-            margin-top: 0;
-            color: #4a9eff;
-        }
-        .endpoint {
-            font-family: 'Courier New', monospace;
-            background: #333;
-            padding: 5px 10px;
-            border-radius: 3px;
-            display: inline-block;
-            margin: 5px 0;
-            font-size: 14px;
-        }
-        ul {
-            list-style: none;
-            padding: 0;
-        }
-        li {
-            padding: 8px 0;
-            border-bottom: 1px solid #333;
-        }
-        a {
-            color: #4a9eff;
-            text-decoration: none;
-        }
-        a:hover {
-            text-decoration: underline;
-        }
-        .note {
-            background: #2a2a2a;
-            border-left: 4px solid #ffa500;
-            padding: 15px;
-            margin: 20px 0;
-            border-radius: 4px;
-        }
-    </style>
+
+    <!-- PrimeVue CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/primevue@3.50.0/resources/themes/lara-dark-blue/theme.css">
+    <link rel="stylesheet" href="https://unpkg.com/primeicons@6.0.1/primeicons.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/variables.css">
+    <link rel="stylesheet" href="/css/global.css">
+    <link rel="stylesheet" href="/css/components.css">
 </head>
 <body>
-    <h1>Claude Code Manager - Backend API</h1>
+    <div id="app"></div>
 
-    <div class="status">
-        <h2>Server Status: Running</h2>
-        <p>The backend API server is operational and ready to serve requests.</p>
-        <p><strong>Base URL:</strong> <span class="endpoint">http://localhost:8420/api</span></p>
-    </div>
+    <!-- Vue 3 -->
+    <script src="https://unpkg.com/vue@3.4.21/dist/vue.global.prod.js"></script>
 
-    <div class="note">
-        <strong>Note:</strong> This is a placeholder page. The frontend UI will be implemented by the frontend team.
-    </div>
+    <!-- PrimeVue -->
+    <script src="https://unpkg.com/primevue@3.50.0/core/core.min.js"></script>
+    <script src="https://unpkg.com/primevue@3.50.0/button/button.min.js"></script>
+    <script src="https://unpkg.com/primevue@3.50.0/card/card.min.js"></script>
+    <script src="https://unpkg.com/primevue@3.50.0/toolbar/toolbar.min.js"></script>
+    <script src="https://unpkg.com/primevue@3.50.0/inputtext/inputtext.min.js"></script>
+    <script src="https://unpkg.com/primevue@3.50.0/iconfield/iconfield.min.js"></script>
+    <script src="https://unpkg.com/primevue@3.50.0/inputicon/inputicon.min.js"></script>
+    <script src="https://unpkg.com/primevue@3.50.0/breadcrumb/breadcrumb.min.js"></script>
+    <script src="https://unpkg.com/primevue@3.50.0/dropdown/dropdown.min.js"></script>
+    <script src="https://unpkg.com/primevue@3.50.0/progressspinner/progressspinner.min.js"></script>
+    <script src="https://unpkg.com/primevue@3.50.0/skeleton/skeleton.min.js"></script>
+    <script src="https://unpkg.com/primevue@3.50.0/sidebar/sidebar.min.js"></script>
+    <script src="https://unpkg.com/primevue@3.50.0/panel/panel.min.js"></script>
+    <script src="https://unpkg.com/primevue@3.50.0/tag/tag.min.js"></script>
+    <script src="https://unpkg.com/primevue@3.50.0/toast/toast.min.js"></script>
+    <script src="https://unpkg.com/primevue@3.50.0/toastservice/toastservice.min.js"></script>
+    <script src="https://unpkg.com/primevue@3.50.0/tooltip/tooltip.min.js"></script>
 
-    <h2>Available API Endpoints</h2>
-
-    <ul>
-        <li>
-            <span class="endpoint">GET /api/health</span><br>
-            <small>Health check endpoint</small><br>
-            <a href="/api/health" target="_blank">Test endpoint →</a>
-        </li>
-        <li>
-            <span class="endpoint">GET /api/projects</span><br>
-            <small>List all Claude Code projects</small><br>
-            <a href="/api/projects" target="_blank">Test endpoint →</a>
-        </li>
-        <li>
-            <span class="endpoint">POST /api/projects/scan</span><br>
-            <small>Rescan projects from ~/.claude.json</small>
-        </li>
-        <li>
-            <span class="endpoint">GET /api/projects/:projectId/agents</span><br>
-            <small>Get project subagents</small>
-        </li>
-        <li>
-            <span class="endpoint">GET /api/projects/:projectId/commands</span><br>
-            <small>Get project slash commands</small>
-        </li>
-        <li>
-            <span class="endpoint">GET /api/projects/:projectId/hooks</span><br>
-            <small>Get project hooks</small>
-        </li>
-        <li>
-            <span class="endpoint">GET /api/projects/:projectId/mcp</span><br>
-            <small>Get project MCP servers</small>
-        </li>
-        <li>
-            <span class="endpoint">GET /api/user/agents</span><br>
-            <small>Get user-level subagents</small><br>
-            <a href="/api/user/agents" target="_blank">Test endpoint →</a>
-        </li>
-        <li>
-            <span class="endpoint">GET /api/user/commands</span><br>
-            <small>Get user-level slash commands</small><br>
-            <a href="/api/user/commands" target="_blank">Test endpoint →</a>
-        </li>
-        <li>
-            <span class="endpoint">GET /api/user/hooks</span><br>
-            <small>Get user-level hooks</small><br>
-            <a href="/api/user/hooks" target="_blank">Test endpoint →</a>
-        </li>
-        <li>
-            <span class="endpoint">GET /api/user/mcp</span><br>
-            <small>Get user-level MCP servers</small><br>
-            <a href="/api/user/mcp" target="_blank">Test endpoint →</a>
-        </li>
-    </ul>
-
-    <h2>Documentation</h2>
-    <p>See <code>src/backend/README.md</code> for complete API documentation.</p>
+    <!-- Application -->
+    <script type="module" src="/js/app.js"></script>
 </body>
 </html>
