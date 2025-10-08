@@ -81,6 +81,8 @@ POST /api/projects/scan
 ```
 Triggers a rescan of `~/.claude.json` to refresh the project list.
 
+**Note:** The endpoint is `/api/projects/scan` (not `/api/scan`).
+
 **Response:**
 ```json
 {
@@ -279,7 +281,7 @@ The backend serves the frontend application from `src/frontend/`. All non-API ro
 
 - **express** (^4.18.2): Web server framework
 - **cors** (^2.8.5): CORS middleware
-- **yaml** (^2.3.4): YAML parsing for frontmatter
+- **gray-matter** (^4.0.3): Markdown parsing with YAML frontmatter extraction
 
 ## Development Notes
 

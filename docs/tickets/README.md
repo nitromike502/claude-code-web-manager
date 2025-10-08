@@ -85,7 +85,7 @@ Backend setup can proceed in parallel with wireframe design.
 
 ### Story 2.4: API Endpoint Skeleton
 - [TASK-2.4.1](TASK-2.4.1.md) - Create api.js router and mount at /api in Express
-- [TASK-2.4.2](TASK-2.4.2.md) - Create GET /api/projects and POST /api/scan routes
+- [TASK-2.4.2](TASK-2.4.2.md) - Create GET /api/projects and POST /api/projects/scan routes
 - [TASK-2.4.3](TASK-2.4.3.md) - Create 4 project config routes (agents/commands/hooks/mcp)
 - [TASK-2.4.4](TASK-2.4.4.md) - Create 4 user config routes for ~/.claude directory
 - [TASK-2.4.5](TASK-2.4.5.md) - Test all 11 API routes with curl and document examples

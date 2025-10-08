@@ -217,7 +217,7 @@ GET  /api/user/agents                           - Get user subagents
 GET  /api/user/commands                         - Get user commands
 GET  /api/user/hooks                            - Get user hooks
 GET  /api/user/mcp                              - Get user MCP servers
-POST /api/scan                                  - Trigger project rescan
+POST /api/projects/scan                         - Trigger project rescan
 ```
 
 **Note:** projectId will be the project path with slashes removed (e.g., `/home/user/projects/myapp` becomes `homeuserprojectsmyapp`)
@@ -320,7 +320,7 @@ Phase 1 MVP is successful when:
 
 ### Step 3: Backend - API Endpoints
 - Implement all GET endpoints
-- Implement POST /api/scan endpoint
+- Implement POST /api/projects/scan endpoint
 - Test with mock data
 - Test with real Claude Code projects
 

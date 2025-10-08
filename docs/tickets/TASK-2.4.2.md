@@ -14,7 +14,7 @@ Create API routes for project listing and scanning. Initially return mock/empty 
 ## Acceptance Criteria
 
 - [ ] GET /api/projects route created
-- [ ] POST /api/scan route created
+- [ ] POST /api/projects/scan route created
 - [ ] projectId parameter validation added
 - [ ] Routes return appropriate status codes
 - [ ] Mock data returned (empty arrays for now)
@@ -91,11 +91,11 @@ Test:
 curl http://localhost:8420/api/projects
 
 # Trigger rescan
-curl -X POST http://localhost:8420/api/scan
+curl -X POST http://localhost:8420/api/projects/scan
 ```
 
 ## References
 
 - PRD Section 2.1: Project Discovery
 - API endpoint: GET /api/projects
-- API endpoint: POST /api/scan
+- API endpoint: POST /api/projects/scan

@@ -57,7 +57,7 @@ Complete list of all tickets with brief descriptions.
 
 ### Story 2.4: API Endpoint Skeleton → **PR #10** (code-reviewer only)
 - **TASK-2.4.1** - Create api.js router and mount at /api in Express
-- **TASK-2.4.2** - Create GET /api/projects and POST /api/scan routes
+- **TASK-2.4.2** - Create GET /api/projects and POST /api/projects/scan routes
 - **TASK-2.4.3** - Create 4 project config routes (agents/commands/hooks/mcp)
 - **TASK-2.4.4** - Create 4 user config routes for ~/.claude directory
 - **TASK-2.4.5** - Test all 11 API routes with curl and document examples

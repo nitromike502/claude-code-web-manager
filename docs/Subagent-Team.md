@@ -41,7 +41,7 @@ This document defines the specialized subagent team for building the Claude Code
   - `GET /api/projects`
   - `GET /api/projects/:projectId/*`
   - `GET /api/user/*`
-  - `POST /api/scan`
+  - `POST /api/projects/scan`
 - Handle project path encoding/decoding for URLs
 - Implement static file serving for frontend
 - Error handling middleware

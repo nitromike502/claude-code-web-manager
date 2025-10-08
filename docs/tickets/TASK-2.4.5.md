@@ -46,7 +46,7 @@ curl -s $BASE_URL/api/projects | jq .
 
 echo ""
 echo "4. Trigger rescan"
-curl -s -X POST $BASE_URL/api/scan | jq .
+curl -s -X POST $BASE_URL/api/projects/scan | jq .
 
 echo ""
 echo "5. Get project agents (use first project ID from /api/projects)"

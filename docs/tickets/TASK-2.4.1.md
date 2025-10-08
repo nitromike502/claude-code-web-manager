@@ -35,7 +35,7 @@ router.get('/', (req, res) => {
     endpoints: [
       'GET /api/health',
       'GET /api/projects',
-      'POST /api/scan',
+      'POST /api/projects/scan',
       'GET /api/projects/:projectId/agents',
       'GET /api/projects/:projectId/commands',
       'GET /api/projects/:projectId/hooks',

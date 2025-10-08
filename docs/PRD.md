@@ -268,7 +268,7 @@ GET  /api/user/commands                         - Get user-level slash commands
 GET  /api/user/hooks                            - Get user-level hooks
 GET  /api/user/mcp                              - Get user-level MCP servers
 GET  /api/enterprise/mcp                        - Get enterprise MCP servers (read-only)
-POST /api/scan                                  - Trigger project rescan
+POST /api/projects/scan                         - Trigger project rescan
 GET  /api/config                                - Get app configuration (scan paths)
 ```
 

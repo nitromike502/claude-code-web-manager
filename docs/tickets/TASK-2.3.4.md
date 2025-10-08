@@ -145,4 +145,4 @@ const { scanProjects } = require('./projectScanner');
 
 - PRD Section 2.1: Project Discovery (lines 33-57)
 - CLAUDE.md: Data Sources (~/.claude.json)
-- API endpoint: POST /api/scan (trigger refresh)
+- API endpoint: POST /api/projects/scan (trigger refresh)

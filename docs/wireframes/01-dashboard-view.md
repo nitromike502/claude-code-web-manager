@@ -88,7 +88,7 @@ Each card displays:
 
 ### API Endpoints Used
 - `GET /api/projects` - Fetch all discovered projects
-- `POST /api/scan` - Trigger rescan of projects
+- `POST /api/projects/scan` - Trigger rescan of projects
 
 ### Data Structure Expected
 ```json
@@ -116,7 +116,7 @@ Each card displays:
 1. **Click Project Card:** Navigate to Project Detail View
 2. **Click Rescan Button:**
    - Show loading indicator
-   - POST to `/api/scan`
+   - POST to `/api/projects/scan`
    - Reload project list
    - Show toast notification "Projects rescanned"
 3. **Click User/Global Button:** Navigate to User/Global View
