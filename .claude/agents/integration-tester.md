@@ -44,7 +44,7 @@ When invoked, you must follow these steps:
    - Test `GET /api/projects/:projectId/commands` - Slash command retrieval
    - Test `GET /api/projects/:projectId/hooks` - Hooks retrieval
    - Test `GET /api/projects/:projectId/mcp` - MCP server retrieval
-   - Test `POST /api/scan` - Project refresh functionality
+   - Test `POST /api/projects/scan` - Project refresh functionality
    - Test user-level endpoints (`/api/user/*`)
    - Verify response formats, status codes, and error handling
 

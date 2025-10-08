@@ -46,11 +46,13 @@ With tickets ready (existing or newly created):
    - wireframe-designer for UI mockups
    - backend-architect for API development
    - frontend-developer for Vue/PrimeVue components
+   - data-parser for configuration file parsing
    - integration-tester for testing and verification
    - code-reviewer for quality assurance
+   - documentation-engineer for documentation updates (after feature implementation)
    - git-workflow-specialist for commits and PRs
 3. Manage phase progression through development lifecycle
-4. Ensure proper handoff chain: developer → code-reviewer → git-workflow-specialist
+4. Ensure proper handoff chain: developer → documentation-engineer → code-reviewer → git-workflow-specialist
 5. Include user review checkpoints after each significant feature
 6. Track progress and mark tickets as completed
 

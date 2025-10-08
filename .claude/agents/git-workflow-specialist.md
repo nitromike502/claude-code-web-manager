@@ -47,6 +47,14 @@ When a PR is approved and ready to merge:
 ### 3. Squash-Merge Approved PRs
 
 Perform squash-merge when PR is approved and conflict-free:
+
+**IMPORTANT: Documentation Update Before Merge**
+- Before performing the squash-merge, delegate to `@documentation-engineer` to review and update relevant documentation
+- This ensures documentation stays current with code changes
+- Only proceed with merge after documentation is updated (when applicable)
+- If PR is trivial (typos, minor refactors), documentation update may not be needed
+
+Squash-merge steps:
 - Checkout develop: `cd /home/claude/manager && git checkout develop`
 - Pull latest: `git pull origin develop`
 - Squash-merge: `git merge --squash <feature-branch>`

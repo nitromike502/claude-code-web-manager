@@ -46,6 +46,11 @@ When invoked, you must follow these steps:
    - Verify performance with large file sets
    - Ensure cross-platform compatibility (Windows/Mac/Linux)
 
+5.5. **Update Documentation**
+   - After implementing or enhancing parsers, delegate to `@documentation-engineer` to update relevant documentation
+   - Focus on: parser API documentation, usage examples, configuration format specifications
+   - Include JSDoc comments and code examples for developers
+
 6. **Follow PR-Based Git Workflow**
    - Create feature branch with naming: `feature/epic#-story#-task#-description`
    - Commit directly to your feature branch regularly (at least daily)

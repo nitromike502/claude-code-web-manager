@@ -79,6 +79,11 @@ When invoked to work on frontend tasks, follow these steps:
    - Test error handling with missing data
    - Verify API integration works correctly
 
+6.5. **Update Documentation**
+   - After completing UI implementation, delegate to `@documentation-engineer` to update relevant documentation
+   - Focus on: component usage, UI patterns, user guides, setup instructions
+   - This ensures documentation reflects current UI state and user workflows
+
 7. **Follow PR-Based Git Workflow**
    - Create feature branch with naming: `feature/epic#-story#-task#-description`
    - Commit directly to your feature branch regularly (at least daily)
@@ -163,7 +168,7 @@ GET  /api/user/agents                     - Get user subagents
 GET  /api/user/commands                   - Get user commands
 GET  /api/user/hooks                      - Get user hooks
 GET  /api/user/mcp                        - Get user MCP servers
-POST /api/scan                            - Trigger project rescan
+POST /api/projects/scan                   - Trigger project rescan
 ```
 
 ## Report / Response

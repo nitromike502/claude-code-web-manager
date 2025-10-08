@@ -55,7 +55,7 @@ When invoked, you must follow these steps:
      - `GET /api/user/commands` - Get user commands
      - `GET /api/user/hooks` - Get user hooks
      - `GET /api/user/mcp` - Get user MCP servers
-     - `POST /api/scan` - Trigger project list refresh
+     - `POST /api/projects/scan` - Trigger project list refresh
    - Implement file system operations (reading JSON, parsing markdown frontmatter)
    - Add comprehensive error handling middleware
    - Configure static file serving for frontend assets
@@ -77,7 +77,8 @@ When invoked, you must follow these steps:
    - Add inline code comments for complex logic
    - Document API endpoints with request/response examples
    - Note any assumptions or limitations
-   - Update relevant documentation files if needed
+   - After completing implementation, delegate to `@documentation-engineer` to update relevant documentation (API docs, README, architecture docs)
+   - This ensures documentation stays current with code changes
 
 7. **Follow PR-Based Git Workflow**
    - Create feature branch with naming: `feature/epic#-story#-task#-description`
