@@ -76,7 +76,7 @@ GET  /api/user/agents                - Get user subagents
 GET  /api/user/commands              - Get user commands
 GET  /api/user/hooks                 - Get user hooks
 GET  /api/user/mcp                   - Get user MCP servers
-POST /api/scan                       - Trigger project list refresh
+POST /api/projects/scan              - Trigger project list refresh
 ```
 
 **Note:** `projectId` = project path with slashes removed (e.g., `/home/user/projects/myapp` → `homeuserprojectsmyapp`)
@@ -89,7 +89,7 @@ POST /api/scan                       - Trigger project list refresh
 - Dark mode support
 - Responsive design for laptop/desktop
 
-**Wireframes:** To be created before implementation begins
+**Wireframes:** ✅ Complete - See `docs/wireframes/` directory
 
 ## Implementation Approach
 
@@ -104,22 +104,22 @@ See subagent proposals in project `.claude/agents/` directory.
 ## Development Workflow
 
 1. ✅ Requirements gathering (Phase 1 complete)
-2. ⏳ Create wireframe mockups (next step)
-3. ⏳ Build backend API
-4. ⏳ Build frontend UI
-5. ⏳ Integration & testing
+2. ✅ Create wireframe mockups
+3. ✅ Build backend API
+4. ✅ Build frontend UI
+5. ✅ Integration & testing
 6. ⏳ Polish & cross-platform verification
 
 ## Success Criteria (Phase 1)
 
 - [x] Requirements documented and reviewed
-- [ ] Wireframes approved
-- [ ] All Claude Code projects visible
-- [ ] All config types viewable (agents/commands/hooks/MCP)
-- [ ] Search/filter functionality working
-- [ ] Clean, intuitive UI
-- [ ] Works on Windows, Mac, Linux
-- [ ] Handles missing/malformed files gracefully
+- [x] Wireframes approved
+- [x] All Claude Code projects visible
+- [x] All config types viewable (agents/commands/hooks/MCP)
+- [x] Search/filter functionality working
+- [x] Clean, intuitive UI
+- [ ] Works on Windows, Mac, Linux (requires testing)
+- [x] Handles missing/malformed files gracefully
 
 ## Future Phases
 
@@ -128,17 +128,44 @@ See subagent proposals in project `.claude/agents/` directory.
 
 ⚠️ Phase 2+ documents exist but have not been fully reviewed.
 
-## Getting Started (Future)
+## Getting Started
+
+### Prerequisites
+- Node.js 18.0.0 or higher
+- npm (comes with Node.js)
+- Claude Code installed with at least one project configured in `~/.claude.json`
+
+### Installation
 
 ```bash
+# Clone the repository
+git clone <repository-url>
+cd manager
+
 # Install dependencies
 npm install
 
-# Start server
+# Start the server
 npm start
+```
 
-# Access in browser
+### Usage
+
+Once the server is running, open your browser to:
+```
 http://localhost:8420
+```
+
+The application will automatically:
+1. Read your Claude Code projects from `~/.claude.json`
+2. Display all discovered projects in the dashboard
+3. Allow you to view agents, commands, hooks, and MCP servers for each project
+
+### Development Mode
+
+For development with auto-reload on file changes:
+```bash
+npm run dev
 ```
 
 ## Contributing

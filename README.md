@@ -31,6 +31,12 @@ Claude Code Manager provides a centralized interface to view and manage Claude C
 - **Frontend:** Vue 3 + PrimeVue (CDN-hosted)
 - **Data Source:** Live file system reads (no database)
 
+## Prerequisites
+
+- Node.js 18.0.0 or higher
+- npm (comes with Node.js)
+- Claude Code installed with at least one project configured in `~/.claude.json`
+
 ## Installation
 
 ```bash
@@ -44,15 +50,33 @@ npm install
 
 ## Usage
 
+### Starting the Server
+
 ```bash
-# Start the server
+# Production mode
 npm start
 
-# Access in browser
+# Development mode (with auto-reload on file changes)
+npm run dev
+```
+
+### Accessing the Application
+
+Open your browser to:
+```
 http://localhost:8420
 ```
 
-The application will automatically discover all Claude Code projects configured in your `~/.claude.json` file.
+The application will automatically:
+1. Read your Claude Code projects from `~/.claude.json`
+2. Display all discovered projects in the dashboard
+3. Allow you to view agents, commands, hooks, and MCP servers for each project
+
+### Available Scripts
+
+- `npm start` - Start the production server
+- `npm run dev` - Start the development server with auto-reload (Node.js 18+)
+- `npm test` - Run backend tests (when implemented)
 
 ## Architecture
 
@@ -86,7 +110,7 @@ GET  /api/user/agents                     # Get user subagents
 GET  /api/user/commands                   # Get user commands
 GET  /api/user/hooks                      # Get user hooks
 GET  /api/user/mcp                        # Get user MCP servers
-POST /api/scan                            # Trigger project refresh
+POST /api/projects/scan                   # Trigger project refresh
 ```
 
 ## Configuration Sources
@@ -112,18 +136,37 @@ This project uses Claude Code with specialized subagents for parallel developmen
 
 - **Backend Architect** - API design and implementation
 - **Frontend Developer** - Vue components and UI
-- **Integration Tester** - Cross-platform testing and verification
+- **Data Parser** - File parsing and data extraction
+- **Git Workflow Specialist** - Version control and PR management
+- **Subagent Orchestrator** - Multi-agent coordination
+- **Documentation Engineer** - Documentation creation and maintenance
 
 See `.claude/agents/` for the complete team structure.
 
 ### Development Workflow
 
-1. Requirements gathering
-2. Wireframe creation
-3. Backend API implementation
-4. Frontend UI implementation
-5. Integration & testing
-6. Cross-platform verification
+1. ✅ Requirements gathering (Phase 1 complete)
+2. ✅ Wireframe creation
+3. ✅ Backend API implementation
+4. ✅ Frontend UI implementation
+5. ✅ Integration & testing
+6. ⏳ Cross-platform verification (ongoing)
+
+### Making Changes
+
+1. **Backend Changes**: Edit files in `src/backend/`, server will auto-reload in dev mode
+2. **Frontend Changes**: Edit files in `src/frontend/`, refresh browser to see changes
+3. **No Build Step**: Both backend and frontend run directly without compilation
+
+### Testing
+
+```bash
+# Test backend server is running
+curl http://localhost:8420/api/health
+
+# Test project discovery
+curl http://localhost:8420/api/projects
+```
 
 ## Platform Support
 
@@ -137,7 +180,7 @@ This project is built using the SWARM methodology with Claude Code subagents. Co
 
 ## License
 
-[To be determined]
+MIT License (see LICENSE file)
 
 ## Support
 
@@ -145,8 +188,49 @@ For issues and questions, please refer to the project documentation in the `docs
 
 ## Roadmap
 
-- **Phase 1 (Current):** Read-only viewing interface ✓
-- **Phase 2:** CRUD operations for all configuration types
-- **Phase 3:** Advanced features (validation, templates, import/export)
+### Phase 1 - MVP (Current) ✅
+- [x] Project discovery from `~/.claude.json`
+- [x] View subagents, commands, hooks, and MCP servers
+- [x] Search and filter functionality
+- [x] Dark/light mode support
+- [x] Responsive design
+- [ ] Cross-platform testing (Windows, Mac, Linux)
+
+### Phase 2 - CRUD Operations (Planned)
+- [ ] Create new subagents, commands, hooks, and MCP servers
+- [ ] Edit existing configurations
+- [ ] Delete configurations
+- [ ] Configuration validation
+- [ ] Real-time file watching
+
+### Phase 3 - Advanced Features (Future)
+- [ ] Configuration templates
+- [ ] Import/export functionality
+- [ ] Bulk operations
+- [ ] Configuration testing
+- [ ] Version history
 
 See individual PRD documents in `docs/` for detailed phase specifications.
+
+## Troubleshooting
+
+### Server Won't Start
+- Ensure Node.js 18+ is installed: `node --version`
+- Check if port 8420 is available: `lsof -i :8420` (Mac/Linux) or `netstat -ano | findstr :8420` (Windows)
+- Install dependencies: `npm install`
+
+### No Projects Showing
+- Verify `~/.claude.json` exists and contains project paths
+- Check browser console for errors (F12)
+- Try clicking the "Rescan" button in the UI
+
+### API Errors
+- Check backend server logs for error messages
+- Verify project directories exist and are accessible
+- Ensure `.claude/` directories have proper permissions
+
+### Frontend Not Loading
+- Clear browser cache and hard refresh (Ctrl+Shift+R or Cmd+Shift+R)
+- Check browser console for JavaScript errors
+- Verify CDN links are accessible (check Network tab)
+- Try a different browser
