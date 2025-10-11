@@ -130,9 +130,7 @@ export default {
   computed: {
     sidebarStyle() {
       return {
-        width: '40%',
-        minWidth: '400px',
-        maxWidth: '600px',
+        width: '75vw',
       };
     },
     typeIcon() {

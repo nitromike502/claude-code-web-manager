@@ -51,7 +51,7 @@ export default {
             >
               <template #header>
                 <div class="project-header">
-                  <i class="pi pi-folder"></i>
+                  <i :class="project.isUser ? 'pi pi-user' : 'pi pi-folder'"></i>
                   <h3 class="project-name">{{ project.name }}</h3>
                 </div>
               </template>
@@ -93,6 +93,7 @@ export default {
   data() {
     return {
       projects: [],
+      userConfig: null,
       loading: false,
       scanning: false,
       error: null,
@@ -108,6 +109,9 @@ export default {
   },
   computed: {
     filteredProjects() {
+      if (!Array.isArray(this.projects)) {
+        return [];
+      }
       let filtered = [...this.projects];
 
       // Apply search filter
@@ -134,11 +138,17 @@ export default {
           break;
       }
 
+      // Prepend user configuration as first card if available
+      if (this.userConfig) {
+        filtered.unshift(this.userConfig);
+      }
+
       return filtered;
     },
   },
   mounted() {
     this.loadProjects();
+    this.loadUserConfig();
 
     // Listen for search from header
     window.addEventListener('header-search', (e) => {
@@ -160,6 +170,22 @@ export default {
       }
     },
 
+    async loadUserConfig() {
+      try {
+        const stats = await window.api.user.getStats();
+        this.userConfig = {
+          id: 'user',
+          name: 'User Configurations',
+          path: '~/.claude',
+          stats,
+          isUser: true,
+        };
+      } catch (err) {
+        console.error('Failed to load user config:', err);
+        // Don't set error state, just skip user config card
+      }
+    },
+
     async handleRescan() {
       this.scanning = true;
 
@@ -172,6 +198,7 @@ export default {
           life: 3000,
         });
         await this.loadProjects();
+        await this.loadUserConfig();
       } catch (err) {
         this.$toast.add({
           severity: 'error',
@@ -185,7 +212,11 @@ export default {
     },
 
     navigateToProject(projectId) {
-      window.router.navigate(`/project/${projectId}`);
+      if (projectId === 'user') {
+        window.router.navigate('/user');
+      } else {
+        window.router.navigate(`/project/${projectId}`);
+      }
     },
   },
 };

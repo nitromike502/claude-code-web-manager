@@ -81,6 +81,23 @@ export const userAPI = {
   async getMCP() {
     return fetchJSON(`${API_BASE_URL}/user/mcp`);
   },
+
+  // Get user stats (counts for all categories)
+  async getStats() {
+    const [agents, commands, hooks, mcp] = await Promise.all([
+      this.getAgents(),
+      this.getCommands(),
+      this.getHooks(),
+      this.getMCP(),
+    ]);
+
+    return {
+      agents: agents.agents?.length || 0,
+      commands: commands.commands?.length || 0,
+      hooks: hooks.hooks?.length || 0,
+      mcp: mcp.mcp?.length || 0,
+    };
+  },
 };
 
 // Health check

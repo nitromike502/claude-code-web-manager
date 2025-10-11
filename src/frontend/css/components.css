@@ -280,10 +280,25 @@
 }
 
 /* Detail Sidebar */
+.detail-sidebar {
+  background-color: var(--bg-secondary) !important;
+  box-shadow: var(--shadow-sidebar);
+}
+
 .detail-sidebar .p-sidebar-header {
   background-color: var(--bg-tertiary);
   border-bottom: 1px solid var(--border-primary);
   padding: 1rem !important;
+}
+
+.detail-sidebar .p-sidebar-content {
+  background-color: var(--bg-secondary);
+}
+
+/* Modal mask/backdrop for sidebar */
+.p-sidebar-mask {
+  background-color: var(--overlay-modal) !important;
+  backdrop-filter: blur(2px);
 }
 
 .sidebar-header-title {
