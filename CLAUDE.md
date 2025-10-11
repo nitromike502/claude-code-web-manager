@@ -145,6 +145,9 @@ cd manager
 # Install dependencies
 npm install
 
+# Setup Git hooks (enforces feature branch workflow)
+./scripts/setup-git-hooks.sh
+
 # Start the server
 npm start
 ```
@@ -168,6 +171,111 @@ For development with auto-reload on file changes:
 npm run dev
 ```
 
+## Git Workflow
+
+This project enforces a **feature branch workflow** to ensure code quality and enable frequent, small commits.
+
+### Mandatory Workflow Rules
+
+1. **No Direct Commits to Main** - A pre-push hook prevents direct pushes to `main`, `master`, or `develop` branches
+2. **Feature Branches Required** - All work must be done on feature branches
+3. **Small, Focused Tasks** - Tasks should be 30-60 minutes maximum
+4. **Frequent Commits** - Commit every 15-30 minutes of productive work
+5. **Test Immediately** - Test after every task completion
+6. **Pull Request Required** - All features require code review before merging
+
+### Feature Branch Workflow
+
+```bash
+# 1. Create a feature branch from main
+git checkout main
+git pull
+git checkout -b feature/your-feature-name
+
+# 2. Make your changes (30-60 min max per task)
+# ...edit files...
+
+# 3. Test your changes
+npm test  # or manual testing
+
+# 4. Commit frequently (every 15-30 min)
+git add <files>
+git commit -m "type: brief description"
+
+# 5. Push your feature branch
+git push -u origin feature/your-feature-name
+
+# 6. Create a Pull Request on GitHub
+gh pr create --title "..." --body "..."
+
+# 7. After PR approval, merge and delete branch
+gh pr merge <pr-number>
+git checkout main
+git pull
+git branch -d feature/your-feature-name
+```
+
+### Branch Naming Conventions
+
+- `feature/` - New features (e.g., `feature/project-discovery`)
+- `fix/` - Bug fixes (e.g., `fix/sidebar-scrolling`)
+- `chore/` - Maintenance tasks (e.g., `chore/update-deps`)
+- `docs/` - Documentation only (e.g., `docs/api-reference`)
+- `refactor/` - Code refactoring (e.g., `refactor/api-service`)
+
+### Commit Message Format
+
+Follow [Conventional Commits](https://www.conventionalcommits.org/):
+
+```
+<type>: <brief description>
+
+[optional body]
+```
+
+**Types:**
+- `feat:` - New feature
+- `fix:` - Bug fix
+- `docs:` - Documentation changes
+- `chore:` - Maintenance tasks
+- `refactor:` - Code refactoring
+- `test:` - Adding or updating tests
+- `style:` - Code style changes (formatting)
+
+**Examples:**
+```
+feat: add project discovery service
+fix: resolve sidebar scrolling issue
+docs: update API endpoint documentation
+chore: consolidate sidebar fix docs
+```
+
+### Why This Workflow?
+
+Per the workflow analysis (see `docs/workflow-analysis-20251007.md`), the October 7 revert was caused by:
+- Massive feature scope (2-3 hour chunks)
+- No feature branches (100% work on main)
+- Infrequent commits (40+ min gaps)
+- Late testing (only after "completion")
+
+This resulted in **350+ errors** and lost work. The new workflow prevents these issues by enforcing small, testable, reviewable changes.
+
+### Pre-Push Hook
+
+A pre-push Git hook is installed at `.git/hooks/pre-push` that prevents direct pushes to protected branches. If you accidentally try to push to main, you'll see:
+
+```
+❌ ERROR: Direct pushes to 'main' branch are not allowed!
+
+Please use the feature branch workflow:
+  1. Create a feature branch: git checkout -b feature/your-feature-name
+  2. Make your changes and commit
+  3. Push your feature branch: git push -u origin feature/your-feature-name
+  4. Create a Pull Request for review
+```
+
 ## Contributing
 
 This project uses Claude Code with specialized subagents. See `.claude/agents/` for team structure.
+
+**All contributions must follow the Git Workflow above.**
