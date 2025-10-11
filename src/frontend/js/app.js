@@ -1,11 +1,5 @@
 // Main Vue Application
 
-// Import CSS
-import 'primeicons/primeicons.css';
-import '../css/variables.css';
-import '../css/global.css';
-import '../css/components.css';
-
 import { createApp } from 'vue';
 import PrimeVue from 'primevue/config';
 import Button from 'primevue/button';

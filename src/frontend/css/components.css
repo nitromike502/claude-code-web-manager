@@ -289,10 +289,19 @@
   background-color: var(--bg-tertiary);
   border-bottom: 1px solid var(--border-primary);
   padding: 1rem !important;
+  flex-shrink: 0; /* Prevent header from shrinking */
 }
 
 .detail-sidebar .p-sidebar-content {
   background-color: var(--bg-secondary);
+  overflow-y: auto !important; /* Enable scrolling in the content area */
+  padding: 0 !important; /* Remove default padding, we'll add it to .sidebar-content */
+  display: flex;
+  flex-direction: column;
+}
+
+.detail-sidebar .p-sidebar-footer {
+  flex-shrink: 0; /* Prevent footer from shrinking */
 }
 
 /* Modal mask/backdrop for sidebar */
@@ -325,8 +334,9 @@
 }
 
 .sidebar-content {
-  padding: 1.5rem;
-  overflow-y: auto;
+  padding: 2rem 1.5rem; /* Increased top/bottom padding from 1.5rem to 2rem */
+  flex: 1; /* Allow content to grow */
+  min-height: 0; /* Important for flexbox scrolling */
 }
 
 .sidebar-actions {

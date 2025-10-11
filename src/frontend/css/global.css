@@ -19,6 +19,11 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Prevent body scroll when sidebar is open */
+body.sidebar-open {
+  overflow: hidden;
+}
+
 #app {
   min-height: 100vh;
   display: flex;
