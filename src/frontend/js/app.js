@@ -1,5 +1,24 @@
 // Main Vue Application
 
+import { createApp } from 'vue';
+import PrimeVue from 'primevue/config';
+import Button from 'primevue/button';
+import Card from 'primevue/card';
+import Toolbar from 'primevue/toolbar';
+import InputText from 'primevue/inputtext';
+import IconField from 'primevue/iconfield';
+import InputIcon from 'primevue/inputicon';
+import Breadcrumb from 'primevue/breadcrumb';
+import Dropdown from 'primevue/dropdown';
+import ProgressSpinner from 'primevue/progressspinner';
+import Skeleton from 'primevue/skeleton';
+import Sidebar from 'primevue/sidebar';
+import Panel from 'primevue/panel';
+import Tag from 'primevue/tag';
+import Toast from 'primevue/toast';
+import ToastService from 'primevue/toastservice';
+import Tooltip from 'primevue/tooltip';
+
 import api from './api.js';
 import createRouter from './router.js';
 import Dashboard from './components/Dashboard.js';
@@ -8,9 +27,6 @@ import UserGlobal from './components/UserGlobal.js';
 import ConfigCard from './components/ConfigCard.js';
 import ConfigItem from './components/ConfigItem.js';
 import DetailSidebar from './components/DetailSidebar.js';
-
-const { createApp } = Vue;
-const { useToast } = primevue.usetoast;
 
 // Create Vue app
 const app = createApp({
@@ -151,31 +167,31 @@ const app = createApp({
 });
 
 // Register PrimeVue
-app.use(PrimeVue.Config, {
+app.use(PrimeVue, {
   theme: 'none', // We'll use CSS variables for theming
 });
 
 // Register PrimeVue components
-app.component('Button', primevue.button);
-app.component('Card', primevue.card);
-app.component('Toolbar', primevue.toolbar);
-app.component('InputText', primevue.inputtext);
-app.component('IconField', primevue.iconfield);
-app.component('InputIcon', primevue.inputicon);
-app.component('Breadcrumb', primevue.breadcrumb);
-app.component('Dropdown', primevue.dropdown);
-app.component('ProgressSpinner', primevue.progressspinner);
-app.component('Skeleton', primevue.skeleton);
-app.component('Sidebar', primevue.sidebar);
-app.component('Panel', primevue.panel);
-app.component('Tag', primevue.tag);
-app.component('Toast', primevue.toast);
+app.component('Button', Button);
+app.component('Card', Card);
+app.component('Toolbar', Toolbar);
+app.component('InputText', InputText);
+app.component('IconField', IconField);
+app.component('InputIcon', InputIcon);
+app.component('Breadcrumb', Breadcrumb);
+app.component('Dropdown', Dropdown);
+app.component('ProgressSpinner', ProgressSpinner);
+app.component('Skeleton', Skeleton);
+app.component('Sidebar', Sidebar);
+app.component('Panel', Panel);
+app.component('Tag', Tag);
+app.component('Toast', Toast);
 
 // Register directives
-app.directive('tooltip', primevue.tooltip);
+app.directive('tooltip', Tooltip);
 
 // Register PrimeVue services
-app.use(primevue.toastservice);
+app.use(ToastService);
 
 // Register custom components
 app.component('dashboard', Dashboard);
