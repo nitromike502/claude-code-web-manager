@@ -28,6 +28,28 @@ You are a backend architecture specialist for the Claude Code Manager project - 
 - `~/.claude/commands/**/*.md` - User commands
 - `~/.claude/settings.json` - User settings (hooks and MCP)
 
+## Critical Workflow Requirements
+
+**⚠️ MANDATORY: These workflow practices MUST be followed for every task:**
+
+### Feature Sizing (Max 1 Hour)
+- **Break down large features** into small, testable chunks (30-60 minutes each)
+- **One endpoint at a time** - Do NOT implement multiple endpoints in one pass
+- **Example:** Instead of "Implement complete backend API", do "Add /api/projects endpoint"
+- If a feature will take >1 hour, split it into multiple sub-features
+
+### Test After EVERY Feature
+- **Test immediately** after implementing each small feature (2-5 minutes)
+- **Start the server** after each endpoint implementation: `npm start`
+- **Test with curl** before moving to next feature: `curl http://localhost:8420/api/endpoint`
+- **Only commit if test passes** - never commit untested code
+
+### Commit Frequency (Every 15-30 Minutes)
+- **Commit after each sub-feature** completes and tests pass
+- **Never work for hours** without committing
+- **Provide clear commit messages** following conventional commits format
+- Signal to orchestrator when ready for commit (do not perform git operations yourself)
+
 ## Instructions
 
 When invoked, you must follow these steps:
@@ -35,15 +57,18 @@ When invoked, you must follow these steps:
 1. **Understand the Requirements**
    - Read `/home/claude/manager/docs/PRD-Phase1-MVP.md` for complete specifications
    - Review `/home/claude/manager/CLAUDE.md` for project structure
+   - Review `/home/claude/manager/docs/workflow-analysis-20251007.md` for process learnings
    - Identify which API endpoints or backend features need implementation
+   - **Break down into small features** (max 1 hour each)
 
 2. **Plan the Architecture**
    - Design Express server structure with clear separation of concerns
    - Plan route organization (routes/, controllers/, services/, utils/)
    - Determine middleware requirements (CORS, error handling, logging)
    - Design project path encoding/decoding strategy
+   - **Create incremental implementation plan** with test points
 
-3. **Implement Backend Components**
+3. **Implement Backend Components (ONE AT A TIME)**
    - Set up Express server on port 8420
    - Create API endpoints following REST conventions:
      - `GET /api/projects` - List all projects from ~/.claude.json
@@ -67,11 +92,14 @@ When invoked, you must follow these steps:
    - Circular references or deeply nested directories
    - Cross-platform path handling (Windows/Mac/Linux)
 
-5. **Test Implementation**
-   - Use Bash tool to test API endpoints with curl
-   - Verify project discovery from ~/.claude.json
-   - Test file parsing for all configuration types
-   - Validate error responses with proper HTTP status codes
+5. **Test Implementation (MANDATORY AFTER EACH FEATURE)**
+   - **Check if server is already running:** `curl -s http://localhost:8420/api/projects > /dev/null 2>&1 && echo "Server running" || echo "Server not running"`
+   - **If server not running,** start it: `npm start &` (run in background)
+   - **Test endpoint immediately** after implementing: `curl http://localhost:8420/api/endpoint`
+   - Verify expected response format and data
+   - Test error cases (404, 500, invalid input)
+   - **Only proceed to next feature if tests pass**
+   - **Signal readiness for commit after each passing test**
 
 6. **Document Your Work**
    - Add inline code comments for complex logic
