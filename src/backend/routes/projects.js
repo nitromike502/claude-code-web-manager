@@ -25,27 +25,27 @@ router.get('/', async (req, res) => {
       projectsCache = result;
     }
 
-    // Add counts to each project
-    const projectsWithCounts = {};
+    // Add counts to each project and convert to array
+    const projectsArray = [];
 
     for (const [projectId, projectData] of Object.entries(projectsCache.projects)) {
       if (projectData.exists) {
         const counts = await getProjectCounts(projectData.path);
-        projectsWithCounts[projectId] = {
+        projectsArray.push({
           ...projectData,
-          counts
-        };
+          stats: counts  // Frontend expects 'stats' not 'counts'
+        });
       } else {
-        projectsWithCounts[projectId] = {
+        projectsArray.push({
           ...projectData,
-          counts: { agents: 0, commands: 0, hooks: 0, mcp: 0 }
-        };
+          stats: { agents: 0, commands: 0, hooks: 0, mcp: 0 }
+        });
       }
     }
 
     res.json({
       success: true,
-      projects: projectsWithCounts,
+      projects: projectsArray,
       error: projectsCache.error
     });
   } catch (error) {

@@ -4,46 +4,379 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Claude Code Manager</title>
-
-    <!-- PrimeVue CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/primevue@3.50.0/resources/themes/lara-dark-blue/theme.css">
-    <link rel="stylesheet" href="https://unpkg.com/primeicons@6.0.1/primeicons.css">
-
-    <!-- Custom CSS -->
     <link rel="stylesheet" href="/css/variables.css">
     <link rel="stylesheet" href="/css/global.css">
     <link rel="stylesheet" href="/css/components.css">
-
-    <!-- Import Maps for ESM modules via esm.sh CDN -->
-    <script type="importmap">
-    {
-      "imports": {
-        "vue": "https://esm.sh/vue@3.4.21",
-        "primevue/config": "https://esm.sh/primevue@3.50.0/config",
-        "primevue/button": "https://esm.sh/primevue@3.50.0/button",
-        "primevue/card": "https://esm.sh/primevue@3.50.0/card",
-        "primevue/toolbar": "https://esm.sh/primevue@3.50.0/toolbar",
-        "primevue/inputtext": "https://esm.sh/primevue@3.50.0/inputtext",
-        "primevue/iconfield": "https://esm.sh/primevue@3.50.0/iconfield",
-        "primevue/inputicon": "https://esm.sh/primevue@3.50.0/inputicon",
-        "primevue/breadcrumb": "https://esm.sh/primevue@3.50.0/breadcrumb",
-        "primevue/dropdown": "https://esm.sh/primevue@3.50.0/dropdown",
-        "primevue/progressspinner": "https://esm.sh/primevue@3.50.0/progressspinner",
-        "primevue/skeleton": "https://esm.sh/primevue@3.50.0/skeleton",
-        "primevue/sidebar": "https://esm.sh/primevue@3.50.0/sidebar",
-        "primevue/panel": "https://esm.sh/primevue@3.50.0/panel",
-        "primevue/tag": "https://esm.sh/primevue@3.50.0/tag",
-        "primevue/toast": "https://esm.sh/primevue@3.50.0/toast",
-        "primevue/toastservice": "https://esm.sh/primevue@3.50.0/toastservice",
-        "primevue/tooltip": "https://esm.sh/primevue@3.50.0/tooltip"
-      }
-    }
-    </script>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <div id="app"></div>
+    <div id="app">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="app-title">
+                <i class="fas fa-code"></i>
+                <span>Claude Code Manager</span>
+            </div>
+            <div class="header-search">
+                <input
+                    type="text"
+                    class="search-input"
+                    placeholder="Search projects..."
+                    v-model="searchQuery"
+                    @input="filterProjects"
+                />
+            </div>
+            <button class="theme-toggle" @click="toggleTheme" :title="currentTheme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'">
+                <i :class="currentTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon'"></i>
+            </button>
+        </header>
 
-    <!-- Application -->
-    <script type="module" src="/js/app.js"></script>
+        <!-- Breadcrumbs -->
+        <div class="breadcrumbs">
+            <span class="breadcrumb-item active">
+                <i class="fas fa-home"></i>
+                Dashboard
+            </span>
+        </div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="content-header">
+                <h2>Projects</h2>
+                <button class="btn-refresh" @click="refreshProjects" title="Refresh projects">
+                    <i class="fas fa-sync-alt"></i>
+                    Refresh
+                </button>
+            </div>
+
+            <!-- Project Grid -->
+            <div class="project-grid">
+                <div
+                    v-for="project in filteredProjects"
+                    :key="project.id"
+                    class="project-card"
+                    @click="selectProject(project)"
+                >
+                    <div class="project-header">
+                        <i class="fas fa-folder"></i>
+                        <h3 class="project-name">{{ project.name }}</h3>
+                    </div>
+                    <div class="project-path">{{ project.path }}</div>
+                    <div class="project-stats">
+                        <div class="stat stat-agents">
+                            <i class="fas fa-robot"></i>
+                            <span>{{ project.stats.agents }} Agents</span>
+                        </div>
+                        <div class="stat stat-commands">
+                            <i class="fas fa-terminal"></i>
+                            <span>{{ project.stats.commands }} Commands</span>
+                        </div>
+                        <div class="stat stat-hooks">
+                            <i class="fas fa-plug"></i>
+                            <span>{{ project.stats.hooks }} Hooks</span>
+                        </div>
+                        <div class="stat stat-mcp">
+                            <i class="fas fa-server"></i>
+                            <span>{{ project.stats.mcp }} MCP</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Empty State -->
+            <div v-if="filteredProjects.length === 0" class="empty-state">
+                <i class="fas fa-folder-open"></i>
+                <h3>No projects found</h3>
+                <p>{{ searchQuery ? 'Try a different search term' : 'Click Refresh to scan for projects' }}</p>
+            </div>
+        </main>
+    </div>
+
+    <!-- Vue 3 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@3.5.22/dist/vue.global.prod.js"></script>
+
+    <!-- App Script -->
+    <script>
+        const { createApp } = Vue;
+
+        createApp({
+            data() {
+                return {
+                    currentTheme: 'dark',
+                    searchQuery: '',
+                    projects: [
+                        {
+                            id: 1,
+                            name: 'Claude Manager',
+                            path: '/home/claude/manager',
+                            stats: { agents: 5, commands: 12, hooks: 3, mcp: 2 }
+                        },
+                        {
+                            id: 2,
+                            name: 'E-Commerce Platform',
+                            path: '/home/claude/projects/ecommerce',
+                            stats: { agents: 8, commands: 24, hooks: 6, mcp: 4 }
+                        },
+                        {
+                            id: 3,
+                            name: 'Personal Blog',
+                            path: '/home/claude/websites/blog',
+                            stats: { agents: 2, commands: 8, hooks: 1, mcp: 1 }
+                        },
+                        {
+                            id: 4,
+                            name: 'Task Tracker',
+                            path: '/home/claude/apps/task-tracker',
+                            stats: { agents: 4, commands: 15, hooks: 4, mcp: 3 }
+                        },
+                        {
+                            id: 5,
+                            name: 'Portfolio Website',
+                            path: '/home/claude/websites/portfolio',
+                            stats: { agents: 1, commands: 5, hooks: 2, mcp: 1 }
+                        },
+                        {
+                            id: 6,
+                            name: 'Data Analysis Tool',
+                            path: '/home/claude/tools/data-analysis',
+                            stats: { agents: 6, commands: 18, hooks: 5, mcp: 5 }
+                        },
+                        {
+                            id: 7,
+                            name: 'Mobile App Backend',
+                            path: '/home/claude/projects/mobile-backend',
+                            stats: { agents: 7, commands: 20, hooks: 4, mcp: 6 }
+                        },
+                        {
+                            id: 8,
+                            name: 'Documentation Site',
+                            path: '/home/claude/docs/api-docs',
+                            stats: { agents: 3, commands: 10, hooks: 2, mcp: 2 }
+                        },
+                        {
+                            id: 9,
+                            name: 'Testing Framework',
+                            path: '/home/claude/tools/test-framework',
+                            stats: { agents: 5, commands: 22, hooks: 7, mcp: 3 }
+                        },
+                        {
+                            id: 10,
+                            name: 'Chat Application',
+                            path: '/home/claude/projects/chat-app',
+                            stats: { agents: 9, commands: 28, hooks: 8, mcp: 7 }
+                        }
+                    ],
+                    filteredProjects: []
+                };
+            },
+            mounted() {
+                // Initialize filtered projects
+                this.filteredProjects = [...this.projects];
+
+                // Load theme preference from localStorage
+                const savedTheme = localStorage.getItem('theme') || 'dark';
+                this.currentTheme = savedTheme;
+                document.documentElement.setAttribute('data-theme', savedTheme);
+            },
+            methods: {
+                toggleTheme() {
+                    this.currentTheme = this.currentTheme === 'dark' ? 'light' : 'dark';
+                    document.documentElement.setAttribute('data-theme', this.currentTheme);
+                    localStorage.setItem('theme', this.currentTheme);
+                },
+                filterProjects() {
+                    const query = this.searchQuery.toLowerCase().trim();
+                    if (!query) {
+                        this.filteredProjects = [...this.projects];
+                        return;
+                    }
+                    this.filteredProjects = this.projects.filter(project =>
+                        project.name.toLowerCase().includes(query) ||
+                        project.path.toLowerCase().includes(query)
+                    );
+                },
+                refreshProjects() {
+                    // Placeholder for future API call
+                    console.log('Refreshing projects...');
+                    // Add a simple animation feedback
+                    const btn = document.querySelector('.btn-refresh i');
+                    if (btn) {
+                        btn.style.animation = 'spin 0.5s ease-in-out';
+                        setTimeout(() => {
+                            btn.style.animation = '';
+                        }, 500);
+                    }
+                },
+                selectProject(project) {
+                    console.log('Selected project:', project);
+                    // Placeholder for future navigation
+                }
+            }
+        }).mount('#app');
+    </script>
+
+    <style>
+        /* Additional styles for header components */
+        .app-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 2rem;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.625rem 1rem;
+            background-color: var(--bg-tertiary);
+            border: 1px solid var(--border-primary);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-size: 0.9375rem;
+            transition: all 0.2s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            background-color: var(--bg-secondary);
+        }
+
+        .search-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .theme-toggle {
+            background-color: var(--bg-tertiary);
+            border: 1px solid var(--border-primary);
+            color: var(--text-primary);
+            padding: 0.625rem 0.875rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 1.125rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 42px;
+        }
+
+        .theme-toggle:hover {
+            background-color: var(--bg-hover);
+            border-color: var(--color-primary);
+        }
+
+        .theme-toggle:active {
+            transform: scale(0.95);
+        }
+
+        /* Breadcrumbs */
+        .breadcrumbs {
+            padding: 1rem 2rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .breadcrumb-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+            transition: color 0.2s ease;
+        }
+
+        .breadcrumb-item.active {
+            color: var(--text-emphasis);
+            font-weight: 500;
+        }
+
+        .breadcrumb-item:not(.active):hover {
+            color: var(--text-primary);
+            cursor: pointer;
+        }
+
+        /* Content Header */
+        .content-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+        }
+
+        .content-header h2 {
+            margin: 0;
+            font-size: 1.75rem;
+        }
+
+        .btn-refresh {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.625rem 1.25rem;
+            background-color: var(--color-primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9375rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .btn-refresh:hover {
+            background-color: var(--color-primary-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn-refresh:active {
+            transform: translateY(0);
+        }
+
+        /* Spin animation for refresh icon */
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 767px) {
+            .app-header {
+                flex-wrap: wrap;
+                gap: 0.75rem;
+            }
+
+            .app-title {
+                order: 1;
+                flex: 1;
+            }
+
+            .theme-toggle {
+                order: 2;
+            }
+
+            .header-search {
+                order: 3;
+                width: 100%;
+                min-width: 100%;
+            }
+
+            .breadcrumbs {
+                padding: 0.75rem 1rem 0;
+            }
+
+            .content-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .btn-refresh {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
 </body>
 </html>

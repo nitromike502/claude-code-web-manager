@@ -5,7 +5,7 @@ export default {
   template: `
     <Sidebar
       :visible="visible"
-      @update:visible="$emit('update:visible', $event)"
+      @update:visible="handleVisibilityChange"
       position="right"
       :style="sidebarStyle"
       :modal="true"
@@ -130,9 +130,7 @@ export default {
   computed: {
     sidebarStyle() {
       return {
-        width: '40%',
-        minWidth: '400px',
-        maxWidth: '600px',
+        width: '75vw',
       };
     },
     typeIcon() {
@@ -202,7 +200,25 @@ export default {
       return html;
     },
   },
+  watch: {
+    visible(newVal) {
+      // Prevent body scroll when sidebar is open
+      if (newVal) {
+        document.body.style.overflow = 'hidden';
+      } else {
+        document.body.style.overflow = '';
+      }
+    },
+  },
+  beforeUnmount() {
+    // Ensure body scroll is restored if component is destroyed while sidebar is open
+    document.body.style.overflow = '';
+  },
   methods: {
+    handleVisibilityChange(value) {
+      this.$emit('update:visible', value);
+      // The watcher will handle the body scroll
+    },
     copyYaml() {
       navigator.clipboard.writeText(this.yamlContent);
       this.$toast.add({

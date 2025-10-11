@@ -154,3 +154,8 @@ $RECYCLE.BIN/
 
 # Files marked for deletion
 *.delete
+
+# Test artifacts and temporary test files
+.playwright-mcp/
+test-*.html
+vite.config.js

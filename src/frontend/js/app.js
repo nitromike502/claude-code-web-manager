@@ -58,9 +58,6 @@ const app = createApp({
 
       return crumbs;
     },
-    isUserView() {
-      return this.currentView === 'user-global';
-    },
     showBack() {
       return this.currentView !== 'dashboard';
     },
@@ -72,6 +69,12 @@ const app = createApp({
     // Set up theme toggle
     document.addEventListener('theme-toggle', () => {
       this.toggleTheme();
+    });
+
+    // Listen for route changes
+    window.addEventListener('route-change', (event) => {
+      this.currentView = event.detail.component;
+      this.routeParams = event.detail.params;
     });
   },
   methods: {
@@ -85,9 +88,6 @@ const app = createApp({
     handleRescan() {
       window.dispatchEvent(new CustomEvent('trigger-rescan'));
     },
-    handleUserView() {
-      router.navigate('/user');
-    },
     toggleTheme() {
       this.currentTheme = this.currentTheme === 'dark' ? 'light' : 'dark';
       document.documentElement.setAttribute('data-theme', this.currentTheme);
@@ -100,7 +100,7 @@ const app = createApp({
     },
   },
   template: `
-    <div id="app">
+    <div>
       <Toolbar class="app-header">
         <template #start>
           <Button
@@ -144,14 +144,6 @@ const app = createApp({
             rounded
             @click="toggleTheme"
             v-tooltip.bottom="'Switch to dark mode'"
-          />
-          <Button
-            icon="pi pi-user"
-            text
-            rounded
-            :class="{ 'active': isUserView }"
-            @click="handleUserView"
-            v-tooltip.bottom="'User configurations'"
           />
         </template>
       </Toolbar>
@@ -201,7 +193,14 @@ app.component('config-card', ConfigCard);
 app.component('config-item', ConfigItem);
 app.component('detail-sidebar', DetailSidebar);
 
-// Set up routing
+// Make API available globally
+window.api = api;
+
+// Mount the app first
+const mountedApp = app.mount('#app');
+window.app = mountedApp;
+
+// Set up routing after app is mounted
 const routes = {
   '/': 'dashboard',
   '/project/:projectId': 'project-detail',
@@ -209,13 +208,6 @@ const routes = {
 };
 
 const router = createRouter(routes);
-
-// Make API and router available globally
-window.api = api;
 window.router = router;
-
-// Mount the app
-app.mount('#app');
-window.app = app;
 
 console.log('Claude Code Manager initialized');
