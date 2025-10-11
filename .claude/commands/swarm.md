@@ -26,35 +26,44 @@ Invoke the `subagent-orchestrator` agent to:
 2. Review any existing tickets to understand current work scope and status
 3. Determine if tickets are sufficient to proceed with development
 
-## Step 2: Auto-Plan if Needed
+## Step 2: Auto-Plan if Needed (ENFORCE SMALL FEATURE SIZING)
 If NO tickets exist or tickets are stale/completed:
-1. Assess current project state (read CLAUDE.md, check directory structure, git status)
+1. Assess current project state (read CLAUDE.md, workflow-analysis-20251007.md, git status)
 2. Determine current phase and what work comes next
 3. Identify appropriate PRD sections for planning
 4. Create comprehensive Epic/Story/Task breakdown with TodoWrite tool:
    - **Epics**: Major feature areas (e.g., "Backend API Development", "Frontend UI Development")
    - **Stories**: User-facing features within each epic (e.g., "Project List View", "Subagent Viewer")
    - **Tasks**: Technical implementation steps for each story (e.g., "Create /api/projects endpoint")
+   - **⚠️ CRITICAL: ALL tasks MUST be 30-60 minutes max**
+   - **⚠️ CRITICAL: Each task must be independently testable and committable**
+   - **⚠️ CRITICAL: Break down any task >1 hour into multiple sub-tasks**
 5. Include agent assignments, dependencies, acceptance criteria, and phase gates
+6. Reference `/home/claude/manager/docs/workflow-analysis-20251007.md` for sizing best practices
 
 **Note**: This auto-planning mirrors the `/plan` command functionality, ensuring you can run `/swarm` at any time.
 
-## Step 3: Execute Development Workflow
+## Step 3: Execute Development Workflow (ENFORCE FREQUENT COMMITS)
 With tickets ready (existing or newly created):
 1. Read relevant PRD documents (docs/PRD-Phase1-MVP.md, docs/Subagent-Team.md)
-2. Coordinate specialized agents through development workflow:
+2. **Validate task sizing before starting** - reject any task >1 hour
+3. Coordinate specialized agents through development workflow:
+   - git-workflow-specialist creates feature branch FIRST (mandatory)
    - wireframe-designer for UI mockups
-   - backend-architect for API development
-   - frontend-developer for Vue/PrimeVue components
+   - backend-architect for API development (one endpoint at a time)
+   - frontend-developer for Vue/PrimeVue components (one component at a time)
    - data-parser for configuration file parsing
+   - **git-workflow-specialist commits after EACH sub-feature (15-30 min)**
    - integration-tester for testing and verification
    - code-reviewer for quality assurance
    - documentation-engineer for documentation updates (after feature implementation)
-   - git-workflow-specialist for commits and PRs
-3. Manage phase progression through development lifecycle
-4. Ensure proper handoff chain: developer → documentation-engineer → code-reviewer → git-workflow-specialist
-5. Include user review checkpoints after each significant feature
-6. Track progress and mark tickets as completed
+   - git-workflow-specialist for PR creation and merge
+4. Manage phase progression through development lifecycle
+5. **Ensure incremental commit chain:** developer → test → git-commit → next sub-feature
+6. **After all sub-features complete:** documentation-engineer → code-reviewer → git-PR → merge
+7. Include user review checkpoints after each significant feature
+8. Track progress and mark tickets as completed
+9. **Monitor commit frequency - must see commits every 15-30 minutes**
 
 ## Step 4: Deliver Results
 1. Provide summary of completed work

@@ -26,22 +26,28 @@ When invoked, you must follow these steps:
    - List completed work awaiting handoff
    - Note any work ready to start
 
-3. **Validate Work Structure**
+3. **Validate Work Structure (CRITICAL FEATURE SIZING)**
    - Ensure all work follows Epic → Story → Task breakdown
-   - Verify tasks are properly sized (not too large)
+   - **MANDATORY: Verify tasks are small enough (30-60 minutes max)**
+   - **Break down any task >1 hour into multiple sub-tasks**
+   - **Each task must be independently testable and committable**
    - Confirm dependencies are documented
    - Check that no critical steps are skipped
+   - **Reference `/home/claude/manager/docs/workflow-analysis-20251007.md` for sizing guidelines**
 
-4. **Coordinate Handoffs**
+4. **Coordinate Handoffs (ENFORCE FREQUENT COMMITS)**
    - Task assigned → Delegate to git-workflow-specialist: Create ticket branch
-   - Branch ready → Delegate to developer: Implement feature
-   - Developer completes → Delegate to documentation-engineer (if docs needed)
+   - Branch ready → Delegate to developer: Implement feature (SMALL FEATURE ONLY)
+   - **Developer completes sub-feature → Delegate to git-workflow-specialist: Commit immediately**
+   - **After commit → If more sub-features remain, continue incrementally**
+   - **After all sub-features complete → Delegate to documentation-engineer (if docs needed)**
    - Documentation complete → Delegate to code-reviewer: Review changes
-   - Code-reviewer approves → Delegate to git-workflow-specialist: Commit changes
-   - Changes committed → Delegate to git-workflow-specialist: Create PR
+   - Code-reviewer approves → Delegate to git-workflow-specialist: Create PR
    - PR created → Wait for human approval (if required)
    - PR approved → Delegate to git-workflow-specialist: Merge PR
    - Story completes → Request user review checkpoint
+
+   **CRITICAL: Ensure commits happen every 15-30 minutes, not just at end of feature**
 
 5. **Manage Dependencies**
    - Track what each agent is waiting for
@@ -95,8 +101,11 @@ When invoked, you must follow these steps:
 - **Critical Path Focus:** Monitor and expedite items on critical path
 - **No Waiting Agents:** Ensure no agent sits idle waiting for work
 - **Phase Discipline:** Enforce phase gates strictly (especially wireframes before frontend)
-- **Work Breakdown:** Never allow large monolithic tasks - break into manageable pieces
+- **Work Breakdown:** Never allow large monolithic tasks - break into manageable pieces (30-60 min max)
 - **User Engagement:** Regular checkpoints keep user informed and aligned
+- **⚠️ ENFORCE SMALL FEATURES:** Reject any task >1 hour - send back to project-manager for breakdown
+- **⚠️ MANDATE FREQUENT COMMITS:** Ensure git-workflow-specialist commits every 15-30 minutes
+- **⚠️ TEST BEFORE COMMIT:** Developers must test each sub-feature before signaling ready for commit
 
 **Critical Workflow Rules:**
 

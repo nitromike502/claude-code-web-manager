@@ -37,10 +37,10 @@ export function createRouter(routes) {
     currentRoute = component;
     currentParams = params;
 
-    if (window.app && component) {
-      window.app.currentView = component;
-      window.app.routeParams = params;
-    }
+    // Dispatch custom event for Vue app to handle
+    window.dispatchEvent(new CustomEvent('route-change', {
+      detail: { component, params }
+    }));
   }
 
   // Listen for hash changes

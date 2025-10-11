@@ -2,7 +2,7 @@
 name: analyze-workflow
 description: Analyzes a recent Claude Code development session from logs to identify improvements, inefficiencies, and optimization opportunities
 tools: Read, Glob, Grep, Bash, Task
-argument-hint: "[date] - Optional: YYYYMMDD format date of session to analyze. If omitted, lists available sessions for selection"
+argument-hint: "[date] [additional-instructions] - Optional date (YYYYMMDD) and/or custom analysis instructions"
 color: cyan
 ---
 
@@ -20,6 +20,33 @@ Parse session transcripts from a specific date directory, analyze multi-agent wo
 
 ### Step 1: Determine Target Session
 
+**Parse Arguments:**
+
+First, parse `$ARGUMENTS` to handle 4 scenarios:
+
+1. **No arguments (`$ARGUMENTS` is empty):**
+   - Proceed to list available sessions (see below)
+
+2. **First token matches YYYYMMDD pattern (8 digits):**
+   - Extract date as first token
+   - Everything after first token (if present) = additional instructions
+   - Store additional instructions for use in Step 3
+   - Proceed with date validation (see below)
+
+3. **First token does NOT match YYYYMMDD pattern:**
+   - Entire `$ARGUMENTS` = additional instructions
+   - Store instructions for user reference
+   - Proceed to list available sessions
+   - When showing session list, add note before example:
+     ```
+     You provided instructions: "{instructions}"
+     Please re-run with date to apply them.
+     Example: /analyze-workflow 20251007 {your-instructions}
+     ```
+
+4. **Parsing errors:**
+   - Handle edge cases gracefully with clear error messages
+
 **If date argument is provided (YYYYMMDD format):**
 1. Validate the date format matches YYYYMMDD pattern
 2. Construct the log directory path: `/home/claude/manager/.claude/logs/{YYYYMMDD}/`
@@ -30,7 +57,7 @@ Parse session transcripts from a specific date directory, analyze multi-agent wo
    - Exit gracefully
 5. If directory exists: Proceed to Step 2 with this directory
 
-**If NO date argument is provided:**
+**If NO date argument is provided (but additional instructions may be present):**
 1. Use Bash to scan `.claude/logs/` directory and list all subdirectories
 2. Filter for directories matching YYYYMMDD format (8 digits)
 3. Sort directories chronologically (most recent first)
@@ -39,17 +66,32 @@ Parse session transcripts from a specific date directory, analyze multi-agent wo
    - Suggest they may need to enable logging or check the correct project directory
    - Exit gracefully
 5. If log directories found:
-   - Present them as a numbered list with dates formatted for readability (e.g., "2025-10-07" instead of "20251007")
-   - Example output:
+   - If additional instructions were provided, show them first:
+     ```
+     You provided instructions: "{instructions}"
+     ```
+   - Present available sessions as a numbered list with dates formatted for readability (e.g., "2025-10-07" instead of "20251007")
+   - Example output (with instructions):
+     ```
+     You provided instructions: "focus on why we found so many errors"
+
+     Available Claude Code session logs:
+
+     1. October 11, 2025 (20251011)
+     2. October 7, 2025 (20251007)
+
+     Please select a session to analyze by providing the date in YYYYMMDD format.
+     Example: /analyze-workflow 20251011 focus on why we found so many errors
+     ```
+   - Example output (without instructions):
      ```
      Available Claude Code session logs:
 
-     1. October 7, 2025 (20251007)
-     2. October 6, 2025 (20251006)
-     3. October 5, 2025 (20251005)
+     1. October 11, 2025 (20251011)
+     2. October 7, 2025 (20251007)
 
      Please select a session to analyze by providing the date in YYYYMMDD format.
-     Example: /analyze-workflow 20251007
+     Example: /analyze-workflow 20251011
      ```
    - Wait for user to re-invoke the command with their chosen date
    - Exit gracefully
@@ -62,16 +104,29 @@ Parse session transcripts from a specific date directory, analyze multi-agent wo
    - Identify file types (e.g., `*.log`, `*.md`, session transcripts)
    - Look for patterns suggesting multiple sessions within the same date
 3. Inform the user:
-   ```
-   Analyzing session logs from: /home/claude/manager/.claude/logs/{YYYYMMDD}/
-   Found {count} log files to analyze.
-   ```
+   - If NO additional instructions provided:
+     ```
+     Analyzing session logs from: /home/claude/manager/.claude/logs/{YYYYMMDD}/
+     Found {count} log files to analyze.
+     ```
+   - If additional instructions provided:
+     ```
+     Analyzing session logs from: /home/claude/manager/.claude/logs/{YYYYMMDD}/
+     Found {count} log files to analyze.
+     Custom focus: "{instructions}"
+     ```
 
 ### Step 3: Delegate to Workflow Analyzer
 
 Invoke the `workflow-analyzer` subagent using the Task tool with the following instructions:
 
 **Critical Instructions for workflow-analyzer:**
+
+**If additional instructions were provided:**
+- Pass them as additional context at the top of the Task prompt
+- Format: "**Additional Focus Areas (User-Provided):** {instructions}"
+- Instruct workflow-analyzer to emphasize these areas in the analysis while still performing comprehensive analysis
+- Highlight findings related to these instructions in the report
 
 1. **Log Directory:** Analyze all files in `/home/claude/manager/.claude/logs/{YYYYMMDD}/`
 
@@ -140,6 +195,12 @@ After the workflow-analyzer completes its report, offer the user:
 1. **Save Report:** "Would you like to save this analysis to a file? I can write it to `/home/claude/manager/docs/workflow-analysis-{date}.md`"
 2. **Deep Dive:** "Would you like me to investigate any specific finding in more detail?"
 3. **Compare Sessions:** "Would you like to compare this session with another date?"
+4. **Analyze with Different Focus:** "Would you like to re-analyze this session with different focus areas?"
+
+**Example commands with instructions:**
+- `/analyze-workflow 20251011 Are we committing our work appropriately`
+- `/analyze-workflow 20251011 focus on subagent handoffs`
+- `/analyze-workflow focus on why we found so many errors` (lists sessions, then re-run with date)
 
 ## Edge Cases
 
