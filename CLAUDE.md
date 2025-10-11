@@ -105,21 +105,21 @@ See subagent proposals in project `.claude/agents/` directory.
 
 1. ✅ Requirements gathering (Phase 1 complete)
 2. ✅ Create wireframe mockups
-3. ✅ Build backend API
-4. ✅ Build frontend UI
-5. ✅ Integration & testing
+3. ⏳ Build backend API (in progress)
+4. ⏳ Build frontend UI (in progress)
+5. ⏳ Integration & testing
 6. ⏳ Polish & cross-platform verification
 
 ## Success Criteria (Phase 1)
 
 - [x] Requirements documented and reviewed
 - [x] Wireframes approved
-- [x] All Claude Code projects visible
-- [x] All config types viewable (agents/commands/hooks/MCP)
-- [x] Search/filter functionality working
-- [x] Clean, intuitive UI
+- [ ] All Claude Code projects visible
+- [ ] All config types viewable (agents/commands/hooks/MCP)
+- [ ] Search/filter functionality working
+- [ ] Clean, intuitive UI
 - [ ] Works on Windows, Mac, Linux (requires testing)
-- [x] Handles missing/malformed files gracefully
+- [ ] Handles missing/malformed files gracefully
 
 ## Future Phases
 
