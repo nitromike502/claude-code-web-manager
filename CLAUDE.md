@@ -95,9 +95,11 @@ POST /api/projects/scan              - Trigger project list refresh
 
 Building with **parallel subagent teams** using the SWARM method:
 
-1. **Backend Team** - API endpoints, file parsing, project discovery
-2. **Frontend Team** - Vue components, PrimeVue integration, routing
-3. **Testing Team** - Cross-platform testing, error handling, edge cases
+1. **Backend Team** - API endpoints, file parsing, project discovery (includes immediate testing)
+2. **Frontend Team** - Vue components, PrimeVue integration, routing (includes immediate testing)
+3. **Quality Team** - Code review, cross-platform verification, documentation
+
+**Note:** Testing is integrated into development, not a separate phase. Each developer tests their implementation immediately before code review.
 
 See subagent proposals in project `.claude/agents/` directory.
 
@@ -105,10 +107,10 @@ See subagent proposals in project `.claude/agents/` directory.
 
 1. ✅ Requirements gathering (Phase 1 complete)
 2. ✅ Create wireframe mockups
-3. ⏳ Build backend API (in progress)
-4. ⏳ Build frontend UI (in progress)
-5. ⏳ Integration & testing
-6. ⏳ Polish & cross-platform verification
+3. ⏳ Build backend API with integrated testing (in progress)
+4. ⏳ Build frontend UI with integrated testing (in progress)
+5. ⏳ Integration verification & cross-platform testing
+6. ⏳ Polish & final quality review
 
 ## Success Criteria (Phase 1)
 

@@ -1,24 +1,24 @@
-# TASK-2.4.5: Test All Routes with curl
+# TASK-2.4.5: Document API Examples
 
 **Epic:** EPIC-2
 **Story:** Story 2.4 - API Endpoint Skeleton
 **Status:** Pending
 **Priority:** MEDIUM
-**Assigned To:** backend-architect
+**Assigned To:** documentation-engineer
 **Dependencies:** TASK-2.4.2, TASK-2.4.3, TASK-2.4.4
 
 ## Description
 
-Comprehensively test all API routes using curl to verify they respond correctly, handle errors appropriately, and return expected data structures.
+Create comprehensive API documentation with example requests and responses for all API routes. This task assumes all routes have already been tested during their individual implementation tasks (TASK-2.4.1 through TASK-2.4.4).
 
 ## Acceptance Criteria
 
-- [ ] All 11 routes tested with curl
-- [ ] Successful responses verified (200 status)
-- [ ] Error responses tested (400, 404, 500)
-- [ ] Response JSON structure validated
-- [ ] Invalid parameters tested
-- [ ] Documentation of example requests/responses created
+- [ ] Example requests documented for all 11 routes
+- [ ] Example responses documented for all routes
+- [ ] Error response examples included (400, 404, 500)
+- [ ] Response JSON structure documented
+- [ ] curl command examples provided
+- [ ] API test script created for convenience
 
 ## Implementation Notes
 

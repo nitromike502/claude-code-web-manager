@@ -14,13 +14,15 @@ This document defines the ticket-based PR workflow for the Claude Code Manager p
 ### Workflow Sequence
 1. **Orchestrator** assigns ticket (TASK-X.X.X)
 2. **Git-workflow-specialist** creates ticket branch: `feature/TASK-X.X.X-description`
-3. **Developer** implements feature (no git operations)
+3. **Developer** implements feature AND tests it immediately (no git operations)
 4. **Documentation-engineer** updates docs (if applicable)
-5. **Code-reviewer** reviews code (pre-PR review)
+5. **Code-reviewer** reviews code and test results (pre-PR review)
 6. **Git-workflow-specialist** commits changes to ticket branch
 7. **Git-workflow-specialist** creates PR to `main`
 8. **Human** reviews and approves PR (for critical PRs)
 9. **Git-workflow-specialist** squash-merges to `main`
+
+**Note:** Testing is integrated into step 3, not a separate step. Developers test their implementation immediately before handing off to code review.
 
 ## Branch Naming Convention
 
@@ -56,7 +58,7 @@ PRs are created by git-workflow-specialist after code-reviewer approval, typical
 - Project list layout mockup
 - Project card component design
 **Branch:** `feature/TASK-1.1.3-wireframes-dashboard`
-**Workflow:** wireframe-designer implements → code-reviewer reviews → git-workflow-specialist commits & creates PR → Human approves
+**Workflow:** wireframe-designer implements + validates → code-reviewer reviews → git-workflow-specialist commits & creates PR → Human approves
 
 ### PR #2: Project Detail & Config Card Wireframes
 **After:** TASK-1.2.3 completed
@@ -172,10 +174,12 @@ git checkout -b feature/TASK-X.X.X-description
 git push -u origin feature/TASK-X.X.X-description
 ```
 
-### 3. Developer Implements
+### 3. Developer Implements AND Tests
 - Developer (backend/frontend/parser) implements feature
+- Developer tests implementation immediately (manual or automated tests)
+- Developer verifies acceptance criteria are met
 - NO git operations by developer
-- Developer reports: "Implementation complete"
+- Developer reports: "Implementation complete and tested"
 
 ### 4. Documentation Engineer Updates (if applicable)
 - Updates relevant documentation
@@ -183,6 +187,7 @@ git push -u origin feature/TASK-X.X.X-description
 
 ### 5. Code-Reviewer Reviews (Pre-PR)
 - Reviews all changes using Read tool
+- Reviews test results and verification
 - Applies review checklist
 - Approves or requests changes
 - Reports: "Code review passed" or provides feedback
@@ -229,15 +234,18 @@ Implements TASK-X.X.X: [Brief description of changes]
 - [Change 1]
 - [Change 2]
 
-## Testing
-- [ ] Manual testing completed
-- [ ] All acceptance criteria met
+## Testing Performed
+- [ ] Developer tested implementation immediately
+- [ ] All acceptance criteria verified
+- [ ] Manual testing completed (describe tests)
+- [ ] Automated tests passing (if applicable)
 - [ ] No breaking changes
 
 ## Screenshots (if applicable)
 [Add wireframe images or UI screenshots]
 
 ## Pre-PR Review
+- [x] Developer testing completed
 - [x] Code-reviewer approval obtained
 - [x] Documentation updated (if applicable)
 
@@ -257,8 +265,8 @@ Implements TASK-X.X.X: [Brief description of changes]
 
 ### Ticket-Based Approach (NEW)
 ✅ Git-workflow-specialist creates ticket branch
-✅ Developer implements (no git ops)
-✅ Code-reviewer reviews pre-PR
+✅ Developer implements AND tests immediately (no git ops)
+✅ Code-reviewer reviews code + test results pre-PR
 ✅ Git-workflow-specialist commits
 ✅ Git-workflow-specialist creates PR
 ✅ Human reviews PR on GitHub

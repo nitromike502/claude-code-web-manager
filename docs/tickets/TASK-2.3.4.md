@@ -20,6 +20,11 @@ Create utility for scanning and discovering Claude Code projects from ~/.claude.
 - [ ] Returns project list with metadata
 - [ ] Generates project IDs for API routing
 - [ ] Handles missing ~/.claude.json gracefully
+- [ ] Tested: scanProjects() returns project list from ~/.claude.json
+- [ ] Tested: generateProjectId() creates valid URL-safe IDs
+- [ ] Tested: getProjectById() finds project by ID
+- [ ] Tested: Error handling works when ~/.claude.json missing
+- [ ] Tested: Project directory existence validation works
 
 ## Implementation Notes
 
