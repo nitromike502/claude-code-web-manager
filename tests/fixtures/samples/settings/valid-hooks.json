@@ -1,0 +1,33 @@
+{
+  "hooks": {
+    "pre-commit": [
+      {
+        "matcher": "*.ts",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "tsc --noEmit",
+            "enabled": true
+          },
+          {
+            "type": "command",
+            "command": "eslint --fix",
+            "enabled": true
+          }
+        ]
+      }
+    ],
+    "post-merge": [
+      {
+        "matcher": "package.json",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "npm install",
+            "enabled": true
+          }
+        ]
+      }
+    ]
+  }
+}
