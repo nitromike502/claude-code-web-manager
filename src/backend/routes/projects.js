@@ -111,11 +111,12 @@ router.get('/:projectId/agents', async (req, res) => {
       });
     }
 
-    const agents = await getProjectAgents(projectData.path);
+    const result = await getProjectAgents(projectData.path);
 
     res.json({
       success: true,
-      agents,
+      agents: result.agents,
+      warnings: result.warnings,
       projectId,
       projectPath: projectData.path
     });
