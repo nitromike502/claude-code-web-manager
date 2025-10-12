@@ -103,14 +103,16 @@ Building with **parallel subagent teams** using the SWARM method:
 
 See subagent proposals in project `.claude/agents/` directory.
 
-## Development Workflow
+## Development Workflow (Phase 1 MVP)
 
-1. ✅ Requirements gathering (Phase 1 complete)
-2. ✅ Create wireframe mockups
+1. ✅ Requirements gathering (PRD complete)
+2. ✅ Create wireframe mockups (Approved)
 3. ✅ Build backend API with automated testing (COMPLETE - 100%)
-4. ⏳ Build frontend UI with automated testing (NOT STARTED)
+4. ⏳ Build frontend UI with automated testing (IN PROGRESS - 15%)
 5. ⏳ Integration verification & cross-platform testing
 6. ⏳ Polish & final quality review
+
+**Note:** Phase 1 = MVP (Read-only interface). Phase 2+ features (CRUD operations) are documented but not part of current scope.
 
 ### Testing Workflow (Automated Quality Gate)
 
@@ -153,12 +155,14 @@ All code changes must pass automated tests before PR creation:
 - [ ] Frontend displays warnings from backend
 - [ ] Automated test suite passing (Playwright)
 
-## Future Phases
+## Future Features (Beyond MVP)
 
-- **Phase 2:** CRUD operations for subagents, commands, hooks, and MCP servers
-- **Phase 3:** Advanced features (validation, testing, templates, import/export)
+After Phase 1 MVP is complete, future enhancements are documented but not yet prioritized:
 
-⚠️ Phase 2+ documents exist but have not been fully reviewed.
+- CRUD operations for subagents, commands, hooks, and MCP servers
+- Advanced features (validation, testing, templates, import/export)
+
+⚠️ Future feature PRDs exist in `docs/PRD-Phase2-*.md` but have not been fully reviewed or scheduled.
 
 ## Getting Started
 
