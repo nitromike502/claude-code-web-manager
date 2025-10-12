@@ -159,11 +159,12 @@ router.get('/:projectId/commands', async (req, res) => {
       });
     }
 
-    const commands = await getProjectCommands(projectData.path);
+    const result = await getProjectCommands(projectData.path);
 
     res.json({
       success: true,
-      commands,
+      commands: result.commands,
+      warnings: result.warnings,
       projectId,
       projectPath: projectData.path
     });
