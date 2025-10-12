@@ -1,0 +1,28 @@
+{
+  "hooks": {
+    "pre-commit": [
+      {
+        "matcher": "*.ts",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "npm run type-check",
+            "enabled": true
+          }
+        ]
+      }
+    ],
+    "pre-push": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "npm run test:full",
+            "enabled": false
+          }
+        ]
+      }
+    ]
+  }
+}

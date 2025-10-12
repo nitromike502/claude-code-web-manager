@@ -1,0 +1,26 @@
+{
+  "hooks": {
+    "pre-commit": [
+      {
+        "matcher": "*.ts",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "tsc --noEmit",
+            "enabled": true
+          },
+          {
+            "type": "command",
+            "command": "eslint --fix",
+            "enabled": true
+          },
+          {
+            "type": "command",
+            "command": "prettier --write",
+            "enabled": true
+          }
+        ]
+      }
+    ]
+  }
+}
