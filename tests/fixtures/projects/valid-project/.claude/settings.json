@@ -1,0 +1,35 @@
+{
+  "hooks": {
+    "pre-commit": [
+      {
+        "matcher": "*.js",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "npm run lint",
+            "enabled": true
+          }
+        ]
+      }
+    ],
+    "pre-push": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "npm test",
+            "enabled": true
+          }
+        ]
+      }
+    ]
+  },
+  "mcpServers": {
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/tmp"],
+      "enabled": true
+    }
+  }
+}

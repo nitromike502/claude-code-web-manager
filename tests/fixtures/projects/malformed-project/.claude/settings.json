@@ -1,0 +1,14 @@
+{
+  "hooks": {
+    "pre-commit": [
+      {
+        "matcher": "*.js"
+        "hooks": [
+          {
+            "type": "command",
+            "command": "npm test"
+          }
+        ]
+      }
+    ]
+  }
