@@ -3,6 +3,7 @@ const os = require('os');
 
 /**
  * Expands ~ to home directory in file paths
+ * Respects process.env.HOME for testing purposes
  * @param {string} filePath - Path that may contain ~
  * @returns {string} Expanded absolute path
  */
@@ -10,7 +11,9 @@ function expandHome(filePath) {
   if (!filePath) return filePath;
 
   if (filePath.startsWith('~/') || filePath === '~') {
-    return path.join(os.homedir(), filePath.slice(2));
+    // Use process.env.HOME if set (for testing), otherwise use os.homedir()
+    const homeDir = process.env.HOME || os.homedir();
+    return path.join(homeDir, filePath.slice(2));
   }
 
   return filePath;
