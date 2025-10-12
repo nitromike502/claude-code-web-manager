@@ -102,7 +102,7 @@ async function getProjectAgents(projectPath) {
 /**
  * Gets slash commands for a specific project (supports nested directories)
  * @param {string} projectPath - Absolute project path
- * @returns {Promise<Array>} Array of command objects
+ * @returns {Promise<Object>} Object with commands array and warnings array
  */
 async function getProjectCommands(projectPath) {
   const commandsDir = path.join(projectPath, '.claude', 'commands');
@@ -112,30 +112,42 @@ async function getProjectCommands(projectPath) {
     const mdFiles = files.filter(f => f.endsWith('.md'));
 
     const commands = [];
+    const warnings = [];
 
     for (const relFile of mdFiles) {
       const filePath = path.join(commandsDir, relFile);
-      const parsed = await readMarkdownWithFrontmatter(filePath);
 
-      if (parsed) {
-        // Command name is derived from file path (e.g., "git/commit.md" -> "git/commit")
-        const commandName = relFile.replace('.md', '');
+      try {
+        const parsed = await readMarkdownWithFrontmatter(filePath);
 
-        commands.push({
-          name: commandName,
-          file: relFile,
-          path: filePath,
-          frontmatter: parsed.frontmatter,
-          content: parsed.content,
-          description: parsed.frontmatter.description || ''
+        if (parsed) {
+          // Command name is derived from file path (e.g., "git/commit.md" -> "git/commit")
+          const commandName = relFile.replace('.md', '');
+
+          commands.push({
+            name: commandName,
+            file: relFile,
+            path: filePath,
+            frontmatter: parsed.frontmatter,
+            content: parsed.content,
+            description: parsed.frontmatter.description || ''
+          });
+        }
+      } catch (parseError) {
+        // Log warning for malformed file and continue processing
+        console.warn(`Skipping command file ${filePath}: ${parseError.message}`);
+        warnings.push({
+          file: filePath,
+          error: parseError.message,
+          skipped: true
         });
       }
     }
 
-    return commands;
+    return { commands, warnings };
   } catch (error) {
     if (error.code === 'ENOENT') {
-      return []; // No commands directory
+      return { commands: [], warnings: [] }; // No commands directory
     }
     throw error;
   }
@@ -262,7 +274,7 @@ async function getUserAgents() {
 
 /**
  * Gets user-level slash commands from ~/.claude/commands/
- * @returns {Promise<Array>} Array of command objects
+ * @returns {Promise<Object>} Object with commands array and warnings array
  */
 async function getUserCommands() {
   const commandsDir = expandHome('~/.claude/commands');
@@ -272,29 +284,41 @@ async function getUserCommands() {
     const mdFiles = files.filter(f => f.endsWith('.md'));
 
     const commands = [];
+    const warnings = [];
 
     for (const relFile of mdFiles) {
       const filePath = path.join(commandsDir, relFile);
-      const parsed = await readMarkdownWithFrontmatter(filePath);
 
-      if (parsed) {
-        const commandName = relFile.replace('.md', '');
+      try {
+        const parsed = await readMarkdownWithFrontmatter(filePath);
 
-        commands.push({
-          name: commandName,
-          file: relFile,
-          path: filePath,
-          frontmatter: parsed.frontmatter,
-          content: parsed.content,
-          description: parsed.frontmatter.description || ''
+        if (parsed) {
+          const commandName = relFile.replace('.md', '');
+
+          commands.push({
+            name: commandName,
+            file: relFile,
+            path: filePath,
+            frontmatter: parsed.frontmatter,
+            content: parsed.content,
+            description: parsed.frontmatter.description || ''
+          });
+        }
+      } catch (parseError) {
+        // Log warning for malformed file and continue processing
+        console.warn(`Skipping user command file ${filePath}: ${parseError.message}`);
+        warnings.push({
+          file: filePath,
+          error: parseError.message,
+          skipped: true
         });
       }
     }
 
-    return commands;
+    return { commands, warnings };
   } catch (error) {
     if (error.code === 'ENOENT') {
-      return []; // No user commands directory
+      return { commands: [], warnings: [] }; // No user commands directory
     }
     throw error;
   }
@@ -361,7 +385,7 @@ async function getUserMCP() {
  */
 async function getProjectCounts(projectPath) {
   try {
-    const [agentsResult, commands, hooks, mcp] = await Promise.all([
+    const [agentsResult, commandsResult, hooks, mcp] = await Promise.all([
       getProjectAgents(projectPath),
       getProjectCommands(projectPath),
       getProjectHooks(projectPath),
@@ -370,7 +394,7 @@ async function getProjectCounts(projectPath) {
 
     return {
       agents: agentsResult.agents.length,
-      commands: commands.length,
+      commands: commandsResult.commands.length,
       hooks: hooks.length,
       mcp: mcp.length
     };

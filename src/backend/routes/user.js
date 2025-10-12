@@ -34,11 +34,12 @@ router.get('/agents', async (req, res) => {
  */
 router.get('/commands', async (req, res) => {
   try {
-    const commands = await getUserCommands();
+    const result = await getUserCommands();
 
     res.json({
       success: true,
-      commands
+      commands: result.commands,
+      warnings: result.warnings
     });
   } catch (error) {
     res.status(500).json({
