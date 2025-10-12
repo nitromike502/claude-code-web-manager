@@ -107,21 +107,51 @@ See subagent proposals in project `.claude/agents/` directory.
 
 1. ✅ Requirements gathering (Phase 1 complete)
 2. ✅ Create wireframe mockups
-3. ⏳ Build backend API with integrated testing (in progress)
-4. ⏳ Build frontend UI with integrated testing (in progress)
+3. ✅ Build backend API with automated testing (COMPLETE - 100%)
+4. ⏳ Build frontend UI with automated testing (NOT STARTED)
 5. ⏳ Integration verification & cross-platform testing
 6. ⏳ Polish & final quality review
 
+### Testing Workflow (Automated Quality Gate)
+
+All code changes must pass automated tests before PR creation:
+
+1. **Developer implements feature** (backend-architect or frontend-developer)
+2. **test-automation-engineer runs tests** (Jest for backend, Playwright for frontend)
+   - ✅ If all tests pass → Proceed to step 3
+   - ❌ If any tests fail → Return to developer to fix issues (loop until pass)
+3. **git-workflow-specialist creates PR** (only after tests pass)
+4. **Code review and merge**
+
+**Test Types:**
+- **Backend (Jest + Supertest):** API endpoint tests, parser unit tests, error handling, regression tests
+- **Frontend (Playwright):** Component rendering, user interactions, API integration, visual verification
+
+**Test Reports:** All test results are saved to `/home/claude/manager/docs/testing/test-reports/`
+
+**Hard Block:** PRs cannot be created if tests fail. This prevents broken code from being merged.
+
 ## Success Criteria (Phase 1)
 
+### Backend (100% Complete)
 - [x] Requirements documented and reviewed
 - [x] Wireframes approved
-- [ ] All Claude Code projects visible
+- [x] All 8 API endpoints implemented and tested
+- [x] All 4 parsers (agents/commands/hooks/MCP) functional
+- [x] Resilient error handling (malformed files skipped with warnings)
+- [x] Warnings system implemented (`{data, warnings}` response structure)
+- [x] Cross-platform path handling
+- [x] BUG-001 and BUG-002 resolved
+- [x] Automated test suite passing (Jest)
+
+### Frontend (0% Complete)
+- [ ] All Claude Code projects visible in UI
 - [ ] All config types viewable (agents/commands/hooks/MCP)
 - [ ] Search/filter functionality working
 - [ ] Clean, intuitive UI
 - [ ] Works on Windows, Mac, Linux (requires testing)
-- [ ] Handles missing/malformed files gracefully
+- [ ] Frontend displays warnings from backend
+- [ ] Automated test suite passing (Playwright)
 
 ## Future Phases
 

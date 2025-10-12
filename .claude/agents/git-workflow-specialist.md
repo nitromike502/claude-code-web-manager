@@ -69,10 +69,13 @@ At the beginning of each development session:
 - Identify stale branches (feature branches WITHOUT open PRs)
 - Report findings to user with recommendations
 
-### 3. Create Pull Request (After Code Review Approval)
+### 3. Create Pull Request (After Tests Pass)
 
-When code-reviewer approves changes:
+**IMPORTANT:** PR creation is now gated by test-automation-engineer.
+
+When test-automation-engineer confirms all tests pass:
 - Ensure all changes committed and pushed to ticket branch
+- Verify test report shows 100% passing tests
 - Create PR to main using gh CLI:
   ```bash
   gh pr create --title "type: description" --body "$(cat <<'EOF'
@@ -84,11 +87,14 @@ When code-reviewer approves changes:
   - Change 2
 
   ## Testing
-  - Test scenario 1
-  - Test scenario 2
+  ✅ All automated tests passing
+  Test report: /home/claude/manager/docs/testing/test-reports/test-report-{timestamp}.md
+  - Jest (Backend): X/X tests passing
+  - Playwright (Frontend): X/X tests passing
 
   ## References
   - Closes TASK-X.X.X
+  - Test report: [link to test report file]
   EOF
   )"
   ```

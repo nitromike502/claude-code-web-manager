@@ -1,5 +1,20 @@
 # Claude Code Manager - Frontend
 
+> ⚠️ **STATUS: DESIGN SPECIFICATION - NOT YET IMPLEMENTED**
+>
+> This document describes the planned frontend implementation for Phase 1 MVP.
+> The frontend has **not been built yet**. This serves as a design specification
+> and implementation guide for the frontend development team.
+>
+> **Backend Status:** ✅ 100% Complete (all APIs ready)
+> **Frontend Status:** ❌ 0% Complete (not started)
+>
+> See EPIC-2 in `docs/tickets/` for frontend implementation tasks.
+
+---
+
+## Planned Implementation
+
 Complete Vue 3 + PrimeVue frontend implementation for the Claude Code Manager MVP.
 
 ## Architecture

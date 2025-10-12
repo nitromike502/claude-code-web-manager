@@ -147,10 +147,10 @@ See `.claude/agents/` for the complete team structure.
 
 1. ✅ Requirements gathering (Phase 1 complete)
 2. ✅ Wireframe creation
-3. ✅ Backend API implementation
-4. ✅ Frontend UI implementation
-5. ✅ Integration & testing
-6. ⏳ Cross-platform verification (ongoing)
+3. ✅ Backend API implementation (100% complete with error handling)
+4. ⏳ Frontend UI implementation (NOT STARTED)
+5. ⏳ Integration & testing
+6. ⏳ Cross-platform verification (pending)
 
 ### Making Changes
 
@@ -188,12 +188,25 @@ For issues and questions, please refer to the project documentation in the `docs
 
 ## Roadmap
 
-### Phase 1 - MVP (Current) ✅
+### Phase 1 - MVP (Current) - Backend Complete, Frontend Pending
+**Backend (100% Complete):**
 - [x] Project discovery from `~/.claude.json`
-- [x] View subagents, commands, hooks, and MCP servers
-- [x] Search and filter functionality
-- [x] Dark/light mode support
-- [x] Responsive design
+- [x] All 8 API endpoints implemented and tested
+- [x] Resilient error handling (malformed files skipped with warnings)
+- [x] All 4 parsers functional (agents, commands, hooks, MCP)
+- [x] Warnings system implemented
+- [x] Cross-platform path handling
+- [x] BUG-001 and BUG-002 resolved
+
+**Frontend (0% Complete):**
+- [ ] Project dashboard view
+- [ ] Project detail view with config cards
+- [ ] User/global configuration view
+- [ ] View subagents, commands, hooks, and MCP servers in UI
+- [ ] Search and filter functionality
+- [ ] Dark/light mode support
+- [ ] Responsive design
+- [ ] Display warnings from backend
 - [ ] Cross-platform testing (Windows, Mac, Linux)
 
 ### Phase 2 - CRUD Operations (Planned)

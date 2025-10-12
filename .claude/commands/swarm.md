@@ -81,17 +81,20 @@ After user selects ticket(s) to work on:
    - backend-architect for API development
    - frontend-developer for Vue/PrimeVue components
    - data-parser for configuration file parsing
-   - **Developer tests their implementation immediately** (testing is part of implementation, not separate)
+   - **Developer tests their implementation manually** (quick sanity check)
    - **git-workflow-specialist commits after EACH tested sub-feature (15-30 min)**
-   - code-reviewer for quality assurance (reviews implementation + test results)
+   - **test-automation-engineer runs automated tests (MANDATORY after all sub-features complete)**
+   - **If tests FAIL:** Return to developer to fix issues, re-run tests (loop until pass)
+   - **If tests PASS:** Proceed to documentation and code review
    - documentation-engineer for documentation updates
-5. **Ensure incremental commit chain:** developer implements + tests → git-commit → code-reviewer → next sub-feature
-6. **After all work complete:** documentation-engineer → code-reviewer → git-PR
-7. **Create PR for THIS ticket** - one ticket = one PR
+   - code-reviewer for quality assurance (reviews implementation + test results)
+5. **Ensure incremental commit chain:** developer implements + tests → git-commit → next sub-feature → test-automation-engineer → docs → code-review
+6. **After all work complete and tests pass:** documentation-engineer → code-reviewer → git-PR
+7. **Create PR for THIS ticket** - one ticket = one PR (only if automated tests passed)
 8. **Mark ticket as "pending PR review"**
 9. **Monitor commit frequency - must see commits every 15-30 minutes**
 
-**CRITICAL: Testing is integrated into each implementation task, not a separate task or epic. Developers test immediately after implementing each sub-feature.**
+**CRITICAL: Automated testing (test-automation-engineer) is a mandatory quality gate that runs AFTER all sub-features complete but BEFORE PR creation. PRs cannot be created if tests fail.**
 
 **After all selected tickets have their PRs created:**
 - STOP and present all PR URLs to user

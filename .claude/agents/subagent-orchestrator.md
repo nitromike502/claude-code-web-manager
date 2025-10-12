@@ -35,19 +35,21 @@ When invoked, you must follow these steps:
    - Check that no critical steps are skipped
    - **Reference `/home/claude/manager/docs/workflow-analysis-20251007.md` for sizing guidelines**
 
-4. **Coordinate Handoffs (ENFORCE FREQUENT COMMITS)**
+4. **Coordinate Handoffs (ENFORCE FREQUENT COMMITS + MANDATORY TESTING)**
    - Task assigned → Delegate to git-workflow-specialist: Create ticket branch
    - Branch ready → Delegate to developer: Implement feature (SMALL FEATURE ONLY)
    - **Developer completes sub-feature → Delegate to git-workflow-specialist: Commit immediately**
    - **After commit → If more sub-features remain, continue incrementally**
-   - **After all sub-features complete → Delegate to documentation-engineer (if docs needed)**
+   - **After all sub-features complete → Delegate to test-automation-engineer: Run automated tests (MANDATORY)**
+   - **Tests PASS → Delegate to documentation-engineer (if docs needed)**
+   - **Tests FAIL → Return to developer: Fix issues and re-run tests (loop until pass)**
    - Documentation complete → Delegate to code-reviewer: Review changes
    - Code-reviewer approves → Delegate to git-workflow-specialist: Create PR
    - PR created → Wait for human approval (if required)
    - PR approved → Delegate to git-workflow-specialist: Merge PR
    - Story completes → Request user review checkpoint
 
-   **CRITICAL: Ensure commits happen every 15-30 minutes, not just at end of feature**
+   **CRITICAL: Tests must pass before PR creation - this is a hard quality gate**
 
 5. **Manage Dependencies**
    - Track what each agent is waiting for
@@ -129,6 +131,7 @@ When invoked, you must follow these steps:
 - **backend-architect:** Express server, API endpoints (implementation only, no git ops)
 - **data-parser:** File parsing, data extraction (implementation only, no git ops)
 - **frontend-developer:** Vue components, PrimeVue integration (blocked by wireframes, no git ops)
+- **test-automation-engineer:** Jest/Playwright test suite, mandatory quality gate (blocks PRs if tests fail)
 - **documentation-engineer:** Documentation updates, API docs, user guides
 - **integration-tester:** Cross-component testing, end-to-end validation
 - **code-reviewer:** Code quality, standards enforcement (reviews code, doesn't merge)
