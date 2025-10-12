@@ -13,11 +13,12 @@ const {
  */
 router.get('/agents', async (req, res) => {
   try {
-    const agents = await getUserAgents();
+    const result = await getUserAgents();
 
     res.json({
       success: true,
-      agents
+      agents: result.agents,
+      warnings: result.warnings
     });
   } catch (error) {
     res.status(500).json({

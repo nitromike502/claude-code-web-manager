@@ -51,7 +51,7 @@ async function discoverProjects() {
 /**
  * Gets subagents for a specific project
  * @param {string} projectPath - Absolute project path
- * @returns {Promise<Array>} Array of agent objects
+ * @returns {Promise<Object>} Object with agents array and warnings array
  */
 async function getProjectAgents(projectPath) {
   const agentsDir = path.join(projectPath, '.claude', 'agents');
@@ -61,27 +61,39 @@ async function getProjectAgents(projectPath) {
     const mdFiles = files.filter(f => f.endsWith('.md'));
 
     const agents = [];
+    const warnings = [];
 
     for (const file of mdFiles) {
       const filePath = path.join(agentsDir, file);
-      const parsed = await readMarkdownWithFrontmatter(filePath);
 
-      if (parsed) {
-        agents.push({
-          name: file.replace('.md', ''),
-          file: file,
-          path: filePath,
-          frontmatter: parsed.frontmatter,
-          content: parsed.content,
-          description: parsed.frontmatter.description || ''
+      try {
+        const parsed = await readMarkdownWithFrontmatter(filePath);
+
+        if (parsed) {
+          agents.push({
+            name: file.replace('.md', ''),
+            file: file,
+            path: filePath,
+            frontmatter: parsed.frontmatter,
+            content: parsed.content,
+            description: parsed.frontmatter.description || ''
+          });
+        }
+      } catch (parseError) {
+        // Log warning for malformed file and continue processing
+        console.warn(`Skipping agent file ${filePath}: ${parseError.message}`);
+        warnings.push({
+          file: filePath,
+          error: parseError.message,
+          skipped: true
         });
       }
     }
 
-    return agents;
+    return { agents, warnings };
   } catch (error) {
     if (error.code === 'ENOENT') {
-      return []; // No agents directory
+      return { agents: [], warnings: [] }; // No agents directory
     }
     throw error;
   }
@@ -200,7 +212,7 @@ async function getProjectMCP(projectPath) {
 
 /**
  * Gets user-level subagents from ~/.claude/agents/
- * @returns {Promise<Array>} Array of agent objects
+ * @returns {Promise<Object>} Object with agents array and warnings array
  */
 async function getUserAgents() {
   const agentsDir = expandHome('~/.claude/agents');
@@ -210,27 +222,39 @@ async function getUserAgents() {
     const mdFiles = files.filter(f => f.endsWith('.md'));
 
     const agents = [];
+    const warnings = [];
 
     for (const file of mdFiles) {
       const filePath = path.join(agentsDir, file);
-      const parsed = await readMarkdownWithFrontmatter(filePath);
 
-      if (parsed) {
-        agents.push({
-          name: file.replace('.md', ''),
-          file: file,
-          path: filePath,
-          frontmatter: parsed.frontmatter,
-          content: parsed.content,
-          description: parsed.frontmatter.description || ''
+      try {
+        const parsed = await readMarkdownWithFrontmatter(filePath);
+
+        if (parsed) {
+          agents.push({
+            name: file.replace('.md', ''),
+            file: file,
+            path: filePath,
+            frontmatter: parsed.frontmatter,
+            content: parsed.content,
+            description: parsed.frontmatter.description || ''
+          });
+        }
+      } catch (parseError) {
+        // Log warning for malformed file and continue processing
+        console.warn(`Skipping user agent file ${filePath}: ${parseError.message}`);
+        warnings.push({
+          file: filePath,
+          error: parseError.message,
+          skipped: true
         });
       }
     }
 
-    return agents;
+    return { agents, warnings };
   } catch (error) {
     if (error.code === 'ENOENT') {
-      return []; // No user agents directory
+      return { agents: [], warnings: [] }; // No user agents directory
     }
     throw error;
   }
@@ -337,7 +361,7 @@ async function getUserMCP() {
  */
 async function getProjectCounts(projectPath) {
   try {
-    const [agents, commands, hooks, mcp] = await Promise.all([
+    const [agentsResult, commands, hooks, mcp] = await Promise.all([
       getProjectAgents(projectPath),
       getProjectCommands(projectPath),
       getProjectHooks(projectPath),
@@ -345,7 +369,7 @@ async function getProjectCounts(projectPath) {
     ]);
 
     return {
-      agents: agents.length,
+      agents: agentsResult.agents.length,
       commands: commands.length,
       hooks: hooks.length,
       mcp: mcp.length
