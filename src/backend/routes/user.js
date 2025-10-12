@@ -55,11 +55,12 @@ router.get('/commands', async (req, res) => {
  */
 router.get('/hooks', async (req, res) => {
   try {
-    const hooks = await getUserHooks();
+    const result = await getUserHooks();
 
     res.json({
       success: true,
-      hooks
+      hooks: result.hooks,
+      warnings: result.warnings
     });
   } catch (error) {
     res.status(500).json({
