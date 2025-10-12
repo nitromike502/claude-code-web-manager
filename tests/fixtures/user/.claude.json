@@ -1,0 +1,13 @@
+{
+  "projects": {
+    "/home/claude/manager/tests/fixtures/projects/valid-project": {
+      "lastAccessed": "2025-10-12T00:00:00.000Z"
+    },
+    "/home/claude/manager/tests/fixtures/projects/minimal-project": {
+      "lastAccessed": "2025-10-11T00:00:00.000Z"
+    },
+    "/home/claude/manager/tests/fixtures/projects/malformed-project": {
+      "lastAccessed": "2025-10-10T00:00:00.000Z"
+    }
+  }
+}
