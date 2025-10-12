@@ -65,31 +65,33 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Start server
-app.listen(PORT, () => {
-  console.log('='.repeat(60));
-  console.log(`Claude Code Manager Backend Server`);
-  console.log('='.repeat(60));
-  console.log(`Server running on: http://localhost:${PORT}`);
-  console.log(`API base URL: http://localhost:${PORT}/api`);
-  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
-  console.log(`Timestamp: ${new Date().toISOString()}`);
-  console.log('='.repeat(60));
-  console.log('');
-  console.log('Available API endpoints:');
-  console.log('  GET  /api/health                        - Health check');
-  console.log('  GET  /api/projects                      - List all projects');
-  console.log('  POST /api/projects/scan                 - Rescan projects');
-  console.log('  GET  /api/projects/:id/agents           - Get project agents');
-  console.log('  GET  /api/projects/:id/commands         - Get project commands');
-  console.log('  GET  /api/projects/:id/hooks            - Get project hooks');
-  console.log('  GET  /api/projects/:id/mcp              - Get project MCP servers');
-  console.log('  GET  /api/user/agents                   - Get user agents');
-  console.log('  GET  /api/user/commands                 - Get user commands');
-  console.log('  GET  /api/user/hooks                    - Get user hooks');
-  console.log('  GET  /api/user/mcp                      - Get user MCP servers');
-  console.log('='.repeat(60));
-});
+// Start server only if not in test environment
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(PORT, () => {
+    console.log('='.repeat(60));
+    console.log(`Claude Code Manager Backend Server`);
+    console.log('='.repeat(60));
+    console.log(`Server running on: http://localhost:${PORT}`);
+    console.log(`API base URL: http://localhost:${PORT}/api`);
+    console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+    console.log(`Timestamp: ${new Date().toISOString()}`);
+    console.log('='.repeat(60));
+    console.log('');
+    console.log('Available API endpoints:');
+    console.log('  GET  /api/health                        - Health check');
+    console.log('  GET  /api/projects                      - List all projects');
+    console.log('  POST /api/projects/scan                 - Rescan projects');
+    console.log('  GET  /api/projects/:id/agents           - Get project agents');
+    console.log('  GET  /api/projects/:id/commands         - Get project commands');
+    console.log('  GET  /api/projects/:id/hooks            - Get project hooks');
+    console.log('  GET  /api/projects/:id/mcp              - Get project MCP servers');
+    console.log('  GET  /api/user/agents                   - Get user agents');
+    console.log('  GET  /api/user/commands                 - Get user commands');
+    console.log('  GET  /api/user/hooks                    - Get user hooks');
+    console.log('  GET  /api/user/mcp                      - Get user MCP servers');
+    console.log('='.repeat(60));
+  });
+}
 
 // Handle graceful shutdown
 process.on('SIGTERM', () => {
