@@ -18,6 +18,9 @@ Create the main API router (src/backend/routes/api.js) and mount it on the Expre
 - [ ] Router imported in server.js
 - [ ] Router mounted at /api
 - [ ] Basic test route works
+- [ ] Tested: curl command returns expected JSON response
+- [ ] Tested: Response includes API name and version
+- [ ] Tested: Response includes list of endpoints
 
 ## Implementation Notes
 

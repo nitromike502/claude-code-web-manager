@@ -88,7 +88,7 @@ Backend setup can proceed in parallel with wireframe design.
 - [TASK-2.4.2](TASK-2.4.2.md) - Create GET /api/projects and POST /api/projects/scan routes
 - [TASK-2.4.3](TASK-2.4.3.md) - Create 4 project config routes (agents/commands/hooks/mcp)
 - [TASK-2.4.4](TASK-2.4.4.md) - Create 4 user config routes for ~/.claude directory
-- [TASK-2.4.5](TASK-2.4.5.md) - Test all 11 API routes with curl and document examples
+- [TASK-2.4.5](TASK-2.4.5.md) - Document API examples with curl commands (routes tested during implementation)
 - **📋 PR #10** after TASK-2.4.5 → `code-reviewer` only (no human approval)
 
 ### Story 2.5: Error Handling Framework
@@ -139,9 +139,9 @@ feature/TASK-X.X.X-description
 
 1. **Orchestrator** assigns ticket (TASK-X.X.X)
 2. **Git-workflow-specialist** creates ticket branch
-3. **Developer** implements (no git operations)
+3. **Developer** implements AND tests immediately (no git operations)
 4. **Documentation-engineer** updates docs (if needed)
-5. **Code-reviewer** reviews code (pre-PR review)
+5. **Code-reviewer** reviews code and test results (pre-PR review)
 6. **Git-workflow-specialist** commits changes
 7. **Git-workflow-specialist** creates PR to `main`
 8. **Human** reviews PR on GitHub (for critical PRs)
@@ -149,8 +149,9 @@ feature/TASK-X.X.X-description
 
 ### Key Principles
 
+- **Testing is integrated into development** - Developers test immediately after implementation, not as a separate phase
 - **Developers NEVER perform git operations** - git-workflow-specialist handles all branches, commits, PRs, and merges
-- **Code review happens BEFORE PR creation** - code-reviewer approves before PR
+- **Code review includes test verification** - code-reviewer validates both implementation and test results
 - **Consistent ticket-based naming** - Every branch includes ticket reference
 - **Centralized git operations** - Single source of truth for all git commands
 

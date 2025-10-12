@@ -81,15 +81,17 @@ After user selects ticket(s) to work on:
    - backend-architect for API development
    - frontend-developer for Vue/PrimeVue components
    - data-parser for configuration file parsing
-   - **git-workflow-specialist commits after EACH sub-feature (15-30 min)**
-   - integration-tester for testing and verification
-   - code-reviewer for quality assurance
+   - **Developer tests their implementation immediately** (testing is part of implementation, not separate)
+   - **git-workflow-specialist commits after EACH tested sub-feature (15-30 min)**
+   - code-reviewer for quality assurance (reviews implementation + test results)
    - documentation-engineer for documentation updates
-5. **Ensure incremental commit chain:** developer → test → git-commit → next sub-feature
+5. **Ensure incremental commit chain:** developer implements + tests → git-commit → code-reviewer → next sub-feature
 6. **After all work complete:** documentation-engineer → code-reviewer → git-PR
 7. **Create PR for THIS ticket** - one ticket = one PR
 8. **Mark ticket as "pending PR review"**
 9. **Monitor commit frequency - must see commits every 15-30 minutes**
+
+**CRITICAL: Testing is integrated into each implementation task, not a separate task or epic. Developers test immediately after implementing each sub-feature.**
 
 **After all selected tickets have their PRs created:**
 - STOP and present all PR URLs to user

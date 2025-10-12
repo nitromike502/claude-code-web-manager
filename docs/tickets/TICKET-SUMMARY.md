@@ -60,7 +60,7 @@ Complete list of all tickets with brief descriptions.
 - **TASK-2.4.2** - Create GET /api/projects and POST /api/projects/scan routes
 - **TASK-2.4.3** - Create 4 project config routes (agents/commands/hooks/mcp)
 - **TASK-2.4.4** - Create 4 user config routes for ~/.claude directory
-- **TASK-2.4.5** - Test all 11 API routes with curl and document examples
+- **TASK-2.4.5** - Document API examples with curl commands (routes tested during implementation)
 
 ### Story 2.5: Error Handling Framework → **PR #11** (code-reviewer only)
 - **TASK-2.5.1** - Create errorHandler middleware for consistent error responses
