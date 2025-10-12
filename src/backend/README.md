@@ -114,10 +114,22 @@ Returns all subagents for a specific project from `.claude/agents/*.md`.
       "description": "Expert backend architect"
     }
   ],
+  "warnings": [
+    {
+      "file": "/path/to/malformed.md",
+      "error": "Invalid YAML frontmatter: ...",
+      "skipped": true
+    }
+  ],
   "projectId": "projectId",
   "projectPath": "/absolute/path/to/project"
 }
 ```
+
+**Error Handling:**
+- Malformed YAML files are skipped and reported in `warnings` array
+- Valid files are parsed successfully even if some files fail
+- Endpoint never crashes due to malformed files
 
 #### Get Project Commands
 ```
@@ -217,8 +229,32 @@ Returns user-level MCP servers from `~/.claude/settings.json`.
 
 ## Error Handling
 
-All endpoints return a consistent error format:
+### Resilient Parser Architecture (Phase 1 Complete)
 
+All parser endpoints now implement **graceful degradation** with comprehensive error handling:
+
+**Response Format:**
+```json
+{
+  "success": true,
+  "data": [ /* valid items */ ],
+  "warnings": [
+    {
+      "file": "/path/to/malformed.md",
+      "error": "Invalid YAML frontmatter: ...",
+      "skipped": true
+    }
+  ]
+}
+```
+
+**Error Handling Features:**
+1. **Malformed Files**: Skipped and reported in `warnings` array
+2. **Type Validation**: Handles unexpected data types (array vs object)
+3. **Partial Success**: Returns valid data even if some files fail
+4. **Never Crashes**: Endpoints always return 200 status with partial results
+
+**Error Format:**
 ```json
 {
   "success": false,
@@ -228,12 +264,18 @@ All endpoints return a consistent error format:
 
 **Common Error Scenarios:**
 - **404 Not Found**: Project ID does not exist or project directory is missing
-- **500 Internal Server Error**: File read errors, parsing errors, or unexpected failures
+- **500 Internal Server Error**: Critical failures only (endpoint never crashes on malformed data)
 
 **Graceful Handling:**
 - Missing files return empty arrays (not errors)
-- Malformed JSON/YAML throws descriptive parsing errors
+- Malformed JSON/YAML files are skipped with warnings
 - Invalid project paths are marked with `exists: false`
+- Type validation errors handled gracefully (hooks as object vs array)
+
+**Implementation:**
+- All 4 parsers (agents, commands, hooks, MCP) use consistent error handling
+- PRs #10, #11, #12, #13 added error handling to each parser
+- BUG-001 and BUG-002 resolved with this pattern
 
 ## Data Sources
 

@@ -116,10 +116,12 @@ When invoked to work on frontend tasks, follow these steps:
 
 7. **Complete Implementation and Signal Readiness**
    - Focus purely on implementation - DO NOT create branches, commits, or PRs yourself
-   - When implementation is complete, clearly document what was changed
+   - When implementation is complete, test manually in browser (quick sanity check)
+   - Clearly document what was changed
    - List all files created/modified with absolute paths
-   - Provide testing results and screenshots (if applicable)
-   - Signal to orchestrator that work is ready for commit
+   - Signal to orchestrator that work is ready for **automated testing**
+   - The orchestrator will coordinate with test-automation-engineer to run Playwright tests
+   - **Only after tests pass** will work proceed to documentation and code review
    - The orchestrator will coordinate with git-workflow-specialist for all git operations
 
 **Best Practices:**

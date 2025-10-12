@@ -4,9 +4,10 @@
 **Priority:** HIGH
 **Component:** Backend API
 **Endpoint:** GET /api/user/agents
-**Status:** Open
+**Status:** ✅ RESOLVED
 **Discovered:** 2025-10-11
-**Related PR:** #9 (Backend API Testing)
+**Resolved:** 2025-10-11
+**Related PR:** #9 (Backend API Testing), #10 (Fix: Add error handling to agents parser)
 
 ---
 
@@ -110,12 +111,12 @@ Implement **Option A** first for resilience, then optionally add **Option B** fo
 
 ## Acceptance Criteria
 
-- [ ] Endpoint returns 200 status even with malformed files
-- [ ] Valid agent files are parsed and returned successfully
-- [ ] Malformed files are skipped with warnings logged
-- [ ] Response includes `warnings` array with skipped files
-- [ ] Error messages are helpful and actionable
-- [ ] No single malformed file blocks entire endpoint
+- [x] Endpoint returns 200 status even with malformed files
+- [x] Valid agent files are parsed and returned successfully
+- [x] Malformed files are skipped with warnings logged
+- [x] Response includes `warnings` array with skipped files
+- [x] Error messages are helpful and actionable
+- [x] No single malformed file blocks entire endpoint
 
 ---
 
@@ -159,3 +160,44 @@ This bug was discovered during comprehensive backend API testing (SWARM Option A
 - This is a defensive programming issue - should handle malformed user data gracefully
 - Same pattern should be applied to other parsers (commands, hooks, MCP)
 - Consider creating a shared `parseWithErrorHandling()` utility function
+
+---
+
+## Resolution
+
+**Date:** 2025-10-11
+**PR:** #10 - Fix: Add error handling to agents parser
+**Branch:** feature/fix-agents-error-handling
+
+### Changes Made
+
+1. **Updated `getProjectAgents()` function** in `/home/claude/manager/src/backend/services/projectDiscovery.js`:
+   - Added try-catch block around individual file parsing
+   - Malformed YAML files are now skipped and reported in warnings array
+   - Valid files are parsed successfully even if some files fail
+   - Function returns `{agents, warnings}` structure
+
+2. **Updated `getUserAgents()` function** in the same file:
+   - Applied identical error handling pattern
+   - Handles malformed YAML gracefully
+   - Returns `{agents, warnings}` structure
+
+3. **Updated API routes**:
+   - `/home/claude/manager/src/backend/routes/projects.js`: Return warnings array
+   - `/home/claude/manager/src/backend/routes/user.js`: Return warnings array
+
+### Testing
+
+All tests passed:
+- ✓ Project agents endpoint returns success with agents and warnings arrays
+- ✓ User agents endpoint returns success with agents and warnings arrays
+- ✓ Malformed YAML files are skipped and reported in warnings
+- ✓ Valid files are parsed successfully
+- ✓ No crashes on malformed data
+
+### Impact
+
+- **User agents endpoint now fully functional**
+- **Project agents endpoint also improved with error handling**
+- **Both endpoints return warnings for malformed data instead of crashing**
+- **Pattern applied to all other parsers (commands, hooks, MCP) in subsequent PRs**

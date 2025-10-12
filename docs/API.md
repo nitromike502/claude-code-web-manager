@@ -30,14 +30,31 @@ Complete API reference for the Claude Code Manager backend.
 
 ## Response Format
 
-All API responses follow a consistent JSON structure:
+All API responses follow a consistent JSON structure with optional warnings array.
 
-### Success Response
+### Success Response (Standard)
 ```json
 {
   "success": true,
   "data": { ... },
   "error": null
+}
+```
+
+### Success Response with Warnings (New in v1.0.0)
+```json
+{
+  "success": true,
+  "agents": [ ... ],
+  "warnings": [
+    {
+      "file": "/path/to/malformed.md",
+      "error": "Invalid YAML frontmatter: ...",
+      "skipped": true
+    }
+  ],
+  "projectId": "...",
+  "projectPath": "..."
 }
 ```
 
@@ -55,9 +72,17 @@ All API responses follow a consistent JSON structure:
 
 ### HTTP Status Codes
 
-- **200 OK** - Request succeeded
+- **200 OK** - Request succeeded (even with warnings for malformed files)
 - **404 Not Found** - Resource not found (project ID, file, etc.)
-- **500 Internal Server Error** - Server error (file read error, parsing error, etc.)
+- **500 Internal Server Error** - Server error (critical failures only)
+
+### Resilient Error Handling (Phase 1 Complete)
+
+**All parser endpoints now handle malformed files gracefully:**
+- Malformed files are **skipped** and reported in the `warnings` array
+- Valid files are **parsed successfully** and returned in the data array
+- Endpoints **always return 200 status** with partial success
+- Frontend can display warnings to users for actionable feedback
 
 ### Common Error Scenarios
 
@@ -77,11 +102,33 @@ All API responses follow a consistent JSON structure:
    }
    ```
 
-3. **File Parsing Error**
+3. **Malformed YAML File (Agents/Commands)**
    ```json
    {
-     "success": false,
-     "error": "Failed to parse JSON: Unexpected token..."
+     "success": true,
+     "agents": [ /* valid agents */ ],
+     "warnings": [
+       {
+         "file": "/path/to/malformed.md",
+         "error": "Invalid YAML frontmatter: incomplete explicit mapping pair",
+         "skipped": true
+       }
+     ]
+   }
+   ```
+
+4. **Malformed JSON File (Hooks/MCP)**
+   ```json
+   {
+     "success": true,
+     "hooks": [ /* valid hooks */ ],
+     "warnings": [
+       {
+         "file": "/path/to/settings.json",
+         "error": "Invalid JSON: Unexpected token",
+         "skipped": true
+       }
+     ]
    }
    ```
 
@@ -89,7 +136,9 @@ All API responses follow a consistent JSON structure:
 
 - Missing files (agents, commands, hooks, MCP) return **empty arrays**, not errors
 - Invalid project paths are marked with `exists: false` in the response
-- Malformed YAML/JSON files throw descriptive parsing errors
+- Malformed YAML/JSON files are **skipped** and reported in `warnings` array
+- Type validation errors (e.g., hooks as object instead of array) are handled gracefully
+- Endpoints **never crash** due to malformed user data
 
 ---
 
@@ -222,6 +271,13 @@ Returns all subagents for a specific project from `.claude/agents/*.md`.
       "description": "Expert backend architect specializing in API design"
     }
   ],
+  "warnings": [
+    {
+      "file": "/absolute/path/to/.claude/agents/malformed.md",
+      "error": "Invalid YAML frontmatter: incomplete explicit mapping pair at line 3",
+      "skipped": true
+    }
+  ],
   "projectId": "homeuserprojectsmyapp",
   "projectPath": "/home/user/projects/myapp"
 }
@@ -235,10 +291,21 @@ Returns all subagents for a specific project from `.claude/agents/*.md`.
 - `content` (string) - Full markdown content including frontmatter
 - `description` (string) - From frontmatter or empty string
 
-**Notes:**
+**Warnings Array:**
+- `file` (string) - Absolute path to problematic file
+- `error` (string) - Description of the error encountered
+- `skipped` (boolean) - Always true (file was skipped)
+
+**Error Handling:**
 - Returns empty array if `.claude/agents/` directory doesn't exist
+- Malformed YAML files are skipped and reported in `warnings` array
+- Valid files are parsed successfully even if some files fail
+- Endpoint never crashes due to malformed files
+
+**Notes:**
 - Parses YAML frontmatter using `gray-matter` library
 - Only includes `.md` files
+- Warnings array is empty if all files parse successfully
 
 ---
 
@@ -288,10 +355,18 @@ Returns all slash commands for a project from `.claude/commands/**/*.md` (suppor
 - `content` (string) - Full markdown content
 - `description` (string) - From frontmatter or empty string
 
+**Warnings Array:**
+- Same structure as agents endpoint (file, error, skipped)
+
+**Error Handling:**
+- Returns empty array if `.claude/commands/` directory doesn't exist
+- Malformed YAML files are skipped and reported in `warnings` array
+- Valid files are parsed successfully even if some files fail
+
 **Notes:**
 - Supports nested directory structures (e.g., `git/commit.md`, `git/push.md`)
-- Returns empty array if `.claude/commands/` directory doesn't exist
 - Command name includes directory path for organization
+- Warnings array is empty if all files parse successfully
 
 ---
 
@@ -329,13 +404,24 @@ Returns all hooks from `.claude/settings.json` and `.claude/settings.local.json`
 **Response Fields (per hook):**
 - `event` (string) - Hook event name
 - `matcher` (string, optional) - File pattern matcher
-- `action` (string) - Action to execute
+- `hooks` (array) - Array of hook actions
 - `source` (string) - Which settings file the hook came from
+- `matcherIndex` (number) - Index of this matcher within the event
+
+**Warnings Array:**
+- Same structure as other endpoints (file, error, skipped)
+
+**Error Handling:**
+- Merges hooks from both `settings.json` and `settings.local.json`
+- Handles both array and object hook formats
+- Malformed JSON files are skipped and reported in `warnings` array
+- Type validation errors are handled gracefully
 
 **Notes:**
-- Merges hooks from both `settings.json` and `settings.local.json`
 - Local settings take precedence over project settings
 - Returns empty array if no hooks configured
+- Supports both object format (keyed by event) and array format
+- Warnings array is empty if all files parse successfully
 
 ---
 
@@ -379,10 +465,19 @@ Returns all MCP servers from `.mcp.json` at the project root.
 - `env` (object, optional) - Environment variables
 - `source` (string) - Configuration file source
 
-**Notes:**
+**Warnings Array:**
+- Same structure as other endpoints (file, error, skipped)
+
+**Error Handling:**
 - Reads from `.mcp.json` in project root
+- Malformed JSON files are skipped and reported in `warnings` array
+- Type validation ensures `mcpServers` is an object (not array/string)
 - Returns empty array if `.mcp.json` doesn't exist
+
+**Notes:**
 - MCP servers are defined at project level, not in `.claude/` directory
+- Warnings array is empty if all files parse successfully
+- Endpoint never crashes due to malformed configuration files
 
 ---
 
