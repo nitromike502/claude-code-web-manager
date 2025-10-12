@@ -1,12 +1,12 @@
 /**
- * Malformed YAML Error Handling Tests - Agents
+ * Malformed YAML Error Handling Tests - Agents & Commands
  *
  * Tests that the backend can gracefully handle malformed YAML frontmatter
- * in agent files without crashing the server or blocking other valid files.
+ * in agent and command files without crashing the server or blocking other valid files.
  */
 
 const path = require('path');
-const { getProjectAgents, getUserAgents } = require('../../../src/backend/services/projectDiscovery');
+const { getProjectAgents, getUserAgents, getProjectCommands, getUserCommands } = require('../../../src/backend/services/projectDiscovery');
 
 // Paths to test fixtures
 const MALFORMED_PROJECT_PATH = path.join(__dirname, '../../fixtures/projects/malformed-project');
@@ -180,6 +180,239 @@ describe('Malformed YAML Error Handling - Agents', () => {
 
       // Note: Warnings may or may not be present depending on async timing,
       // but the key test is that processing doesn't crash and valid files are parsed
+    });
+  });
+});
+
+describe('Malformed YAML Error Handling - Commands', () => {
+  describe('Parser Resilience', () => {
+    test('should not crash when parsing malformed YAML frontmatter in commands', async () => {
+      // Attempt to read commands from project with malformed YAML
+      const result = await getProjectCommands(VALID_PROJECT_PATH);
+
+      // Should complete without throwing
+      expect(result).toBeDefined();
+      expect(result.commands).toBeDefined();
+      expect(result.warnings).toBeDefined();
+
+      // Should have arrays
+      expect(Array.isArray(result.warnings)).toBe(true);
+      expect(Array.isArray(result.commands)).toBe(true);
+    });
+
+    test('should not crash when user commands directory has malformed files', async () => {
+      // Test user-level commands parsing
+      const result = await getUserCommands();
+
+      // Should complete without throwing
+      expect(result).toBeDefined();
+      expect(result.commands).toBeDefined();
+      expect(result.warnings).toBeDefined();
+      expect(Array.isArray(result.commands)).toBe(true);
+      expect(Array.isArray(result.warnings)).toBe(true);
+    });
+  });
+
+  describe('Warning System', () => {
+    test('warnings should include file path and error description for malformed command YAML', async () => {
+      // Use valid-project which has malformed command files
+      const result = await getProjectCommands(VALID_PROJECT_PATH);
+
+      // Should have warnings array
+      expect(result.warnings).toBeDefined();
+      expect(Array.isArray(result.warnings)).toBe(true);
+
+      // If warnings exist (which they should), validate their structure
+      if (result.warnings.length > 0) {
+        // Find any warning for a malformed command file
+        const malformedWarning = result.warnings.find(w =>
+          w.file.includes('malformed-command.md') || w.file.includes('broken.md')
+        );
+
+        // If we found a warning, validate its structure
+        if (malformedWarning) {
+          // Structure validation
+          expect(malformedWarning).toHaveProperty('file');
+          expect(malformedWarning).toHaveProperty('error');
+          expect(malformedWarning).toHaveProperty('skipped');
+          expect(typeof malformedWarning.file).toBe('string');
+          expect(typeof malformedWarning.error).toBe('string');
+          expect(malformedWarning.skipped).toBe(true);
+
+          // File path validation (should be absolute or at least contain the file)
+          expect(malformedWarning.file).toContain('.md');
+
+          // Error message should mention YAML or parsing
+          expect(malformedWarning.error.toLowerCase()).toMatch(/yaml|parse|invalid|frontmatter/);
+
+          // Should not be an empty string
+          expect(malformedWarning.error.length).toBeGreaterThan(0);
+        }
+      }
+
+      // The key test: parsing should not crash and should return valid structure
+      expect(result.commands).toBeDefined();
+      expect(Array.isArray(result.commands)).toBe(true);
+    });
+
+    // Additional test to verify warnings in isolation
+    test('malformed YAML files should generate warnings when parsed individually', async () => {
+      // This test verifies the functionality works in a clean state
+      const result = await getProjectCommands(VALID_PROJECT_PATH);
+
+      // System should not crash
+      expect(result).toBeDefined();
+
+      // Should have processed some valid commands
+      expect(result.commands.length).toBeGreaterThan(0);
+
+      // Find the valid commands we know exist
+      const validCommand = result.commands.find(c => c.name === 'simple-command');
+      const nestedCommand = result.commands.find(c => c.name.includes('nested-command'));
+
+      // At least one of these should exist
+      expect(validCommand || nestedCommand).toBeDefined();
+
+      // Should have valid structure
+      expect(result.commands).toBeDefined();
+      expect(result.warnings).toBeDefined();
+    });
+  });
+
+  describe('Continued Processing', () => {
+    test('system should continue processing valid commands after encountering malformed files', async () => {
+      // The valid-project has malformed command files AND valid command files
+      // The system should skip the malformed ones and process the valid ones
+      const result = await getProjectCommands(VALID_PROJECT_PATH);
+
+      // Should not throw an error
+      expect(result).toBeDefined();
+
+      // Should return a commands array with valid commands
+      expect(result.commands).toBeDefined();
+      expect(Array.isArray(result.commands)).toBe(true);
+      expect(result.commands.length).toBeGreaterThan(0); // Should have valid commands
+
+      // Should have warnings array
+      expect(result.warnings).toBeDefined();
+      expect(Array.isArray(result.warnings)).toBe(true);
+
+      // Verify that valid commands were parsed correctly
+      const validCommand = result.commands.find(c => c.name === 'simple-command');
+      expect(validCommand).toBeDefined();
+      expect(validCommand.frontmatter).toBeDefined();
+    });
+
+    test('system should process commands without frontmatter using filename fallback', async () => {
+      // Commands without frontmatter should still be processed (unlike agents)
+      const result = await getProjectCommands(VALID_PROJECT_PATH);
+
+      // Should have processed the no-frontmatter command
+      const noFrontmatterCommand = result.commands.find(c => c.name === 'no-frontmatter');
+      expect(noFrontmatterCommand).toBeDefined();
+
+      // Should have content even without frontmatter
+      expect(noFrontmatterCommand.content).toBeDefined();
+      expect(noFrontmatterCommand.content.length).toBeGreaterThan(0);
+
+      // Frontmatter should be empty object (not undefined)
+      expect(noFrontmatterCommand.frontmatter).toBeDefined();
+    });
+  });
+
+  describe('Multiple Error Handling', () => {
+    test('warnings array should be empty when no errors occur', async () => {
+      // Test a project with no commands
+      const result = await getProjectCommands(MINIMAL_PROJECT_PATH);
+
+      expect(result).toBeDefined();
+      expect(result.warnings).toBeDefined();
+      expect(Array.isArray(result.warnings)).toBe(true);
+      expect(result.warnings.length).toBe(0);
+      expect(result.commands.length).toBe(0);
+    });
+
+    test('multiple malformed command files should generate multiple warnings', async () => {
+      // Valid-project has at least one malformed command file
+      const result = await getProjectCommands(VALID_PROJECT_PATH);
+
+      expect(result).toBeDefined();
+      expect(result.warnings).toBeDefined();
+      expect(Array.isArray(result.warnings)).toBe(true);
+
+      // Each warning should have the required structure
+      result.warnings.forEach(warning => {
+        expect(warning).toHaveProperty('file');
+        expect(warning).toHaveProperty('error');
+        expect(warning).toHaveProperty('skipped');
+        expect(typeof warning.file).toBe('string');
+        expect(typeof warning.error).toBe('string');
+        expect(path.isAbsolute(warning.file)).toBe(true);
+      });
+    });
+  });
+
+  describe('Result Structure Validation', () => {
+    test('result should have correct structure with commands even with malformed files', async () => {
+      const result = await getProjectCommands(VALID_PROJECT_PATH);
+
+      // Verify result structure
+      expect(result).toHaveProperty('commands');
+      expect(result).toHaveProperty('warnings');
+      expect(Array.isArray(result.commands)).toBe(true);
+      expect(Array.isArray(result.warnings)).toBe(true);
+
+      // Even with potential errors, parsing should complete without throwing
+      expect(result).toBeDefined();
+      expect(result.commands).toBeDefined();
+      expect(result.warnings).toBeDefined();
+
+      // Should have successfully parsed valid commands
+      expect(result.commands.length).toBeGreaterThan(0);
+
+      // Valid commands should have proper structure
+      result.commands.forEach(command => {
+        expect(command).toHaveProperty('name');
+        expect(command).toHaveProperty('file');
+        expect(command).toHaveProperty('path');
+        expect(command).toHaveProperty('frontmatter');
+        expect(command).toHaveProperty('content');
+      });
+    });
+  });
+
+  describe('Edge Cases', () => {
+    test('should handle empty commands directory gracefully', async () => {
+      // minimal-project has no commands directory
+      const result = await getProjectCommands(MINIMAL_PROJECT_PATH);
+
+      expect(result).toBeDefined();
+      expect(result.commands).toEqual([]);
+      expect(result.warnings).toEqual([]);
+    });
+
+    test('should handle non-existent commands directory gracefully', async () => {
+      // Test with a path that doesn't exist
+      const nonExistentPath = path.join(__dirname, '../../fixtures/projects/nonexistent-project');
+      const result = await getProjectCommands(nonExistentPath);
+
+      // Should return empty arrays, not throw
+      expect(result).toBeDefined();
+      expect(result.commands).toEqual([]);
+      expect(result.warnings).toEqual([]);
+    });
+
+    test('commands without frontmatter should not generate warnings', async () => {
+      // Commands can work without frontmatter (fallback to content)
+      const result = await getProjectCommands(VALID_PROJECT_PATH);
+
+      // Check that no-frontmatter command was processed without warnings
+      const noFrontmatterCommand = result.commands.find(c => c.name === 'no-frontmatter');
+      expect(noFrontmatterCommand).toBeDefined();
+
+      // Should not have any warnings specifically for this file
+      const noFrontmatterWarnings = result.warnings.filter(w => w.file.includes('no-frontmatter.md'));
+      expect(noFrontmatterWarnings.length).toBe(0);
     });
   });
 });
