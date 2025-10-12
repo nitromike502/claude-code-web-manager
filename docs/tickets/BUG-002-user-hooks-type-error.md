@@ -4,9 +4,10 @@
 **Priority:** MEDIUM
 **Component:** Backend API
 **Endpoint:** GET /api/user/hooks
-**Status:** Open
+**Status:** RESOLVED
 **Discovered:** 2025-10-11
-**Related PR:** #9 (Backend API Testing)
+**Resolved:** 2025-10-12
+**Related PR:** #9 (Backend API Testing), feature/fix-hooks-error-handling
 
 ---
 
@@ -133,12 +134,12 @@ async function parseUserHooks() {
 
 ## Acceptance Criteria
 
-- [ ] Endpoint handles undefined hooks gracefully
-- [ ] Endpoint handles array format correctly
-- [ ] Endpoint handles object format correctly
-- [ ] Endpoint returns empty array for missing/invalid hooks
-- [ ] Error messages are helpful and actionable
-- [ ] No TypeErrors thrown
+- [x] Endpoint handles undefined hooks gracefully
+- [x] Endpoint handles array format correctly
+- [x] Endpoint handles object format correctly
+- [x] Endpoint returns empty array for missing/invalid hooks
+- [x] Error messages are helpful and actionable
+- [x] No TypeErrors thrown
 
 ---
 
@@ -222,3 +223,71 @@ This bug was discovered during comprehensive backend API testing (SWARM Option A
 - Consider creating a shared `normalizeHooks()` utility function
 - Hook format varies between Claude Code versions - need to support both
 - Document the expected format in API documentation
+
+---
+
+## Resolution
+
+**Date:** 2025-10-12
+**Commit:** e394704
+**Branch:** feature/fix-hooks-error-handling
+
+### Changes Made
+
+1. **Updated `getProjectHooks()` function** in `/home/claude/manager/src/backend/services/projectDiscovery.js`:
+   - Added type checking before calling `.map()`
+   - Handle array format: direct mapping with source annotation
+   - Handle object format: parse event -> array of matchers structure
+   - Track warnings for malformed JSON and unexpected types
+   - Return `{hooks, warnings}` structure instead of plain array
+
+2. **Updated `getUserHooks()` function** in the same file:
+   - Applied identical error handling pattern
+   - Support both array and object formats
+   - Return `{hooks, warnings}` structure
+
+3. **Updated `getProjectCounts()` function**:
+   - Handle new return structure from `getProjectHooks()`
+   - Access `hooksResult.hooks.length` instead of `hooks.length`
+
+4. **Updated API routes**:
+   - `/home/claude/manager/src/backend/routes/projects.js`: Return warnings array
+   - `/home/claude/manager/src/backend/routes/user.js`: Return warnings array
+
+### Hooks Data Structure
+
+Discovered that hooks in settings.json use this structure:
+```json
+{
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "matcher": "",
+        "hooks": [...]
+      }
+    ],
+    "Notification": [...]
+  }
+}
+```
+
+Each event maps to an array of matcher configurations. The parser now correctly handles this by:
+- Iterating over event entries
+- Extracting matcher and hooks arrays
+- Creating structured hook objects with event, matcher, hooks, source, and matcherIndex fields
+
+### Testing
+
+All tests passed:
+- ✓ Project hooks endpoint returns success with hooks and warnings arrays
+- ✓ User hooks endpoint returns success with hooks and warnings arrays
+- ✓ Hook structure includes event, matcher, hooks, and source fields
+- ✓ No TypeErrors when parsing object format hooks
+- ✓ Empty warnings array when all files parse successfully
+
+### Impact
+
+- **User hooks endpoint now fully functional**
+- **Project hooks endpoint also improved with error handling**
+- **Both endpoints return warnings for malformed data instead of crashing**
+- **Supports both array and object hook formats**
