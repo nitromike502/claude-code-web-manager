@@ -207,11 +207,12 @@ router.get('/:projectId/hooks', async (req, res) => {
       });
     }
 
-    const hooks = await getProjectHooks(projectData.path);
+    const result = await getProjectHooks(projectData.path);
 
     res.json({
       success: true,
-      hooks,
+      hooks: result.hooks,
+      warnings: result.warnings,
       projectId,
       projectPath: projectData.path
     });

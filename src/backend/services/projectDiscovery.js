@@ -156,41 +156,112 @@ async function getProjectCommands(projectPath) {
 /**
  * Gets hooks for a specific project (from settings.json and settings.local.json)
  * @param {string} projectPath - Absolute project path
- * @returns {Promise<Array>} Array of hook objects
+ * @returns {Promise<Object>} Object with hooks array and warnings array
  */
 async function getProjectHooks(projectPath) {
   const settingsPath = path.join(projectPath, '.claude', 'settings.json');
   const localSettingsPath = path.join(projectPath, '.claude', 'settings.local.json');
 
   const hooks = [];
+  const warnings = [];
 
+  // Try reading main settings.json
   try {
-    // Read main settings
     const settings = await readJSON(settingsPath);
     if (settings && settings.hooks) {
-      hooks.push(...settings.hooks.map(hook => ({
-        ...hook,
-        source: 'settings.json'
-      })));
+      // Type check before .map()
+      if (Array.isArray(settings.hooks)) {
+        hooks.push(...settings.hooks.map(hook => ({
+          ...hook,
+          source: 'settings.json'
+        })));
+      } else if (typeof settings.hooks === 'object') {
+        // Handle object format: { "UserPromptSubmit": [...], "Notification": [...] }
+        // Each event maps to an array of matcher configs
+        for (const [event, matchers] of Object.entries(settings.hooks)) {
+          if (Array.isArray(matchers)) {
+            matchers.forEach((matcher, index) => {
+              hooks.push({
+                event,
+                matcher: matcher.matcher || '',
+                hooks: matcher.hooks || [],
+                source: 'settings.json',
+                matcherIndex: index
+              });
+            });
+          }
+        }
+      } else {
+        // Unexpected type
+        console.warn(`Unexpected hooks format in ${settingsPath}: ${typeof settings.hooks}`);
+        warnings.push({
+          file: settingsPath,
+          error: `hooks is ${typeof settings.hooks}, expected array or object`,
+          skipped: true
+        });
+      }
     }
   } catch (error) {
-    // Ignore if file doesn't exist
+    if (error.code !== 'ENOENT') {
+      // Log non-ENOENT errors (malformed JSON, etc.)
+      console.warn(`Failed to parse ${settingsPath}: ${error.message}`);
+      warnings.push({
+        file: settingsPath,
+        error: error.message,
+        skipped: true
+      });
+    }
   }
 
+  // Try reading settings.local.json
   try {
-    // Read local settings
     const localSettings = await readJSON(localSettingsPath);
     if (localSettings && localSettings.hooks) {
-      hooks.push(...localSettings.hooks.map(hook => ({
-        ...hook,
-        source: 'settings.local.json'
-      })));
+      // Type check before .map()
+      if (Array.isArray(localSettings.hooks)) {
+        hooks.push(...localSettings.hooks.map(hook => ({
+          ...hook,
+          source: 'settings.local.json'
+        })));
+      } else if (typeof localSettings.hooks === 'object') {
+        // Handle object format: { "UserPromptSubmit": [...], "Notification": [...] }
+        // Each event maps to an array of matcher configs
+        for (const [event, matchers] of Object.entries(localSettings.hooks)) {
+          if (Array.isArray(matchers)) {
+            matchers.forEach((matcher, index) => {
+              hooks.push({
+                event,
+                matcher: matcher.matcher || '',
+                hooks: matcher.hooks || [],
+                source: 'settings.local.json',
+                matcherIndex: index
+              });
+            });
+          }
+        }
+      } else {
+        // Unexpected type
+        console.warn(`Unexpected hooks format in ${localSettingsPath}: ${typeof localSettings.hooks}`);
+        warnings.push({
+          file: localSettingsPath,
+          error: `hooks is ${typeof localSettings.hooks}, expected array or object`,
+          skipped: true
+        });
+      }
     }
   } catch (error) {
-    // Ignore if file doesn't exist
+    if (error.code !== 'ENOENT') {
+      // Log non-ENOENT errors (malformed JSON, etc.)
+      console.warn(`Failed to parse ${localSettingsPath}: ${error.message}`);
+      warnings.push({
+        file: localSettingsPath,
+        error: error.message,
+        skipped: true
+      });
+    }
   }
 
-  return hooks;
+  return { hooks, warnings };
 }
 
 /**
@@ -326,28 +397,63 @@ async function getUserCommands() {
 
 /**
  * Gets user-level hooks from ~/.claude/settings.json
- * @returns {Promise<Array>} Array of hook objects
+ * @returns {Promise<Object>} Object with hooks array and warnings array
  */
 async function getUserHooks() {
   const settingsPath = expandHome('~/.claude/settings.json');
 
+  const hooks = [];
+  const warnings = [];
+
   try {
     const settings = await readJSON(settingsPath);
 
-    if (!settings || !settings.hooks) {
-      return [];
+    if (settings && settings.hooks) {
+      // Type check before .map()
+      if (Array.isArray(settings.hooks)) {
+        hooks.push(...settings.hooks.map(hook => ({
+          ...hook,
+          source: '~/.claude/settings.json'
+        })));
+      } else if (typeof settings.hooks === 'object') {
+        // Handle object format: { "UserPromptSubmit": [...], "Notification": [...] }
+        // Each event maps to an array of matcher configs
+        for (const [event, matchers] of Object.entries(settings.hooks)) {
+          if (Array.isArray(matchers)) {
+            matchers.forEach((matcher, index) => {
+              hooks.push({
+                event,
+                matcher: matcher.matcher || '',
+                hooks: matcher.hooks || [],
+                source: '~/.claude/settings.json',
+                matcherIndex: index
+              });
+            });
+          }
+        }
+      } else {
+        // Unexpected type
+        console.warn(`Unexpected hooks format in ${settingsPath}: ${typeof settings.hooks}`);
+        warnings.push({
+          file: settingsPath,
+          error: `hooks is ${typeof settings.hooks}, expected array or object`,
+          skipped: true
+        });
+      }
     }
-
-    return settings.hooks.map(hook => ({
-      ...hook,
-      source: '~/.claude/settings.json'
-    }));
   } catch (error) {
-    if (error.code === 'ENOENT') {
-      return []; // No user settings
+    if (error.code !== 'ENOENT') {
+      // Log non-ENOENT errors (malformed JSON, etc.)
+      console.warn(`Failed to parse ${settingsPath}: ${error.message}`);
+      warnings.push({
+        file: settingsPath,
+        error: error.message,
+        skipped: true
+      });
     }
-    throw error;
   }
+
+  return { hooks, warnings };
 }
 
 /**
@@ -385,7 +491,7 @@ async function getUserMCP() {
  */
 async function getProjectCounts(projectPath) {
   try {
-    const [agentsResult, commandsResult, hooks, mcp] = await Promise.all([
+    const [agentsResult, commandsResult, hooksResult, mcp] = await Promise.all([
       getProjectAgents(projectPath),
       getProjectCommands(projectPath),
       getProjectHooks(projectPath),
@@ -395,7 +501,7 @@ async function getProjectCounts(projectPath) {
     return {
       agents: agentsResult.agents.length,
       commands: commandsResult.commands.length,
-      hooks: hooks.length,
+      hooks: hooksResult.hooks.length,
       mcp: mcp.length
     };
   } catch (error) {
