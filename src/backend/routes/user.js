@@ -76,11 +76,12 @@ router.get('/hooks', async (req, res) => {
  */
 router.get('/mcp', async (req, res) => {
   try {
-    const mcp = await getUserMCP();
+    const result = await getUserMCP();
 
     res.json({
       success: true,
-      mcp
+      mcp: result.mcp,
+      warnings: result.warnings
     });
   } catch (error) {
     res.status(500).json({

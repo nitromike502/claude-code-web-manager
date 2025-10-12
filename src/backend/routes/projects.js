@@ -255,11 +255,12 @@ router.get('/:projectId/mcp', async (req, res) => {
       });
     }
 
-    const mcp = await getProjectMCP(projectData.path);
+    const result = await getProjectMCP(projectData.path);
 
     res.json({
       success: true,
-      mcp,
+      mcp: result.mcp,
+      warnings: result.warnings,
       projectId,
       projectPath: projectData.path
     });

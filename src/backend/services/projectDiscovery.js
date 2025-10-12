@@ -267,30 +267,49 @@ async function getProjectHooks(projectPath) {
 /**
  * Gets MCP servers for a specific project (from .mcp.json)
  * @param {string} projectPath - Absolute project path
- * @returns {Promise<Array>} Array of MCP server objects
+ * @returns {Promise<Object>} Object with mcp array and warnings array
  */
 async function getProjectMCP(projectPath) {
   const mcpPath = path.join(projectPath, '.mcp.json');
 
+  const mcp = [];
+  const warnings = [];
+
   try {
     const config = await readJSON(mcpPath);
 
-    if (!config || !config.mcpServers) {
-      return [];
+    if (config && config.mcpServers) {
+      // Type check before Object.entries()
+      if (typeof config.mcpServers === 'object' && !Array.isArray(config.mcpServers)) {
+        mcp.push(...Object.entries(config.mcpServers).map(([name, serverConfig]) => ({
+          name,
+          ...serverConfig,
+          source: '.mcp.json'
+        })));
+      } else {
+        // Unexpected type
+        const actualType = Array.isArray(config.mcpServers) ? 'array' : typeof config.mcpServers;
+        console.warn(`Unexpected mcpServers format in ${mcpPath}: ${actualType}`);
+        warnings.push({
+          file: mcpPath,
+          error: `mcpServers is ${actualType}, expected object`,
+          skipped: true
+        });
+      }
     }
-
-    // Convert mcpServers object to array
-    return Object.entries(config.mcpServers).map(([name, serverConfig]) => ({
-      name,
-      ...serverConfig,
-      source: '.mcp.json'
-    }));
   } catch (error) {
-    if (error.code === 'ENOENT') {
-      return []; // No MCP config
+    if (error.code !== 'ENOENT') {
+      // Log non-ENOENT errors (malformed JSON, etc.)
+      console.warn(`Failed to parse ${mcpPath}: ${error.message}`);
+      warnings.push({
+        file: mcpPath,
+        error: error.message,
+        skipped: true
+      });
     }
-    throw error;
   }
+
+  return { mcp, warnings };
 }
 
 /**
@@ -458,30 +477,49 @@ async function getUserHooks() {
 
 /**
  * Gets user-level MCP servers from ~/.claude/settings.json
- * @returns {Promise<Array>} Array of MCP server objects
+ * @returns {Promise<Object>} Object with mcp array and warnings array
  */
 async function getUserMCP() {
   const settingsPath = expandHome('~/.claude/settings.json');
 
+  const mcp = [];
+  const warnings = [];
+
   try {
     const settings = await readJSON(settingsPath);
 
-    if (!settings || !settings.mcpServers) {
-      return [];
+    if (settings && settings.mcpServers) {
+      // Type check before Object.entries()
+      if (typeof settings.mcpServers === 'object' && !Array.isArray(settings.mcpServers)) {
+        mcp.push(...Object.entries(settings.mcpServers).map(([name, serverConfig]) => ({
+          name,
+          ...serverConfig,
+          source: '~/.claude/settings.json'
+        })));
+      } else {
+        // Unexpected type
+        const actualType = Array.isArray(settings.mcpServers) ? 'array' : typeof settings.mcpServers;
+        console.warn(`Unexpected mcpServers format in ${settingsPath}: ${actualType}`);
+        warnings.push({
+          file: settingsPath,
+          error: `mcpServers is ${actualType}, expected object`,
+          skipped: true
+        });
+      }
     }
-
-    // Convert mcpServers object to array
-    return Object.entries(settings.mcpServers).map(([name, serverConfig]) => ({
-      name,
-      ...serverConfig,
-      source: '~/.claude/settings.json'
-    }));
   } catch (error) {
-    if (error.code === 'ENOENT') {
-      return []; // No user settings
+    if (error.code !== 'ENOENT') {
+      // Log non-ENOENT errors (malformed JSON, etc.)
+      console.warn(`Failed to parse ${settingsPath}: ${error.message}`);
+      warnings.push({
+        file: settingsPath,
+        error: error.message,
+        skipped: true
+      });
     }
-    throw error;
   }
+
+  return { mcp, warnings };
 }
 
 /**
@@ -491,7 +529,7 @@ async function getUserMCP() {
  */
 async function getProjectCounts(projectPath) {
   try {
-    const [agentsResult, commandsResult, hooksResult, mcp] = await Promise.all([
+    const [agentsResult, commandsResult, hooksResult, mcpResult] = await Promise.all([
       getProjectAgents(projectPath),
       getProjectCommands(projectPath),
       getProjectHooks(projectPath),
@@ -502,7 +540,7 @@ async function getProjectCounts(projectPath) {
       agents: agentsResult.agents.length,
       commands: commandsResult.commands.length,
       hooks: hooksResult.hooks.length,
-      mcp: mcp.length
+      mcp: mcpResult.mcp.length
     };
   } catch (error) {
     return {
