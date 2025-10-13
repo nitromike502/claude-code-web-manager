@@ -197,8 +197,8 @@
                     );
                 },
                 selectProject(project) {
-                    console.log('Selected project:', project);
-                    // Placeholder for future navigation
+                    // Navigate to project detail page with project ID
+                    window.location.href = `/project-detail.html?id=${encodeURIComponent(project.id)}`;
                 }
             }
         }).mount('#app');

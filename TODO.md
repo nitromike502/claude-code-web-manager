@@ -8,7 +8,11 @@ This file tracks ideas, issues, and tasks to address at a later time.
 
 ## Pending Tasks
 
-_(No pending tasks at this time)_
+### NPX Support for Claude Code Manager
+- [ ] Add NPX support to allow running the tool without installation
+- [ ] Create appropriate package.json configuration for NPX execution
+- [ ] Add documentation for NPX usage (e.g., `npx claude-code-manager`)
+- [ ] Test NPX workflow on clean environment
 
 ---
 
