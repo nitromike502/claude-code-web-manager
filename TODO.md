@@ -8,16 +8,26 @@ This file tracks ideas, issues, and tasks to address at a later time.
 
 ## Pending Tasks
 
-### Git Workflow Review
-- [ ] Review session '99830cc0-218c-417a-ae2b-9e8ca2fdab37' logs
-- [ ] Correct git workflow branch timing documentation
-- [ ] Validate the sequence: create branch → implement → test → commit → PR
+_(No pending tasks at this time)_
 
 ---
 
 ## Completed Tasks
 
-_(Tasks completed will be moved here with completion date)_
+### Git Workflow Review (Completed 2025-10-12)
+- [x] Review session '99830cc0-218c-417a-ae2b-9e8ca2fdab37' logs
+- [x] Correct git workflow branch timing documentation
+- [x] Validate the sequence: create branch → implement → test → commit → PR
+
+**Summary:**
+- Analyzed git reflog from session 99830cc0 (Oct 11, 2025, 11:30 PM - 12:15 AM)
+- Identified common mistake: checking out to main before creating PR, leading to accidental commits on main
+- Updated CLAUDE.md with improved git workflow documentation:
+  - Added emphasis on creating branch BEFORE starting work
+  - Added verification step: `git branch --show-current` before committing
+  - Added explicit warning about NOT checking out to main before PR creation
+  - Added "Common Mistake to Avoid" section with clear DO/DON'T guidance
+- Validated the corrected sequence: create branch → implement → test → commit → PR
 
 ---
 
