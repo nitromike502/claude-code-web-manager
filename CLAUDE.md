@@ -108,7 +108,12 @@ See subagent proposals in project `.claude/agents/` directory.
 1. ✅ Requirements gathering (PRD complete)
 2. ✅ Create wireframe mockups (Approved)
 3. ✅ Build backend API with automated testing (COMPLETE - 100%)
-4. ⏳ Build frontend UI with automated testing (IN PROGRESS - 15%)
+4. ⏳ Build frontend UI with automated testing (IN PROGRESS - 13%)
+   - ✅ Story 3.1: Project Detail View Structure (COMPLETE - 80 min / 605 min)
+   - ⏳ Story 3.2: Configuration Cards (Pending - 5 tasks)
+   - ⏳ Story 3.3: Interactive Features (Pending - 6 tasks)
+   - ⏳ Story 3.4: Search & Filter (Pending - 3 tasks)
+   - ⏳ Story 3.5: Final Polish (Pending - 3 tasks)
 5. ⏳ Integration verification & cross-platform testing
 6. ⏳ Polish & final quality review
 
@@ -146,14 +151,19 @@ All code changes must pass automated tests before PR creation:
 - [x] BUG-001 and BUG-002 resolved
 - [x] Automated test suite passing (Jest)
 
-### Frontend (0% Complete)
-- [ ] All Claude Code projects visible in UI
-- [ ] All config types viewable (agents/commands/hooks/MCP)
-- [ ] Search/filter functionality working
-- [ ] Clean, intuitive UI
-- [ ] Works on Windows, Mac, Linux (requires testing)
-- [ ] Frontend displays warnings from backend
-- [ ] Automated test suite passing (Playwright)
+### Frontend (13% Complete)
+- [x] Project detail page structure created
+- [x] Breadcrumb navigation with back button
+- [x] Routing from dashboard to detail view
+- [x] Theme toggle functionality
+- [x] Loading and error states
+- [x] Warning display from backend
+- [x] Automated test suite passing (Playwright - 36/36 tests)
+- [ ] Configuration cards for all 4 types (agents/commands/hooks/MCP)
+- [ ] Detail sidebar for viewing full content
+- [ ] User/global configuration view
+- [ ] Search/filter functionality
+- [ ] Cross-browser compatibility verified
 
 ## Future Features (Beyond MVP)
 

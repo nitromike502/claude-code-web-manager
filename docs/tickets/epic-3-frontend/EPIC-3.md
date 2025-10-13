@@ -1,6 +1,6 @@
 # EPIC 3: Frontend Development
 
-**Status:** In Progress (15% complete)
+**Status:** In Progress (13% complete - Story 3.1 ✅ COMPLETE)
 **Priority:** High
 **Dependencies:**
 - EPIC 1 (Wireframes - COMPLETE)
@@ -21,11 +21,12 @@ Build complete frontend UI for Claude Code Manager with project detail view, car
 
 ## Stories
 
-### Story 3.1: Project Detail View Structure
+### Story 3.1: Project Detail View Structure ✅ COMPLETE
 **Tasks:**
 - TASK-3.1.1: Create project detail page component structure (30 min) - ✅ COMPLETE
-- TASK-3.1.2: Add routing from dashboard to detail view (30 min)
-- TASK-3.1.3: Implement breadcrumb navigation with back button (20 min)
+- TASK-3.1.2: Add routing from dashboard to detail view (30 min) - ✅ COMPLETE
+- TASK-3.1.3: Implement breadcrumb navigation with back button (20 min) - ✅ COMPLETE
+**Total Time:** 80 minutes | **Tests:** 36/36 passed | **Status:** Merged to main
 
 ### Story 3.2: Configuration Cards Layout
 **Tasks:**
