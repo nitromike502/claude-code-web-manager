@@ -33,7 +33,7 @@
 
         <!-- Breadcrumbs -->
         <div class="breadcrumbs" role="navigation" aria-label="Breadcrumb navigation">
-            <button class="breadcrumb-item clickable" @click="goToDashboard">
+            <button class="breadcrumb-item clickable" @click="goToDashboard" title="Return to dashboard">
                 <i class="fas fa-home"></i>
                 Dashboard
             </button>
@@ -222,11 +222,12 @@
             align-items: center;
             gap: 0.5rem;
             color: var(--text-secondary);
-            transition: color 0.2s ease;
+            transition: all 0.2s ease;
             background: none;
             border: none;
             cursor: default;
-            padding: 0;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
             font-size: inherit;
             font-family: inherit;
         }
@@ -237,6 +238,7 @@
 
         .breadcrumb-item.clickable:hover {
             color: var(--text-primary);
+            background-color: var(--bg-hover);
         }
 
         .breadcrumb-item.active {
