@@ -70,6 +70,40 @@ Complete list of all tickets with brief descriptions.
 
 ---
 
+## Epic 3: Frontend Development (20 tasks)
+
+### Story 3.1: Project Detail View Structure → **PR #12** ✅ Human approval required
+- **TASK-3.1.1** - Create project detail page component structure ✅ COMPLETE
+- **TASK-3.1.2** - Add routing from dashboard to detail view
+- **TASK-3.1.3** - Implement breadcrumb navigation with back button
+
+### Story 3.2: Configuration Cards Layout → **PR #13-17** ✅ Human approval required
+- **TASK-3.2.1** - Create card grid layout for 4 config types
+- **TASK-3.2.2** - Build Agents card component with API integration
+- **TASK-3.2.3** - Build Commands card component with API integration
+- **TASK-3.2.4** - Build Hooks card component with API integration
+- **TASK-3.2.5** - Build MCP Servers card component with API integration
+
+### Story 3.3: Detail Sidebar/Panel → **PR #18-23** ✅ Human approval required
+- **TASK-3.3.1** - Create detail sidebar component structure
+- **TASK-3.3.2** - Implement sidebar open/close functionality
+- **TASK-3.3.3** - Add body scroll lock when sidebar open
+- **TASK-3.3.4** - Implement sidebar content scrolling
+- **TASK-3.3.5** - Add syntax highlighting for code content
+- **TASK-3.3.6** - Add copy-to-clipboard functionality
+
+### Story 3.4: User/Global Configuration View → **PR #24-26** ✅ Human approval required
+- **TASK-3.4.1** - Create user/global view page component
+- **TASK-3.4.2** - Implement navigation to user view
+- **TASK-3.4.3** - Display user-level configs in cards
+
+### Story 3.5: Integration & Testing → **PR #27-29** ✅ Human approval required
+- **TASK-3.5.1** - End-to-end integration testing
+- **TASK-3.5.2** - Cross-browser compatibility verification
+- **TASK-3.5.3** - Responsive design testing
+
+---
+
 ## PR Approval Summary
 
 | PR # | Story | Human Approval | Notes |
@@ -85,17 +119,33 @@ Complete list of all tickets with brief descriptions.
 | PR #9 | 2.3 | ✅ Required | Utilities & parsers |
 | PR #10 | 2.4 | ❌ Not required | API endpoints (code-reviewer only) |
 | PR #11 | 2.5 | ❌ Not required | Error handling (code-reviewer only) |
+| PR #12 | 3.1 | ✅ Required | Project detail view structure |
+| PR #13 | 3.2.1 | ✅ Required | Card grid layout |
+| PR #14 | 3.2.2 | ✅ Required | Agents card component |
+| PR #15 | 3.2.3 | ✅ Required | Commands card component |
+| PR #16 | 3.2.4 | ✅ Required | Hooks card component |
+| PR #17 | 3.2.5 | ✅ Required | MCP card component |
+| PR #18 | 3.3.1-2 | ✅ Required | Sidebar structure & functionality |
+| PR #19 | 3.3.3-4 | ✅ Required | Sidebar scrolling |
+| PR #20 | 3.3.5-6 | ✅ Required | Syntax highlighting & copy |
+| PR #21 | 3.4 | ✅ Required | User/global configuration view |
+| PR #22 | 3.5.1 | ✅ Required | Integration testing |
+| PR #23 | 3.5.2-3 | ✅ Required | Cross-browser & responsive testing |
 
-**Total PRs requiring human approval:** 9 out of 11
+**Total PRs requiring human approval:** 21 out of 23
 
 ---
 
 ## Key Milestones
 
-1. **After PR #1-5** - All wireframe designs complete
-2. **After PR #6** - Wireframes approved, frontend can begin (PHASE GATE)
-3. **After PR #7-9** - Backend foundation complete with quality baseline established
-4. **After PR #10-11** - Backend fully functional with all API endpoints
+1. **After PR #1-5** - All wireframe designs complete ✅ COMPLETE
+2. **After PR #6** - Wireframes approved, frontend can begin (PHASE GATE) ✅ COMPLETE
+3. **After PR #7-9** - Backend foundation complete with quality baseline established ✅ COMPLETE
+4. **After PR #10-11** - Backend fully functional with all API endpoints ✅ COMPLETE
+5. **After PR #12-17** - Project detail view with all configuration cards complete
+6. **After PR #18-20** - Detail sidebar with syntax highlighting complete
+7. **After PR #21** - User/global configuration view complete
+8. **After PR #22-23** - Full integration testing and Phase 1 MVP COMPLETE
 
 ---
 
@@ -103,6 +153,7 @@ Complete list of all tickets with brief descriptions.
 
 - [README.md](README.md) - Full ticket list with detailed information
 - [PR-Workflow.md](PR-Workflow.md) - Complete PR workflow and approval process
-- [EPIC-1.md](EPIC-1.md) - Epic 1 overview
-- [EPIC-2.md](EPIC-2.md) - Epic 2 overview
-- Individual tickets: `TASK-X.X.X.md`
+- [epic-1-wireframes/EPIC-1.md](epic-1-wireframes/EPIC-1.md) - Epic 1 overview (COMPLETE)
+- [epic-2-backend/EPIC-2.md](epic-2-backend/EPIC-2.md) - Epic 2 overview (COMPLETE)
+- [epic-3-frontend/EPIC-3.md](epic-3-frontend/EPIC-3.md) - Epic 3 overview (IN PROGRESS)
+- Individual tickets: `epic-X-*/TASK-X.X.X.md`
