@@ -223,7 +223,7 @@ This project enforces a **feature branch workflow** to ensure code quality and e
 ### Feature Branch Workflow
 
 ```bash
-# 1. Create a feature branch from main
+# 1. Create a feature branch from main BEFORE starting work
 git checkout main
 git pull
 git checkout -b feature/your-feature-name
@@ -235,13 +235,17 @@ git checkout -b feature/your-feature-name
 npm test  # or manual testing
 
 # 4. Commit frequently (every 15-30 min)
+# IMPORTANT: Verify you're on feature branch before committing
+git branch --show-current  # Should show feature/your-feature-name
 git add <files>
 git commit -m "type: brief description"
 
-# 5. Push your feature branch
+# 5. Push your feature branch (gh pr create will do this automatically)
 git push -u origin feature/your-feature-name
 
 # 6. Create a Pull Request on GitHub
+# IMPORTANT: Create PR from feature branch, do NOT checkout to main first
+# The gh pr create command works from the feature branch
 gh pr create --title "..." --body "..."
 
 # 7. After PR approval, merge and delete branch
@@ -250,6 +254,10 @@ git checkout main
 git pull
 git branch -d feature/your-feature-name
 ```
+
+**Common Mistake to Avoid:**
+- ❌ **DO NOT** checkout to main to create the PR - this often leads to accidentally committing on main
+- ✅ **DO** stay on your feature branch and run `gh pr create` directly from there
 
 ### Branch Naming Conventions
 
