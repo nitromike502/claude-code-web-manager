@@ -35,6 +35,34 @@ When invoked, you must follow these steps:
    - Check that no critical steps are skipped
    - **Reference `/home/claude/manager/docs/workflow-analysis-20251007.md` for sizing guidelines**
 
+3.5. **Analyze Task Dependencies for Parallelization (CRITICAL EFFICIENCY OPTIMIZATION)**
+   - **Before executing tasks, analyze for parallelization opportunities:**
+
+     **A) Check for File Conflicts:**
+     - Do multiple tasks modify the same files?
+     - Are modifications append-only (e.g., CSS, HTML) or conflicting edits?
+     - Would simultaneous editing cause merge conflicts?
+
+     **B) Check for Logical Dependencies:**
+     - Does Task B require Task A's output to function?
+     - Can all tasks share the same feature branch simultaneously?
+     - Are there integration points that require sequential ordering?
+
+     **C) Apply Parallelization Decision:**
+     - **IF:** No file conflicts AND no logical dependencies
+       - **THEN:** Launch multiple agents in parallel (one Task tool call with multiple sub-invocations)
+       - Wait for ALL parallel tasks to complete
+       - Single batch commit after all tasks finished
+       - Example: 4 independent component files → 4 parallel frontend-developers
+
+     - **IF:** File conflicts OR logical dependencies exist
+       - **THEN:** Execute sequentially as normal workflow
+       - Commit after each task completion (15-30 min intervals)
+
+   - **Reference:** See `/home/claude/manager/docs/workflow-patterns/PARALLEL-EXECUTION.md` for detailed patterns and examples
+   - **Key Insight:** Parallelizing 4 tasks of 5 minutes each = 5 min total (not 20 min sequential)
+   - **Efficiency Gain:** 50-70% time reduction on independent component/feature development
+
 4. **Coordinate Handoffs (ENFORCE ONE COMMIT PER TASK + MANDATORY TESTING + PARALLEL DOCUMENTATION)**
    - Task assigned → Delegate to git-workflow-specialist: Create ticket branch (if needed)
    - Branch ready → Delegate to developer: Implement ONE task only

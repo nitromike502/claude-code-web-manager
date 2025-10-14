@@ -331,13 +331,17 @@ This resulted in **350+ errors** and lost work. The new workflow prevents these 
 - **Debugging:** Easier to identify when/where bugs were introduced
 
 **How to implement:**
+
+#### Default: Sequential Work
+When tasks must be completed in order:
+
 1. **Start task** → Work on feature
 2. **Complete task** → Test immediately
 3. **Tests pass** → Commit immediately with task reference
 4. **Push to remote** → Make work visible
 5. **Start next task** → Repeat cycle
 
-**Example workflow:**
+**Example (Sequential):**
 ```
 Task 3.2.1: Create AgentCard component
 → Implement component (20 min)
@@ -358,9 +362,41 @@ Task 3.2.3: Add agent action buttons
 → Push to origin
 ```
 
-**Never bundle tasks:**
-- ❌ BAD: "feat: implement agent card with metadata and buttons (Tasks 3.2.1-3.2.3)"
-- ✅ GOOD: Three separate commits, one per task
+#### Exception: Parallel Work
+When multiple tasks have **no dependencies** and **no file conflicts**, they can be executed in parallel with a batch commit:
+
+**Criteria for parallel execution:**
+- ✅ Independent files (or append-only shared files)
+- ✅ No logical dependencies between tasks
+- ✅ Same feature branch
+- ✅ Similar scope (15-30 min each)
+
+**Example (Parallel):**
+```
+Tasks 3.2.1-3.2.4: Four independent component files
+→ Launch 4 agents in parallel (00:00)
+→ Agent 1: AgentCard.js (6 min)
+→ Agent 2: CommandCard.js (4 min)
+→ Agent 3: HookCard.js (3 min)
+→ Agent 4: MCPCard.js (3 min)
+→ All complete at 00:06 (longest task)
+→ Batch commit: "feat: implement configuration cards for all 4 types (Tasks 3.2.1-3.2.4)"
+→ Push to origin
+
+Time savings: 20 min sequential → 6 min parallel (70% reduction)
+```
+
+**Commit timing for parallel work:**
+- Parallel execution: 4 tasks × 5 min = 5 min total (not 20 min)
+- Single batch commit after all complete
+- Still maintains "commit every 15-30 min" guideline if total parallel time < 30 min
+
+**Reference:** See `docs/workflow-patterns/PARALLEL-EXECUTION.md` for detailed patterns
+
+**Never bundle independent sequential tasks:**
+- ❌ BAD (Sequential): "feat: implement agent card with metadata and buttons (Tasks 3.2.1-3.2.3)"
+- ✅ GOOD (Sequential): Three separate commits, one per task
+- ✅ GOOD (Parallel): "feat: implement 4 configuration cards (Tasks 3.2.1-3.2.4)" - if truly parallel execution
 
 **Exception:** Only bundle related changes if they are part of the same atomic task (e.g., fixing a typo in documentation doesn't need its own commit if it's noticed during the same task).
 

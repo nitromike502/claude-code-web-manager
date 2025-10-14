@@ -8,6 +8,12 @@ This file tracks ideas, issues, and tasks to address at a later time.
 
 ## Pending Tasks
 
+### Workflow Analyzer Script Integration
+- [ ] Update `/analyze-workflow` slash command to utilize condense-transcript.js helper script
+- [ ] Update `workflow-analyzer` agent instructions to leverage condense-transcript.js for large transcripts
+- [ ] Add documentation in workflow-analyzer about when/how to use the transcript condenser
+- [ ] Test workflow analysis with condensed vs. raw transcripts for efficiency comparison
+
 ### NPX Support for Claude Code Manager
 - [ ] Add NPX support to allow running the tool without installation
 - [ ] Create appropriate package.json configuration for NPX execution
