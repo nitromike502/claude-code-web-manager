@@ -661,3 +661,97 @@
     justify-content: center;
   }
 }
+
+/* CommandCard Specific Styles */
+.command-card .card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.25rem;
+  background-color: var(--bg-tertiary);
+  border-bottom: 1px solid var(--border-primary);
+}
+
+.command-card .card-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text-emphasis);
+}
+
+.command-card .card-icon {
+  font-size: 1.5rem;
+  color: var(--color-commands);
+}
+
+.command-card .count-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 0.5rem;
+  background-color: var(--color-commands);
+  color: white;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.command-card .card-content {
+  padding: 0;
+}
+
+/* Command List */
+.command-list {
+  padding: 0;
+}
+
+.command-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--border-secondary);
+  transition: background-color 150ms ease;
+  cursor: pointer;
+}
+
+.command-item:last-child {
+  border-bottom: none;
+}
+
+.command-item:hover {
+  background-color: var(--bg-hover);
+}
+
+.command-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.command-name {
+  font-weight: 600;
+  color: var(--text-emphasis);
+  margin-bottom: 0.25rem;
+  font-family: 'Courier New', monospace;
+}
+
+.command-description {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Responsive for CommandCard */
+@media (max-width: 767px) {
+  .command-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+}

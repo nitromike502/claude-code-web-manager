@@ -88,6 +88,11 @@
                         :project-id="projectId"
                         @view-details="viewAgentDetails"
                     ></agent-card>
+
+                    <command-card
+                        :project-id="projectId"
+                        @view-details="viewCommandDetails"
+                    ></command-card>
                 </div>
             </div>
         </main>
@@ -96,9 +101,10 @@
     <!-- Vue 3 CDN -->
     <script src="https://cdn.jsdelivr.net/npm/vue@3.5.22/dist/vue.global.prod.js"></script>
 
-    <!-- Import AgentCard Component -->
+    <!-- Import Components -->
     <script type="module">
         import AgentCard from './components/AgentCard.js';
+        import CommandCard from './components/CommandCard.js';
 
         const { createApp } = Vue;
 
@@ -195,12 +201,19 @@
                     // Handle agent details viewing (will be expanded in later tasks)
                     console.log('View agent details:', data);
                     // Future: Open sidebar with agent details
+                },
+
+                viewCommandDetails(data) {
+                    // Handle command details viewing (will be expanded in later tasks)
+                    console.log('View command details:', data);
+                    // Future: Open sidebar with command details
                 }
             }
         });
 
-        // Register AgentCard component
+        // Register components
         app.component('agent-card', AgentCard);
+        app.component('command-card', CommandCard);
 
         // Mount the app
         app.mount('#app');
