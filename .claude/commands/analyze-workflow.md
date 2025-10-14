@@ -103,90 +103,66 @@ First, parse `$ARGUMENTS` to handle 4 scenarios:
    - Count total log files
    - Identify file types (e.g., `*.log`, `*.md`, session transcripts)
    - Look for patterns suggesting multiple sessions within the same date
-3. Inform the user:
+3. **Gather file size information** using `ls -lh` or `du -h`:
+   - Get sizes of main session transcript(s)
+   - Count and size subagent transcripts
+   - This information helps workflow-analyzer decide optimization strategies
+4. Inform the user:
    - If NO additional instructions provided:
      ```
      Analyzing session logs from: /home/claude/manager/.claude/logs/{YYYYMMDD}/
      Found {count} log files to analyze.
+     Main transcript: {size}
+     Subagent transcripts: {count} files
      ```
    - If additional instructions provided:
      ```
      Analyzing session logs from: /home/claude/manager/.claude/logs/{YYYYMMDD}/
      Found {count} log files to analyze.
+     Main transcript: {size}
+     Subagent transcripts: {count} files
      Custom focus: "{instructions}"
      ```
 
 ### Step 3: Delegate to Workflow Analyzer
 
-Invoke the `workflow-analyzer` subagent using the Task tool with the following instructions:
+Invoke the `workflow-analyzer` subagent using the Task tool with high-level instructions that allow the agent to use its expertise.
 
-**Critical Instructions for workflow-analyzer:**
+**Task Prompt Structure:**
 
-**If additional instructions were provided:**
-- Pass them as additional context at the top of the Task prompt
-- Format: "**Additional Focus Areas (User-Provided):** {instructions}"
-- Instruct workflow-analyzer to emphasize these areas in the analysis while still performing comprehensive analysis
-- Highlight findings related to these instructions in the report
+```
+Analyze Claude Code session from {date} ({YYYYMMDD})
 
-1. **Log Directory:** Analyze all files in `/home/claude/manager/.claude/logs/{YYYYMMDD}/`
+**Session Information:**
+- Date: {formatted date}
+- Log Directory: /home/claude/manager/.claude/logs/{YYYYMMDD}/
+- Main Transcript(s): {filename(s)} ({size(s)})
+- Subagent Transcripts: {count} files ({size range if applicable})
+- Total Log Files: {count}
 
-2. **Multiple Sessions Detection:**
-   - There may be MULTIPLE distinct development sessions within a single date directory
-   - Identify session boundaries by analyzing:
-     - Timestamps and time gaps between log entries
-     - Session initialization markers or conversation starts
-     - File naming patterns (e.g., `session-1.log`, `session-2.log`, or timestamped files)
-     - Context shifts indicating a new conversation or task
-   - If multiple sessions detected, clearly separate them in your analysis
+{If additional instructions provided:}
+**User-Provided Focus Areas:**
+{instructions}
 
-3. **Subagent Transcript Matching:**
-   - Attempt to correlate subagent transcripts with their corresponding main agent sessions
-   - Use these correlation strategies:
-     - **Timestamps:** Match subagent invocation times with main agent logs
-     - **Session IDs:** Look for session identifiers in log file names or metadata
-     - **Task Context:** Match task descriptions in main agent logs with subagent activities
-     - **File Naming Patterns:** Identify naming conventions that link files (e.g., `main-{id}.log` and `subagent-{id}.log`)
-   - If correlation is ambiguous, note this in your analysis and analyze what you can determine
+**Your Task:**
+Analyze this Claude Code development session following your standard workflow analysis process. Use your expertise to determine the most effective analysis approach based on transcript sizes and complexity. Provide a comprehensive report with actionable recommendations for workflow improvements.
 
-4. **Comprehensive Analysis:**
-   - Parse ALL log files in the target directory
-   - Map the complete workflow: user requests → task breakdown → subagent selection → execution → results
-   - Evaluate subagent selection appropriateness and handoff effectiveness
-   - Identify workflow efficiency issues, redundancies, and bottlenecks
-   - Assess code quality, documentation consistency, and adherence to project standards (CLAUDE.md)
-   - Note any tool misuse, permission issues, or context loss between handoffs
+**Important Context:**
+- Multiple sessions may exist within the date directory - identify session boundaries
+- Correlate subagent transcripts with main session using timestamps, session IDs, task context, and file naming patterns
+- If correlation is ambiguous or sessions overlap, note this in your analysis
+- Consider edge cases: corrupted files, permission issues, incomplete logs
 
-5. **Metrics to Extract:**
-   - Tasks completed vs. attempted (per session if multiple)
-   - Subagents utilized with frequency counts
-   - Tool usage statistics (Read, Write, Edit, Bash, Grep, Glob, etc.)
-   - Estimated duration (if timestamps available)
-   - Number of iterations or corrections required
-   - Completion rate percentage
+**Deliverable:**
+Present your analysis report directly in the conversation using your standard format with clear markdown, prioritized recommendations, and specific log references.
+```
 
-6. **Multi-Session Handling:**
-   - If multiple distinct sessions exist within the date:
-     - Provide a **per-session breakdown** with individual metrics and findings
-     - Also provide an **aggregate summary** showing patterns across all sessions
-     - Highlight differences between sessions (e.g., Session 1 was more efficient than Session 2)
-
-7. **Report Structure:**
-   Follow the standard workflow-analyzer report format:
-   - Executive Summary (mention number of sessions if multiple)
-   - Session Metrics (aggregate + per-session breakdown if applicable)
-   - Strengths Observed
-   - Issues and Inefficiencies Identified (with severity: High/Medium/Low)
-   - Workflow Analysis (task decomposition, handoffs, parallelization opportunities, bottlenecks)
-   - Code and Documentation Quality
-   - Recommendations (prioritized: High/Medium/Low)
-   - Examples from Logs (specific excerpts with references)
-   - Conclusion
-
-8. **Output Format:**
-   - Present the report directly to the user in the conversation
-   - Use clear markdown formatting with headers, lists, and code blocks
-   - Highlight critical findings with bold text
-   - Include specific log references (file names and line numbers) for all findings
+**Key Principles:**
+- Provide file size information so the agent can decide whether to use the transcript condenser tool
+- Trust the agent's built-in process (including Step 0: Assess Transcript Size)
+- Give high-level guidance, not step-by-step prescriptive instructions
+- Let the agent determine optimal analysis strategies based on data characteristics
+- Preserve essential context about multiple sessions, correlation strategies, and edge cases
 
 ### Step 4: Follow-Up Options
 

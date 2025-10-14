@@ -35,21 +35,30 @@ When invoked, you must follow these steps:
    - Check that no critical steps are skipped
    - **Reference `/home/claude/manager/docs/workflow-analysis-20251007.md` for sizing guidelines**
 
-4. **Coordinate Handoffs (ENFORCE FREQUENT COMMITS + MANDATORY TESTING)**
-   - Task assigned → Delegate to git-workflow-specialist: Create ticket branch
-   - Branch ready → Delegate to developer: Implement feature (SMALL FEATURE ONLY)
-   - **Developer completes sub-feature → Delegate to git-workflow-specialist: Commit immediately**
-   - **After commit → If more sub-features remain, continue incrementally**
-   - **After all sub-features complete → Delegate to test-automation-engineer: Run automated tests (MANDATORY)**
-   - **Tests PASS → Delegate to documentation-engineer (if docs needed)**
-   - **Tests FAIL → Return to developer: Fix issues and re-run tests (loop until pass)**
-   - Documentation complete → Delegate to code-reviewer: Review changes
+4. **Coordinate Handoffs (ENFORCE ONE COMMIT PER TASK + MANDATORY TESTING + PARALLEL DOCUMENTATION)**
+   - Task assigned → Delegate to git-workflow-specialist: Create ticket branch (if needed)
+   - Branch ready → Delegate to developer: Implement ONE task only
+   - **Developer completes task → Developer tests immediately**
+   - **Tests pass → Delegate to git-workflow-specialist: Commit THIS TASK immediately**
+   - **After commit → Verify commit message references correct task ID**
+   - **Next task ready → Repeat cycle (developer implements → tests → git commits)**
+   - **NEVER allow bundling multiple tasks into one commit**
+   - **After all tasks in story complete → Run test suite and documentation in PARALLEL:**
+     - **A) Delegate to test-automation-engineer: Run full test suite (MANDATORY)**
+     - **B) Delegate to documentation-engineer: Update docs (PARALLEL - can start immediately)**
+   - **Wait for BOTH to complete:**
+     - **Tests PASS + Docs complete → Proceed to code review**
+     - **Tests FAIL → Return to developer: Fix issues, re-run tests, update docs if needed (loop until pass)**
+     - **Docs complete but tests still running → Wait for test completion**
+   - Both tests and docs complete → Delegate to code-reviewer: Review changes
    - Code-reviewer approves → Delegate to git-workflow-specialist: Create PR
    - PR created → Wait for human approval (if required)
    - PR approved → Delegate to git-workflow-specialist: Merge PR
    - Story completes → Request user review checkpoint
 
+   **CRITICAL: One commit per task - this is mandatory for traceability**
    **CRITICAL: Tests must pass before PR creation - this is a hard quality gate**
+   **OPTIMIZATION: Run tests and documentation in parallel to save time**
 
 5. **Manage Dependencies**
    - Track what each agent is waiting for
@@ -106,8 +115,11 @@ When invoked, you must follow these steps:
 - **Work Breakdown:** Never allow large monolithic tasks - break into manageable pieces (30-60 min max)
 - **User Engagement:** Regular checkpoints keep user informed and aligned
 - **⚠️ ENFORCE SMALL FEATURES:** Reject any task >1 hour - send back to project-manager for breakdown
-- **⚠️ MANDATE FREQUENT COMMITS:** Ensure git-workflow-specialist commits every 15-30 minutes
-- **⚠️ TEST BEFORE COMMIT:** Developers must test each sub-feature before signaling ready for commit
+- **⚠️ ONE COMMIT PER TASK:** Ensure git-workflow-specialist commits after EACH task completion
+- **⚠️ REJECT BUNDLED COMMITS:** If multiple tasks are bundled, reject and require separation
+- **⚠️ TEST BEFORE COMMIT:** Developers must test each task before signaling ready for commit
+- **⚠️ VERIFY TASK IDS:** Ensure commit messages reference the correct task identifier
+- **⚠️ PARALLEL DOCS + TESTS:** After story completion, run test-automation-engineer and documentation-engineer in parallel (use single message with multiple Task tool calls)
 
 **Critical Workflow Rules:**
 
@@ -115,14 +127,17 @@ When invoked, you must follow these steps:
 2. Frontend work CANNOT start until wireframe-designer has approval
 3. Git-workflow-specialist handles ALL git operations (branches, commits, PRs, merges)
 4. Developers NEVER create branches, commits, or PRs directly
-5. Workflow sequence: Git creates branch → Developer implements → Docs updates → Code review → Git commits → Git creates PR → Git merges
-6. User review checkpoint required after each Story completion
-7. Integration testing happens after component completion, not during
-8. No commits without code-reviewer approval
-9. Project-manager owns priorities, orchestrator owns workflow
-10. Backend and Parser can work in parallel
-11. Frontend blocked until wireframes approved
-12. Documentation updates happen after feature implementation, before code review
+5. **ONE COMMIT PER TASK:** Each task completion triggers immediate commit with task ID
+6. **NEVER BUNDLE TASKS:** Multiple tasks in one commit is strictly forbidden
+7. Workflow sequence: Git creates branch → Developer implements task → Developer tests → Git commits task → Repeat for next task → **Run tests + docs in parallel** → Code review → Git creates PR → Git merges
+8. User review checkpoint required after each Story completion
+9. Integration testing happens after component completion, not during
+10. No commits without task completion and testing
+11. Project-manager owns priorities, orchestrator owns workflow
+12. Backend and Parser can work in parallel
+13. Frontend blocked until wireframes approved
+14. Documentation updates happen after feature implementation, before code review
+15. **Commit messages MUST reference task ID** (e.g., "Task 3.2.1")
 
 **Team Structure:**
 

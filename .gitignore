@@ -162,5 +162,11 @@ vite.config.js
 test-results/
 playwright-report/
 
+# Visual regression test artifacts (keep baselines, ignore diffs)
+# Baselines (*-snapshots/) are committed to git
+# Actual/diff images are generated during failed tests and should be ignored
+*-actual.png
+*-diff.png
+
 # Deleted files directory (for manual cleanup)
 .deleted/
