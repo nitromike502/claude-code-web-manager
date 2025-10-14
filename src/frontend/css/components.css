@@ -431,3 +431,588 @@
     width: 100%;
   }
 }
+
+/* AgentCard Specific Styles */
+.agent-card .card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.25rem;
+  background-color: var(--bg-tertiary);
+  border-bottom: 1px solid var(--border-primary);
+}
+
+.agent-card .card-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text-emphasis);
+}
+
+.agent-card .card-icon {
+  font-size: 1.5rem;
+  color: var(--color-agents);
+}
+
+.agent-card .count-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 0.5rem;
+  background-color: var(--color-agents);
+  color: white;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.agent-card .card-content {
+  padding: 0;
+}
+
+/* Loading Skeleton */
+.loading-skeleton {
+  padding: 1rem 1.25rem;
+}
+
+.skeleton-item {
+  height: 60px;
+  background: linear-gradient(
+    90deg,
+    var(--bg-tertiary) 25%,
+    var(--bg-hover) 50%,
+    var(--bg-tertiary) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+  border-radius: 4px;
+  margin-bottom: 0.75rem;
+}
+
+.skeleton-item:last-child {
+  margin-bottom: 0;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Error Message */
+.error-message {
+  padding: 2rem 1.25rem;
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+.error-message i {
+  font-size: 2rem;
+  color: #ef4444;
+  margin-bottom: 0.75rem;
+}
+
+.error-message p {
+  margin: 0 0 1rem 0;
+  font-size: 0.875rem;
+}
+
+.btn-retry-small {
+  padding: 0.5rem 1rem;
+  background-color: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.btn-retry-small:hover {
+  background-color: var(--color-primary-hover);
+  transform: translateY(-1px);
+}
+
+/* Empty State */
+.empty-state {
+  padding: 3rem 1.25rem;
+  text-align: center;
+  color: var(--text-muted);
+}
+
+.empty-icon {
+  font-size: 3rem;
+  opacity: 0.3;
+  margin-bottom: 0.75rem;
+}
+
+.empty-state p {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+/* Agent List */
+.agent-list {
+  padding: 0;
+}
+
+.agent-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--border-secondary);
+  transition: background-color 150ms ease;
+  cursor: pointer;
+}
+
+.agent-item:last-child {
+  border-bottom: none;
+}
+
+.agent-item:hover {
+  background-color: var(--bg-hover);
+}
+
+.agent-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.agent-name {
+  font-weight: 600;
+  color: var(--text-emphasis);
+  margin-bottom: 0.25rem;
+}
+
+.agent-description {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.btn-view-details {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background-color: transparent;
+  color: var(--color-primary);
+  border: 1px solid var(--color-primary);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  margin-left: 1rem;
+}
+
+.btn-view-details:hover {
+  background-color: var(--color-primary);
+  color: white;
+}
+
+.btn-view-details i {
+  font-size: 0.875rem;
+}
+
+/* Show More Button */
+.btn-show-more {
+  width: 100%;
+  padding: 0.75rem 1.25rem;
+  background-color: transparent;
+  color: var(--color-primary);
+  border: none;
+  border-top: 1px solid var(--border-secondary);
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.btn-show-more:hover {
+  background-color: var(--bg-hover);
+}
+
+/* Responsive */
+@media (max-width: 767px) {
+  .agent-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .btn-view-details {
+    margin-left: 0;
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* CommandCard Specific Styles */
+.command-card .card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.25rem;
+  background-color: var(--bg-tertiary);
+  border-bottom: 1px solid var(--border-primary);
+}
+
+.command-card .card-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text-emphasis);
+}
+
+.command-card .card-icon {
+  font-size: 1.5rem;
+  color: var(--color-commands);
+}
+
+.command-card .count-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 0.5rem;
+  background-color: var(--color-commands);
+  color: white;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.command-card .card-content {
+  padding: 0;
+}
+
+/* Command List */
+.command-list {
+  padding: 0;
+}
+
+.command-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--border-secondary);
+  transition: background-color 150ms ease;
+  cursor: pointer;
+}
+
+.command-item:last-child {
+  border-bottom: none;
+}
+
+.command-item:hover {
+  background-color: var(--bg-hover);
+}
+
+.command-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.command-name {
+  font-weight: 600;
+  color: var(--text-emphasis);
+  margin-bottom: 0.25rem;
+  font-family: 'Courier New', monospace;
+}
+
+.command-description {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Responsive for CommandCard */
+@media (max-width: 767px) {
+  .command-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+}
+
+/* HookCard Specific Styles */
+.hook-card .card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.25rem;
+  background-color: var(--bg-tertiary);
+  border-bottom: 1px solid var(--border-primary);
+}
+
+.hook-card .card-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text-emphasis);
+}
+
+.hook-card .card-icon {
+  font-size: 1.5rem;
+  color: var(--color-hooks);
+}
+
+.hook-card .count-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 0.5rem;
+  background-color: var(--color-hooks);
+  color: white;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.hook-card .card-content {
+  padding: 0;
+}
+
+/* Hook List */
+.hook-list {
+  padding: 0;
+}
+
+.hook-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--border-secondary);
+  transition: background-color 150ms ease;
+  cursor: pointer;
+}
+
+.hook-item:last-child {
+  border-bottom: none;
+}
+
+.hook-item:hover {
+  background-color: var(--bg-hover);
+}
+
+.hook-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.hook-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.375rem;
+}
+
+.hook-event {
+  font-weight: 600;
+  color: var(--text-emphasis);
+  font-size: 0.9375rem;
+}
+
+.scope-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.125rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.scope-badge.scope-user {
+  background-color: rgba(168, 85, 247, 0.15);
+  color: var(--color-mcp);
+  border: 1px solid rgba(168, 85, 247, 0.3);
+}
+
+.scope-badge.scope-project {
+  background-color: rgba(249, 115, 22, 0.15);
+  color: var(--color-hooks);
+  border: 1px solid rgba(249, 115, 22, 0.3);
+}
+
+.hook-command {
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  font-family: 'Courier New', monospace;
+  margin-bottom: 0.25rem;
+  word-break: break-word;
+}
+
+.hook-description {
+  color: var(--text-secondary);
+  font-size: 0.8125rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Responsive for HookCard */
+@media (max-width: 767px) {
+  .hook-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .hook-header {
+    flex-wrap: wrap;
+  }
+}
+
+/* MCPCard Specific Styles */
+.mcp-card .card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.25rem;
+  background-color: var(--bg-tertiary);
+  border-bottom: 1px solid var(--border-primary);
+}
+
+.mcp-card .card-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text-emphasis);
+}
+
+.mcp-card .card-icon {
+  font-size: 1.5rem;
+  color: var(--color-mcp);
+}
+
+.mcp-card .count-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 0.5rem;
+  background-color: var(--color-mcp);
+  color: white;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.mcp-card .card-content {
+  padding: 0;
+}
+
+/* MCP Server List */
+.mcp-list {
+  padding: 0;
+}
+
+.mcp-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--border-secondary);
+  transition: background-color 150ms ease;
+  cursor: pointer;
+}
+
+.mcp-item:last-child {
+  border-bottom: none;
+}
+
+.mcp-item:hover {
+  background-color: var(--bg-hover);
+}
+
+.mcp-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.mcp-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.375rem;
+  flex-wrap: wrap;
+}
+
+.mcp-name {
+  font-weight: 600;
+  color: var(--text-emphasis);
+  font-size: 0.9375rem;
+}
+
+.mcp-badges {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.transport-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.125rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+  background-color: rgba(168, 85, 247, 0.15);
+  color: var(--color-mcp);
+  border: 1px solid rgba(168, 85, 247, 0.3);
+}
+
+.mcp-command {
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  font-family: 'Courier New', monospace;
+  word-break: break-word;
+}
+
+/* Responsive for MCPCard */
+@media (max-width: 767px) {
+  .mcp-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .mcp-header {
+    flex-wrap: wrap;
+  }
+}

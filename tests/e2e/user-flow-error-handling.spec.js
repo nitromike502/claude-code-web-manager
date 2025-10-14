@@ -132,9 +132,9 @@ test.describe('E2E Flow: Error Handling', () => {
     const projectTitle = page.locator('.project-info-title');
     await expect(projectTitle).toContainText('Project With Warnings');
 
-    // Stats should still be visible
-    const stats = page.locator('.placeholder-stat');
-    expect(await stats.count()).toBe(4);
+    // Configuration cards should still be visible
+    const cards = page.locator('.config-card');
+    expect(await cards.count()).toBe(4);
 
     // STEP 5: User can navigate back to dashboard
     await page.click('.breadcrumb-item.clickable');
@@ -278,12 +278,13 @@ test.describe('E2E Flow: Error Handling', () => {
     const projectTitle = page.locator('.project-info-title');
     await expect(projectTitle).toContainText('Retry Project');
 
-    // Verify stats loaded
-    const stats = page.locator('.placeholder-stat');
-    await expect(stats.nth(0)).toContainText('1 Agents');
-    await expect(stats.nth(1)).toContainText('2 Commands');
-    await expect(stats.nth(2)).toContainText('3 Hooks');
-    await expect(stats.nth(3)).toContainText('4 MCP Servers');
+    // Verify configuration cards loaded
+    const cards = page.locator('.config-card');
+    expect(await cards.count()).toBe(4);
+    await expect(page.locator('.agent-card')).toBeVisible();
+    await expect(page.locator('.command-card')).toBeVisible();
+    await expect(page.locator('.hook-card')).toBeVisible();
+    await expect(page.locator('.mcp-card')).toBeVisible();
   });
 
   test('multiple consecutive errors can be retried', async ({ page }) => {

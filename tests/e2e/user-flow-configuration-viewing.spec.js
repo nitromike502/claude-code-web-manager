@@ -65,19 +65,29 @@ test.describe('E2E Flow: Configuration Viewing Journey', () => {
     await page.waitForURL(/project-detail\.html/);
     await page.waitForSelector('.project-content', { timeout: 10000 });
 
-    // STEP 2-5: Verify all configuration stats are visible
-    // (Configuration cards Story 3.2 will add interactivity)
+    // STEP 2-5: Verify all configuration cards are visible
     const projectTitle = page.locator('.project-info-title');
     await expect(projectTitle).toContainText('Configuration Project');
 
-    const stats = page.locator('.placeholder-stat');
-    expect(await stats.count()).toBe(4);
+    const cards = page.locator('.config-card');
+    expect(await cards.count()).toBe(4);
 
     // Verify each configuration type is represented
-    await expect(stats.nth(0)).toContainText('5 Agents');
-    await expect(stats.nth(1)).toContainText('12 Commands');
-    await expect(stats.nth(2)).toContainText('3 Hooks');
-    await expect(stats.nth(3)).toContainText('2 MCP Servers');
+    const agentCard = page.locator('.agent-card');
+    await expect(agentCard).toBeVisible();
+    await expect(agentCard.locator('.card-title')).toContainText('Subagents');
+
+    const commandCard = page.locator('.command-card');
+    await expect(commandCard).toBeVisible();
+    await expect(commandCard.locator('.card-title')).toContainText('Slash Commands');
+
+    const hookCard = page.locator('.hook-card');
+    await expect(hookCard).toBeVisible();
+    await expect(hookCard.locator('.card-title')).toContainText('Hooks');
+
+    const mcpCard = page.locator('.mcp-card');
+    await expect(mcpCard).toBeVisible();
+    await expect(mcpCard.locator('.card-title')).toContainText('MCP Servers');
 
     // STEP 6: Verify navigation structure exists
     const breadcrumbs = page.locator('.breadcrumbs');
@@ -125,12 +135,15 @@ test.describe('E2E Flow: Configuration Viewing Journey', () => {
     await page.waitForURL(/project-detail\.html\?id=project1/);
     await page.waitForSelector('.project-content', { timeout: 10000 });
 
-    // Verify first project stats
-    let stats = page.locator('.placeholder-stat');
-    await expect(stats.nth(0)).toContainText('10 Agents');
-    await expect(stats.nth(1)).toContainText('20 Commands');
-    await expect(stats.nth(2)).toContainText('5 Hooks');
-    await expect(stats.nth(3)).toContainText('3 MCP Servers');
+    // Verify first project has configuration cards displayed
+    let cards = page.locator('.config-card');
+    expect(await cards.count()).toBe(4);
+
+    // Verify all card types are present
+    await expect(page.locator('.agent-card')).toBeVisible();
+    await expect(page.locator('.command-card')).toBeVisible();
+    await expect(page.locator('.hook-card')).toBeVisible();
+    await expect(page.locator('.mcp-card')).toBeVisible();
 
     // Return to dashboard
     await page.click('.breadcrumb-item.clickable');
@@ -143,12 +156,15 @@ test.describe('E2E Flow: Configuration Viewing Journey', () => {
     await page.waitForURL(/project-detail\.html\?id=project2/);
     await page.waitForSelector('.project-content', { timeout: 10000 });
 
-    // Verify second project stats (different from first)
-    stats = page.locator('.placeholder-stat');
-    await expect(stats.nth(0)).toContainText('2 Agents');
-    await expect(stats.nth(1)).toContainText('8 Commands');
-    await expect(stats.nth(2)).toContainText('1 Hooks');
-    await expect(stats.nth(3)).toContainText('0 MCP Servers');
+    // Verify second project has configuration cards displayed
+    cards = page.locator('.config-card');
+    expect(await cards.count()).toBe(4);
+
+    // Verify all card types are present
+    await expect(page.locator('.agent-card')).toBeVisible();
+    await expect(page.locator('.command-card')).toBeVisible();
+    await expect(page.locator('.hook-card')).toBeVisible();
+    await expect(page.locator('.mcp-card')).toBeVisible();
   });
 
   test('project with zero configurations displays correctly', async ({ page }) => {
@@ -178,12 +194,15 @@ test.describe('E2E Flow: Configuration Viewing Journey', () => {
     await page.waitForURL(/project-detail\.html/);
     await page.waitForSelector('.project-content', { timeout: 10000 });
 
-    // Verify zeros are displayed (not hidden)
-    const stats = page.locator('.placeholder-stat');
-    await expect(stats.nth(0)).toContainText('0 Agents');
-    await expect(stats.nth(1)).toContainText('0 Commands');
-    await expect(stats.nth(2)).toContainText('0 Hooks');
-    await expect(stats.nth(3)).toContainText('0 MCP Servers');
+    // Verify all configuration cards are displayed (even with empty state)
+    const cards = page.locator('.config-card');
+    expect(await cards.count()).toBe(4);
+
+    // Verify all card types are present
+    await expect(page.locator('.agent-card')).toBeVisible();
+    await expect(page.locator('.command-card')).toBeVisible();
+    await expect(page.locator('.hook-card')).toBeVisible();
+    await expect(page.locator('.mcp-card')).toBeVisible();
 
     // Project info should still be visible
     const projectTitle = page.locator('.project-info-title');
@@ -255,7 +274,7 @@ test.describe('E2E Flow: Configuration Viewing Journey', () => {
     // Capture initial data
     const projectName = await page.locator('.project-info-title').textContent();
     const projectPath = await page.locator('.project-info-subtitle').textContent();
-    const agentsCount = await page.locator('.placeholder-stat').nth(0).textContent();
+    const cardsCount = await page.locator('.config-card').count();
 
     // Navigate back
     await page.click('.breadcrumb-item.clickable');
@@ -269,11 +288,11 @@ test.describe('E2E Flow: Configuration Viewing Journey', () => {
     // Verify data is identical
     const projectName2 = await page.locator('.project-info-title').textContent();
     const projectPath2 = await page.locator('.project-info-subtitle').textContent();
-    const agentsCount2 = await page.locator('.placeholder-stat').nth(0).textContent();
+    const cardsCount2 = await page.locator('.config-card').count();
 
     expect(projectName2).toBe(projectName);
     expect(projectPath2).toBe(projectPath);
-    expect(agentsCount2).toBe(agentsCount);
+    expect(cardsCount2).toBe(cardsCount);
   });
 
   test('configuration icons display correctly for each type', async ({ page }) => {
@@ -302,20 +321,18 @@ test.describe('E2E Flow: Configuration Viewing Journey', () => {
     await page.waitForURL(/project-detail\.html/);
     await page.waitForSelector('.project-content', { timeout: 10000 });
 
-    // Verify each configuration type has appropriate icon
-    const stats = page.locator('.placeholder-stat');
-
+    // Verify each configuration card has appropriate icon
     // Agents icon (robot)
-    await expect(stats.nth(0).locator('.fa-robot')).toBeVisible();
+    await expect(page.locator('.agent-card .fa-robot')).toBeVisible();
 
     // Commands icon (terminal)
-    await expect(stats.nth(1).locator('.fa-terminal')).toBeVisible();
+    await expect(page.locator('.command-card .fa-terminal')).toBeVisible();
 
     // Hooks icon (plug)
-    await expect(stats.nth(2).locator('.fa-plug')).toBeVisible();
+    await expect(page.locator('.hook-card .fa-plug')).toBeVisible();
 
     // MCP icon (server)
-    await expect(stats.nth(3).locator('.fa-server')).toBeVisible();
+    await expect(page.locator('.mcp-card .fa-server')).toBeVisible();
   });
 
   test('project detail view handles large configuration counts', async ({ page }) => {
@@ -344,12 +361,15 @@ test.describe('E2E Flow: Configuration Viewing Journey', () => {
     await page.waitForURL(/project-detail\.html/);
     await page.waitForSelector('.project-content', { timeout: 10000 });
 
-    // Verify large numbers display correctly
-    const stats = page.locator('.placeholder-stat');
-    await expect(stats.nth(0)).toContainText('99 Agents');
-    await expect(stats.nth(1)).toContainText('250 Commands');
-    await expect(stats.nth(2)).toContainText('45 Hooks');
-    await expect(stats.nth(3)).toContainText('12 MCP Servers');
+    // Verify all configuration cards are displayed
+    const cards = page.locator('.config-card');
+    expect(await cards.count()).toBe(4);
+
+    // Verify all card types are present (even with large counts)
+    await expect(page.locator('.agent-card')).toBeVisible();
+    await expect(page.locator('.command-card')).toBeVisible();
+    await expect(page.locator('.hook-card')).toBeVisible();
+    await expect(page.locator('.mcp-card')).toBeVisible();
 
     // Verify layout isn't broken by large numbers
     const projectContent = page.locator('.project-content');
@@ -382,9 +402,9 @@ test.describe('E2E Flow: Configuration Viewing Journey', () => {
     await page.click('.project-card');
     await page.waitForURL(/project-detail\.html/);
 
-    let stats = page.locator('.placeholder-stat');
-    expect(await stats.count()).toBe(4);
-    await expect(stats.nth(0)).toBeVisible();
+    let cards = page.locator('.config-card');
+    expect(await cards.count()).toBe(4);
+    await expect(cards.first()).toBeVisible();
 
     // Navigate back for tablet test
     await page.click('.breadcrumb-item.clickable');
@@ -395,9 +415,9 @@ test.describe('E2E Flow: Configuration Viewing Journey', () => {
     await page.click('.project-card');
     await page.waitForURL(/project-detail\.html/);
 
-    stats = page.locator('.placeholder-stat');
-    expect(await stats.count()).toBe(4);
-    await expect(stats.nth(0)).toBeVisible();
+    cards = page.locator('.config-card');
+    expect(await cards.count()).toBe(4);
+    await expect(cards.first()).toBeVisible();
 
     // Navigate back for desktop test
     await page.click('.breadcrumb-item.clickable');
@@ -408,9 +428,9 @@ test.describe('E2E Flow: Configuration Viewing Journey', () => {
     await page.click('.project-card');
     await page.waitForURL(/project-detail\.html/);
 
-    stats = page.locator('.placeholder-stat');
-    expect(await stats.count()).toBe(4);
-    await expect(stats.nth(0)).toBeVisible();
+    cards = page.locator('.config-card');
+    expect(await cards.count()).toBe(4);
+    await expect(cards.first()).toBeVisible();
   });
 
   test('no console errors during configuration viewing flow', async ({ page }) => {

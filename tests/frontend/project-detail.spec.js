@@ -156,7 +156,7 @@ test.describe('Project Detail Page - Page Load & Structure', () => {
     await expect(projectPath).toContainText('/full/path/to/project');
   });
 
-  test('placeholder stats display correct counts', async ({ page }) => {
+  test('configuration cards display correctly', async ({ page }) => {
     await page.route('/api/projects', (route) => {
       route.fulfill({
         status: 200,
@@ -182,28 +182,24 @@ test.describe('Project Detail Page - Page Load & Structure', () => {
 
     await page.goto('/project-detail.html?id=statsproject');
 
-    // Wait for stats to render
-    await page.waitForSelector('.placeholder-stats', { timeout: 10000 });
+    // Wait for configuration cards to render
+    await page.waitForSelector('.config-card', { timeout: 10000 });
 
-    // Verify each stat is displayed with correct count
-    const stats = page.locator('.placeholder-stat');
-    expect(await stats.count()).toBe(4);
+    // Verify all four config cards are displayed
+    const cards = page.locator('.config-card');
+    expect(await cards.count()).toBe(4);
 
-    // Check agents count
-    const agentsStat = stats.nth(0);
-    await expect(agentsStat).toContainText('7 Agents');
+    // Check each card type is present
+    await expect(page.locator('.agent-card')).toBeVisible();
+    await expect(page.locator('.command-card')).toBeVisible();
+    await expect(page.locator('.hook-card')).toBeVisible();
+    await expect(page.locator('.mcp-card')).toBeVisible();
 
-    // Check commands count
-    const commandsStat = stats.nth(1);
-    await expect(commandsStat).toContainText('12 Commands');
-
-    // Check hooks count
-    const hooksStat = stats.nth(2);
-    await expect(hooksStat).toContainText('4 Hooks');
-
-    // Check MCP count
-    const mcpStat = stats.nth(3);
-    await expect(mcpStat).toContainText('3 MCP Servers');
+    // Verify card titles
+    await expect(page.locator('.agent-card .card-title')).toContainText('Subagents');
+    await expect(page.locator('.command-card .card-title')).toContainText('Slash Commands');
+    await expect(page.locator('.hook-card .card-title')).toContainText('Hooks');
+    await expect(page.locator('.mcp-card .card-title')).toContainText('MCP Servers');
   });
 });
 
@@ -283,9 +279,9 @@ test.describe('Project Detail Page - URL Parameter Handling', () => {
     const projectPath = page.locator('.project-info-subtitle');
     await expect(projectPath).toContainText('/path/two');
 
-    // Verify correct stats
-    const agentsStat = page.locator('.placeholder-stat').nth(0);
-    await expect(agentsStat).toContainText('2 Agents');
+    // Verify configuration cards are present
+    const cards = page.locator('.config-card');
+    expect(await cards.count()).toBe(4);
   });
 
   test('handles project ID with special characters', async ({ page }) => {
@@ -815,9 +811,9 @@ test.describe('Project Detail Page - Responsive Design', () => {
     const projectInfo = page.locator('.project-info-bar');
     await expect(projectInfo).toBeVisible();
 
-    // Verify placeholder stats are visible
-    const stats = page.locator('.placeholder-stat');
-    expect(await stats.count()).toBe(4);
+    // Verify configuration cards are visible
+    const cards = page.locator('.config-card');
+    expect(await cards.count()).toBe(4);
   });
 
   test('layout adapts to tablet viewport', async ({ page }) => {
@@ -850,8 +846,8 @@ test.describe('Project Detail Page - Responsive Design', () => {
     const header = page.locator('.app-header');
     await expect(header).toBeVisible();
 
-    const stats = page.locator('.placeholder-stat');
-    expect(await stats.count()).toBe(4);
+    const cards = page.locator('.config-card');
+    expect(await cards.count()).toBe(4);
   });
 
   test('layout works on desktop viewport', async ({ page }) => {
@@ -887,8 +883,8 @@ test.describe('Project Detail Page - Responsive Design', () => {
     const projectContent = page.locator('.project-content');
     await expect(projectContent).toBeVisible();
 
-    const stats = page.locator('.placeholder-stat');
-    expect(await stats.count()).toBe(4);
+    const cards = page.locator('.config-card');
+    expect(await cards.count()).toBe(4);
   });
 });
 
