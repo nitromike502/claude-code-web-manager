@@ -226,9 +226,10 @@ This project enforces a **feature branch workflow** to ensure code quality and e
 1. **No Direct Commits to Main** - A pre-push hook prevents direct pushes to `main`, `master`, or `develop` branches
 2. **Feature Branches Required** - All work must be done on feature branches
 3. **Small, Focused Tasks** - Tasks should be 30-60 minutes maximum
-4. **Frequent Commits** - Commit every 15-30 minutes of productive work
-5. **Test Immediately** - Test after every task completion
-6. **Pull Request Required** - All features require code review before merging
+4. **One Commit Per Task** - Each completed task MUST receive its own dedicated commit
+5. **Frequent Commits** - Commit every 15-30 minutes of productive work
+6. **Test Immediately** - Test after every task completion
+7. **Pull Request Required** - All features require code review before merging
 
 ### Feature Branch Workflow
 
@@ -238,22 +239,25 @@ git checkout main
 git pull
 git checkout -b feature/your-feature-name
 
-# 2. Make your changes (30-60 min max per task)
-# ...edit files...
+# 2. Work on ONE task at a time (30-60 min max per task)
+# ...edit files for Task A...
 
-# 3. Test your changes
+# 3. Test your changes for this task
 npm test  # or manual testing
 
-# 4. Commit frequently (every 15-30 min)
+# 4. Commit THIS TASK immediately after completion
 # IMPORTANT: Verify you're on feature branch before committing
 git branch --show-current  # Should show feature/your-feature-name
 git add <files>
-git commit -m "type: brief description"
-
-# 5. Push your feature branch (gh pr create will do this automatically)
+git commit -m "type: brief description of THIS task"
 git push -u origin feature/your-feature-name
 
-# 6. Create a Pull Request on GitHub
+# 5. Repeat steps 2-4 for each subsequent task
+# Task B → test → commit → push
+# Task C → test → commit → push
+# Each task gets its own commit!
+
+# 6. Create a Pull Request on GitHub after ALL tasks complete
 # IMPORTANT: Create PR from feature branch, do NOT checkout to main first
 # The gh pr create command works from the feature branch
 gh pr create --title "..." --body "..."
@@ -313,6 +317,49 @@ Per the workflow analysis (see `docs/workflow-analysis-20251007.md`), the Octobe
 - Late testing (only after "completion")
 
 This resulted in **350+ errors** and lost work. The new workflow prevents these issues by enforcing small, testable, reviewable changes.
+
+### One Commit Per Task Policy
+
+**Why it matters:**
+- **Traceability:** Each commit maps to exactly one task, making history clear
+- **Revert Granularity:** Can revert individual tasks without losing other work
+- **Progress Visibility:** Commit history shows actual work progression
+- **Code Review:** Reviewers can see logical progression of changes
+- **Debugging:** Easier to identify when/where bugs were introduced
+
+**How to implement:**
+1. **Start task** → Work on feature
+2. **Complete task** → Test immediately
+3. **Tests pass** → Commit immediately with task reference
+4. **Push to remote** → Make work visible
+5. **Start next task** → Repeat cycle
+
+**Example workflow:**
+```
+Task 3.2.1: Create AgentCard component
+→ Implement component (20 min)
+→ Test rendering (5 min)
+→ Commit: "feat: create AgentCard component (Task 3.2.1)"
+→ Push to origin
+
+Task 3.2.2: Add agent metadata display
+→ Implement metadata (15 min)
+→ Test display (5 min)
+→ Commit: "feat: add agent metadata display (Task 3.2.2)"
+→ Push to origin
+
+Task 3.2.3: Add agent action buttons
+→ Implement buttons (20 min)
+→ Test interactions (10 min)
+→ Commit: "feat: add agent action buttons (Task 3.2.3)"
+→ Push to origin
+```
+
+**Never bundle tasks:**
+- ❌ BAD: "feat: implement agent card with metadata and buttons (Tasks 3.2.1-3.2.3)"
+- ✅ GOOD: Three separate commits, one per task
+
+**Exception:** Only bundle related changes if they are part of the same atomic task (e.g., fixing a typo in documentation doesn't need its own commit if it's noticed during the same task).
 
 ### Pre-Push Hook
 

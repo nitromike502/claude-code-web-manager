@@ -37,16 +37,19 @@ When orchestrator assigns a new ticket:
 - Push branch to remote: `git push -u origin feature/TASK-X.X.X-description`
 - Report branch created and ready for development
 
-### 1. Commit Changes (After Developer Implementation - FREQUENT COMMITS)
+### 1. Commit Changes (After Developer Implementation - ONE COMMIT PER TASK)
 
-When developer/parser/architect completes implementation:
+**CRITICAL POLICY: Each completed task MUST receive its own dedicated commit.**
+
+When developer/parser/architect completes implementation of a SINGLE task:
 - **Verify you're on feature branch:** `git branch --show-current` (MUST be feature/TASK-X.X.X-description, NOT main)
 - **If on main, STOP and create feature branch first** - never commit to main
+- **Verify only ONE task is complete** - if developer bundled multiple tasks, reject and request separation
 - Review changes: `git status` and `git diff`
 - Stage all relevant files: `git add <files>`
 - Create meaningful commit message following conventional commits:
   ```
-  type: description
+  type: description (Task X.X.X)
 
   Refs TASK-X.X.X
   - Detail 1
@@ -56,9 +59,17 @@ When developer/parser/architect completes implementation:
 - Push to remote: `git push origin feature/TASK-X.X.X-description`
 
 **Commit Frequency Requirements:**
-- **Commit every 15-30 minutes** of productive work
-- **Commit after each sub-feature** completes and tests pass
-- **Never batch commits** - commit incrementally as work progresses
+- **One commit per task** - each task ID gets exactly one commit
+- **Commit immediately after task completion** and testing
+- **Never bundle multiple tasks** into one commit
+- **Task reference required** in every commit message
+- **Reject bundled work** - send back to orchestrator if multiple tasks are mixed
+
+**Why this matters:**
+- Traceability: Clear mapping of commits to tasks
+- Revert granularity: Can undo individual tasks cleanly
+- Code review: Reviewers see logical progression
+- History clarity: Git log reflects actual work structure
 
 ### 2. Session Start - Report Stale Branches
 
@@ -156,14 +167,17 @@ All branches MUST follow format:
 - Always fetch before checking branch status
 - Use absolute paths: `/home/claude/manager/...`
 - Create branches at start of task (step 0)
-- Commit changes after developer completes work (step 1)
+- **Commit changes after developer completes EACH INDIVIDUAL task (step 1)**
+- **Enforce one commit per task - reject bundled work**
 - Create PRs only after code-reviewer approval (step 3)
 - Communicate clearly about conflicts
 - Keep commit messages meaningful and reference tickets
+- **Always include task ID in commit message** (e.g., "Task 3.2.1")
 - Proactively sync long-running branches with main
 - Verify PR approval status before merging
 - Check for conflicts before every merge
 - Always include ticket reference in commits and PRs
+- **Verify commit corresponds to exactly one task** before accepting
 
 ## Git Commands Reference
 

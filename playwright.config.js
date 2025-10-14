@@ -3,12 +3,17 @@ const { defineConfig, devices } = require('@playwright/test');
 /**
  * Playwright Configuration for Claude Code Manager Frontend Tests
  *
+ * Test Directories:
+ * - tests/frontend: Component-level tests for UI elements
+ * - tests/e2e: End-to-end user flow tests
+ *
  * Phase 1: Chromium-only testing for initial infrastructure setup
  * Phase 2: Will expand to Firefox and WebKit for cross-browser coverage
  */
 module.exports = defineConfig({
-  // Test directory
-  testDir: './tests/frontend',
+  // Test directories (searches recursively for *.spec.js files)
+  testDir: './tests',
+  testMatch: ['**/tests/{frontend,e2e}/**/*.spec.js'],
 
   // Run tests in parallel
   fullyParallel: true,
@@ -44,6 +49,33 @@ module.exports = defineConfig({
 
     // Default timeout for actions (e.g., click, fill)
     actionTimeout: 10000,
+  },
+
+  // Visual regression testing settings
+  expect: {
+    // Timeout for expect assertions (including screenshot comparisons)
+    timeout: 10000,
+
+    // Screenshot comparison settings
+    toHaveScreenshot: {
+      // Maximum allowed difference in pixels
+      maxDiffPixels: 100,
+
+      // Maximum allowed difference ratio (0-1)
+      maxDiffPixelRatio: 0.002,
+
+      // Threshold for pixel color difference (0-1)
+      threshold: 0.2,
+
+      // CSS animations: 'allow' | 'disabled'
+      animations: 'disabled',
+
+      // CSS transitions: 'allow' | 'none'
+      caret: 'hide',
+
+      // Image comparison method: 'pixelmatch'
+      // Using pixelmatch for consistent, reliable comparisons
+    },
   },
 
   // Configure projects for major browsers (Phase 1: Chromium only)

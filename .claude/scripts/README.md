@@ -231,3 +231,106 @@ The script is modular and exports key functions for testing:
 ### License
 
 Part of the Claude Code Manager project.
+
+---
+
+## analyze-session.js
+
+**Purpose:** Analyzes Claude Code session transcripts to identify workflow improvements, inefficiencies, and optimization opportunities.
+
+**Status:** 🚧 In Development - Core session discovery complete, analysis logic pending
+
+### Usage
+
+```bash
+# List all available session dates
+node analyze-session.js
+
+# List sessions for a specific date
+node analyze-session.js YYYYMMDD
+
+# Analyze a specific session
+node analyze-session.js YYYYMMDD sessionId
+
+# Show help
+node analyze-session.js --help
+```
+
+### Examples
+
+```bash
+# List all available sessions
+node .claude/scripts/analyze-session.js
+
+# Show all sessions from October 12, 2025
+node .claude/scripts/analyze-session.js 20251012
+
+# Analyze session c6d23edd from October 12
+node .claude/scripts/analyze-session.js 20251012 c6d23edd
+```
+
+### Features
+
+#### Implemented ✅
+- Auto-discovery of session logs from `.claude/logs/`
+- Date validation and formatting
+- Session grouping (main + subagent transcripts)
+- Timeline display with start times
+- Colored terminal output
+
+#### Planned 🚧
+- Transcript parsing and correlation
+- Workflow analysis (task decomposition, handoffs, bottlenecks)
+- Metrics extraction (duration, success rate, tool usage)
+- Subagent orchestration evaluation
+- Code quality assessment
+- Recommendation generation
+- Report export (markdown format)
+
+### Integration with Slash Command
+
+This script is designed to work in tandem with the `/analyze-workflow` slash command:
+- **Slash command:** High-level workflow, delegates to workflow-analyzer subagent
+- **Node script:** Standalone CLI tool for quick session discovery and analysis
+
+### Sample Output
+
+```
+Available Claude Code session logs:
+
+  1. October 12, 2025 (20251012)
+  2. October 11, 2025 (20251011)
+  3. October 7, 2025 (20251007)
+
+Run with date to analyze:
+  node analyze-session.js 20251012
+```
+
+```
+Sessions for October 12, 2025:
+
+  1. Session c6d23edd
+     Time: 22:07:56
+     Main: transcript_c6d23edd_20251012_220756.json
+     Subagents: 13
+
+  2. Session cc0f0c9f
+     Time: 16:13:57
+     Main: transcript_cc0f0c9f_20251012_161357.json
+     Subagents: 22
+
+Run with session ID to analyze:
+  node analyze-session.js 20251012 c6d23edd
+```
+
+### Requirements
+
+- Node.js 18.0.0 or higher
+- No external dependencies (uses built-in modules only)
+
+### Next Steps
+
+1. Implement transcript parsing logic (JSON structure analysis)
+2. Build correlation engine (link subagent transcripts to main session)
+3. Add workflow analysis (task patterns, efficiency metrics)
+4. Generate actionable recommendations
