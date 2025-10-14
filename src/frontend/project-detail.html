@@ -98,6 +98,11 @@
                         :project-id="projectId"
                         @view-details="viewHookDetails"
                     ></hook-card>
+
+                    <mcp-card
+                        :project-id="projectId"
+                        @view-details="viewMCPDetails"
+                    ></mcp-card>
                 </div>
             </div>
         </main>
@@ -111,6 +116,7 @@
         import AgentCard from './components/AgentCard.js';
         import CommandCard from './components/CommandCard.js';
         import HookCard from './components/HookCard.js';
+        import MCPCard from './components/MCPCard.js';
 
         const { createApp } = Vue;
 
@@ -219,6 +225,12 @@
                     // Handle hook details viewing (will be expanded in later tasks)
                     console.log('View hook details:', data);
                     // Future: Open sidebar with hook details
+                },
+
+                viewMCPDetails(data) {
+                    // Handle MCP server details viewing (will be expanded in later tasks)
+                    console.log('View MCP server details:', data);
+                    // Future: Open sidebar with MCP server details
                 }
             }
         });
@@ -227,6 +239,7 @@
         app.component('agent-card', AgentCard);
         app.component('command-card', CommandCard);
         app.component('hook-card', HookCard);
+        app.component('mcp-card', MCPCard);
 
         // Mount the app
         app.mount('#app');
