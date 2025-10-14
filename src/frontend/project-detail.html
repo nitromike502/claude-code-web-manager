@@ -82,27 +82,12 @@
                     <div class="project-info-subtitle">{{ project.path }}</div>
                 </div>
 
-                <!-- Placeholder for configuration cards (to be added in TASK-3.2.1) -->
-                <div class="config-cards-placeholder">
-                    <p class="placeholder-text">Configuration cards will appear here</p>
-                    <div class="placeholder-stats">
-                        <div class="placeholder-stat">
-                            <i class="fas fa-robot"></i>
-                            <span>{{ project.stats?.agents || 0 }} Agents</span>
-                        </div>
-                        <div class="placeholder-stat">
-                            <i class="fas fa-terminal"></i>
-                            <span>{{ project.stats?.commands || 0 }} Commands</span>
-                        </div>
-                        <div class="placeholder-stat">
-                            <i class="fas fa-plug"></i>
-                            <span>{{ project.stats?.hooks || 0 }} Hooks</span>
-                        </div>
-                        <div class="placeholder-stat">
-                            <i class="fas fa-server"></i>
-                            <span>{{ project.stats?.mcp || 0 }} MCP Servers</span>
-                        </div>
-                    </div>
+                <!-- Configuration Cards -->
+                <div class="config-cards-container">
+                    <agent-card
+                        :project-id="projectId"
+                        @view-details="viewAgentDetails"
+                    ></agent-card>
                 </div>
             </div>
         </main>
@@ -111,11 +96,13 @@
     <!-- Vue 3 CDN -->
     <script src="https://cdn.jsdelivr.net/npm/vue@3.5.22/dist/vue.global.prod.js"></script>
 
-    <!-- App Script -->
-    <script>
+    <!-- Import AgentCard Component -->
+    <script type="module">
+        import AgentCard from './components/AgentCard.js';
+
         const { createApp } = Vue;
 
-        createApp({
+        const app = createApp({
             data() {
                 return {
                     currentTheme: 'dark',
@@ -202,9 +189,21 @@
                     this.currentTheme = this.currentTheme === 'dark' ? 'light' : 'dark';
                     document.documentElement.setAttribute('data-theme', this.currentTheme);
                     localStorage.setItem('theme', this.currentTheme);
+                },
+
+                viewAgentDetails(data) {
+                    // Handle agent details viewing (will be expanded in later tasks)
+                    console.log('View agent details:', data);
+                    // Future: Open sidebar with agent details
                 }
             }
-        }).mount('#app');
+        });
+
+        // Register AgentCard component
+        app.component('agent-card', AgentCard);
+
+        // Mount the app
+        app.mount('#app');
     </script>
 
     <style>
