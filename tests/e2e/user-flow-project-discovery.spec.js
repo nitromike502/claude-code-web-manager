@@ -104,13 +104,15 @@ test.describe('E2E Flow: First-Time User - Project Discovery', () => {
     await expect(breadcrumbs.locator('.breadcrumb-item.clickable')).toContainText('Dashboard');
     await expect(breadcrumbs.locator('.breadcrumb-item.active')).toContainText('My App');
 
-    // Verify configuration stats are visible
-    const stats = page.locator('.placeholder-stat');
-    expect(await stats.count()).toBe(4);
-    await expect(stats.nth(0)).toContainText('3 Agents');
-    await expect(stats.nth(1)).toContainText('8 Commands');
-    await expect(stats.nth(2)).toContainText('2 Hooks');
-    await expect(stats.nth(3)).toContainText('1 MCP Servers');
+    // Verify configuration cards are visible
+    const cards = page.locator('.config-card');
+    expect(await cards.count()).toBe(4);
+
+    // Verify all card types are present
+    await expect(page.locator('.agent-card')).toBeVisible();
+    await expect(page.locator('.command-card')).toBeVisible();
+    await expect(page.locator('.hook-card')).toBeVisible();
+    await expect(page.locator('.mcp-card')).toBeVisible();
 
     // STEP 6: User navigates back to dashboard
     const dashboardBreadcrumb = page.locator('.breadcrumb-item.clickable');
