@@ -755,3 +755,139 @@
     gap: 0.75rem;
   }
 }
+
+/* HookCard Specific Styles */
+.hook-card .card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.25rem;
+  background-color: var(--bg-tertiary);
+  border-bottom: 1px solid var(--border-primary);
+}
+
+.hook-card .card-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text-emphasis);
+}
+
+.hook-card .card-icon {
+  font-size: 1.5rem;
+  color: var(--color-hooks);
+}
+
+.hook-card .count-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 0.5rem;
+  background-color: var(--color-hooks);
+  color: white;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.hook-card .card-content {
+  padding: 0;
+}
+
+/* Hook List */
+.hook-list {
+  padding: 0;
+}
+
+.hook-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--border-secondary);
+  transition: background-color 150ms ease;
+  cursor: pointer;
+}
+
+.hook-item:last-child {
+  border-bottom: none;
+}
+
+.hook-item:hover {
+  background-color: var(--bg-hover);
+}
+
+.hook-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.hook-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.375rem;
+}
+
+.hook-event {
+  font-weight: 600;
+  color: var(--text-emphasis);
+  font-size: 0.9375rem;
+}
+
+.scope-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.125rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.scope-badge.scope-user {
+  background-color: rgba(168, 85, 247, 0.15);
+  color: var(--color-mcp);
+  border: 1px solid rgba(168, 85, 247, 0.3);
+}
+
+.scope-badge.scope-project {
+  background-color: rgba(249, 115, 22, 0.15);
+  color: var(--color-hooks);
+  border: 1px solid rgba(249, 115, 22, 0.3);
+}
+
+.hook-command {
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  font-family: 'Courier New', monospace;
+  margin-bottom: 0.25rem;
+  word-break: break-word;
+}
+
+.hook-description {
+  color: var(--text-secondary);
+  font-size: 0.8125rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Responsive for HookCard */
+@media (max-width: 767px) {
+  .hook-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .hook-header {
+    flex-wrap: wrap;
+  }
+}

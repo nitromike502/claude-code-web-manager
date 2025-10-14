@@ -93,6 +93,11 @@
                         :project-id="projectId"
                         @view-details="viewCommandDetails"
                     ></command-card>
+
+                    <hook-card
+                        :project-id="projectId"
+                        @view-details="viewHookDetails"
+                    ></hook-card>
                 </div>
             </div>
         </main>
@@ -105,6 +110,7 @@
     <script type="module">
         import AgentCard from './components/AgentCard.js';
         import CommandCard from './components/CommandCard.js';
+        import HookCard from './components/HookCard.js';
 
         const { createApp } = Vue;
 
@@ -207,6 +213,12 @@
                     // Handle command details viewing (will be expanded in later tasks)
                     console.log('View command details:', data);
                     // Future: Open sidebar with command details
+                },
+
+                viewHookDetails(data) {
+                    // Handle hook details viewing (will be expanded in later tasks)
+                    console.log('View hook details:', data);
+                    // Future: Open sidebar with hook details
                 }
             }
         });
@@ -214,6 +226,7 @@
         // Register components
         app.component('agent-card', AgentCard);
         app.component('command-card', CommandCard);
+        app.component('hook-card', HookCard);
 
         // Mount the app
         app.mount('#app');
