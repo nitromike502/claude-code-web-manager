@@ -108,9 +108,9 @@ See subagent proposals in project `.claude/agents/` directory.
 1. ✅ Requirements gathering (PRD complete)
 2. ✅ Create wireframe mockups (Approved)
 3. ✅ Build backend API with automated testing (COMPLETE - 100%)
-4. ⏳ Build frontend UI with automated testing (IN PROGRESS - 13%)
-   - ✅ Story 3.1: Project Detail View Structure (COMPLETE - 80 min / 605 min)
-   - ⏳ Story 3.2: Configuration Cards (Pending - 5 tasks)
+4. ⏳ Build frontend UI with automated testing (IN PROGRESS - 45%)
+   - ✅ Story 3.1: Project Detail View Structure (COMPLETE - 80 min)
+   - ✅ Story 3.2: Configuration Cards (COMPLETE - 150 min)
    - ⏳ Story 3.3: Interactive Features (Pending - 6 tasks)
    - ⏳ Story 3.4: Search & Filter (Pending - 3 tasks)
    - ⏳ Story 3.5: Final Polish (Pending - 3 tasks)
@@ -151,15 +151,18 @@ All code changes must pass automated tests before PR creation:
 - [x] BUG-001 and BUG-002 resolved
 - [x] Automated test suite passing (Jest)
 
-### Frontend (13% Complete)
+### Frontend (45% Complete)
 - [x] Project detail page structure created
 - [x] Breadcrumb navigation with back button
 - [x] Routing from dashboard to detail view
 - [x] Theme toggle functionality
 - [x] Loading and error states
 - [x] Warning display from backend
-- [x] Automated test suite passing (Playwright - 36/36 tests)
-- [ ] Configuration cards for all 4 types (agents/commands/hooks/MCP)
+- [x] Configuration cards for all 4 types (agents/commands/hooks/MCP)
+- [x] Card color scheme (green/blue/orange/purple)
+- [x] "Show more" functionality for configuration lists
+- [x] API integration with all configuration endpoints
+- [x] Automated test suite passing (Playwright - 92/100 tests, 92% pass rate)
 - [ ] Detail sidebar for viewing full content
 - [ ] User/global configuration view
 - [ ] Search/filter functionality
