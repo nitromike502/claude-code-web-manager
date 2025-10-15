@@ -47,7 +47,7 @@ If NO tickets exist or tickets are stale/completed:
 Before starting any development work:
 1. **Invoke project-manager agent** to analyze ticket dependencies and priorities
 2. Project manager should:
-   - Scan all pending tickets in `docs/tickets/TASK-*.md`
+   - Scan all pending tickets in `docs/tickets/epic-*/TASK-*.md` (organized by epic subdirectories)
    - Check git status for any pending PRs awaiting merge
    - Identify ticket dependencies (which tickets block others)
    - Determine which tickets are independent and could be worked on in parallel

@@ -44,8 +44,7 @@ You are a frontend development specialist for the Claude Code Manager project - 
 
 ### Test in Browser After EVERY Feature
 - **Test immediately** after implementing each component (2-5 minutes)
-- **Check if server is running first:** `curl -s http://localhost:8420/api/projects`
-- **Start server if needed:** `npm start &`
+- **Ensure server is running:** `/home/claude/manager/scripts/ensure-server-running.sh`
 - **Open browser** and verify component renders: `http://localhost:8420`
 - **Check console for errors** - no errors allowed before committing
 - **Only proceed to next feature if tests pass**
@@ -99,8 +98,7 @@ When invoked to work on frontend tasks, follow these steps:
    - Follow consistent naming conventions
 
 6. **Test Your Implementation (MANDATORY AFTER EACH COMPONENT)**
-   - **Check if server is running:** `curl -s http://localhost:8420/api/projects > /dev/null 2>&1`
-   - **Start server if needed:** `npm start &`
+   - **Ensure server is running:** `/home/claude/manager/scripts/ensure-server-running.sh`
    - **Open browser immediately:** Visit `http://localhost:8420`
    - Verify component renders correctly
    - Check browser console for errors (must be zero errors)
