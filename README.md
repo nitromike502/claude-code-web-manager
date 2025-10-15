@@ -77,6 +77,7 @@ The application will automatically:
 - `npm start` - Start the production server
 - `npm run dev` - Start the development server with auto-reload (Node.js 18+)
 - `npm test` - Run backend tests (when implemented)
+- `./scripts/ensure-server-running.sh` - Check server status and start if needed
 
 ## Architecture
 
@@ -161,8 +162,8 @@ See `.claude/agents/` for the complete team structure.
 ### Testing
 
 ```bash
-# Test backend server is running
-curl http://localhost:8420/api/health
+# Ensure server is running (checks health and starts if needed)
+./scripts/ensure-server-running.sh
 
 # Test project discovery
 curl http://localhost:8420/api/projects
@@ -229,8 +230,10 @@ See individual PRD documents in `docs/` for detailed phase specifications.
 
 ### Server Won't Start
 - Ensure Node.js 18+ is installed: `node --version`
+- Use the helper script to check and start: `./scripts/ensure-server-running.sh`
 - Check if port 8420 is available: `lsof -i :8420` (Mac/Linux) or `netstat -ano | findstr :8420` (Windows)
 - Install dependencies: `npm install`
+- View server logs: `cat .claude/logs/server.log`
 
 ### No Projects Showing
 - Verify `~/.claude.json` exists and contains project paths
