@@ -462,6 +462,14 @@
   transform: translateY(-1px);
 }
 
+.btn-copy.copied {
+  background-color: #10b981;
+}
+
+.btn-copy.copied:hover {
+  background-color: #059669;
+}
+
 .btn-close {
   background-color: var(--bg-secondary);
   color: var(--text-primary);

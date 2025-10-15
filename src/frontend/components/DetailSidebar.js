@@ -27,6 +27,12 @@ export default {
     }
   },
   emits: ['update:visible'],
+  data() {
+    return {
+      isCopied: false,
+      copyTimeout: null
+    };
+  },
   computed: {
     sidebarWidth() {
       return window.innerWidth < 768 ? '100%' : '600px';
@@ -77,8 +83,44 @@ export default {
     this.$nextTick(() => {
       if (this.visible) {
         this.applySyntaxHighlighting();
+        this.focusSidebar();
       }
     });
+
+    // Add keyboard event listener
+    if (this.visible) {
+      this.addKeyboardListeners();
+    }
+  },
+  unmounted() {
+    // Clean up keyboard event listeners
+    this.removeKeyboardListeners();
+
+    // Clear copy timeout
+    if (this.copyTimeout) {
+      clearTimeout(this.copyTimeout);
+    }
+  },
+  watch: {
+    visible(newValue) {
+      if (newValue) {
+        // Focus sidebar and add keyboard listeners when opened
+        this.$nextTick(() => {
+          this.focusSidebar();
+          this.addKeyboardListeners();
+        });
+      } else {
+        // Remove keyboard listeners when closed
+        this.removeKeyboardListeners();
+
+        // Reset copy state
+        this.isCopied = false;
+        if (this.copyTimeout) {
+          clearTimeout(this.copyTimeout);
+          this.copyTimeout = null;
+        }
+      }
+    }
   },
   updated() {
     // Reapply syntax highlighting when content changes
@@ -126,11 +168,11 @@ export default {
         navigator.clipboard.writeText(textToCopy)
           .then(() => {
             console.log('Content copied to clipboard');
-            // TODO: Show success toast in future task
+            this.showCopyFeedback();
           })
           .catch(err => {
             console.error('Failed to copy content:', err);
-            // TODO: Show error toast in future task
+            // Show error in console, but don't break the UI
           });
       } else {
         // Fallback for older browsers
@@ -143,16 +185,68 @@ export default {
         try {
           document.execCommand('copy');
           console.log('Content copied to clipboard (fallback)');
+          this.showCopyFeedback();
         } catch (err) {
           console.error('Failed to copy content (fallback):', err);
         }
         document.body.removeChild(textarea);
       }
+    },
+    showCopyFeedback() {
+      // Clear existing timeout if any
+      if (this.copyTimeout) {
+        clearTimeout(this.copyTimeout);
+      }
+
+      // Show "Copied!" feedback
+      this.isCopied = true;
+
+      // Reset after 2 seconds
+      this.copyTimeout = setTimeout(() => {
+        this.isCopied = false;
+        this.copyTimeout = null;
+      }, 2000);
+    },
+    handleKeydown(event) {
+      // ESC key - Close sidebar
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        this.closeSidebar();
+        return;
+      }
+
+      // Ctrl+C / Cmd+C - Copy content
+      if ((event.ctrlKey || event.metaKey) && event.key === 'c') {
+        // Only handle if we're not in a text selection context
+        const selection = window.getSelection();
+        if (!selection || selection.toString().length === 0) {
+          event.preventDefault();
+          this.copyContent();
+        }
+      }
+    },
+    addKeyboardListeners() {
+      // Bind the handler to this instance
+      this._keydownHandler = this.handleKeydown.bind(this);
+      document.addEventListener('keydown', this._keydownHandler);
+    },
+    removeKeyboardListeners() {
+      if (this._keydownHandler) {
+        document.removeEventListener('keydown', this._keydownHandler);
+        this._keydownHandler = null;
+      }
+    },
+    focusSidebar() {
+      // Focus the sidebar container for keyboard shortcuts
+      const sidebar = this.$el?.querySelector('.detail-sidebar');
+      if (sidebar) {
+        sidebar.focus();
+      }
     }
   },
   template: `
     <div v-if="visible" class="detail-sidebar-overlay" @click="closeSidebar">
-      <div class="detail-sidebar" :style="{ width: sidebarWidth }" @click.stop>
+      <div class="detail-sidebar" :style="{ width: sidebarWidth }" @click.stop tabindex="-1">
         <!-- Sidebar Header -->
         <div class="sidebar-header">
           <div class="sidebar-header-content">
@@ -246,9 +340,9 @@ export default {
 
         <!-- Sidebar Footer -->
         <div class="sidebar-footer">
-          <button class="btn-copy" @click="copyContent" title="Copy content to clipboard">
-            <i class="fas fa-copy"></i>
-            Copy Content
+          <button class="btn-copy" @click="copyContent" :title="isCopied ? 'Content copied!' : 'Copy content to clipboard'" :class="{ 'copied': isCopied }">
+            <i :class="isCopied ? 'fas fa-check' : 'fas fa-copy'"></i>
+            {{ isCopied ? 'Copied!' : 'Copy Content' }}
           </button>
           <button class="btn-close" @click="closeSidebar">
             <i class="fas fa-times"></i>
