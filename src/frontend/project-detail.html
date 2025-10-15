@@ -106,6 +106,15 @@
                 </div>
             </div>
         </main>
+
+        <!-- Detail Sidebar -->
+        <detail-sidebar
+            v-model:visible="sidebarVisible"
+            :title="sidebarTitle"
+            :content="sidebarContent"
+            :type="sidebarType"
+            :metadata="sidebarMetadata"
+        ></detail-sidebar>
     </div>
 
     <!-- Vue 3 CDN -->
@@ -117,6 +126,7 @@
         import CommandCard from './components/CommandCard.js';
         import HookCard from './components/HookCard.js';
         import MCPCard from './components/MCPCard.js';
+        import DetailSidebar from './components/DetailSidebar.js';
 
         const { createApp } = Vue;
 
@@ -139,7 +149,12 @@
                     },
                     warnings: [],
                     loading: false,
-                    error: null
+                    error: null,
+                    sidebarVisible: false,
+                    sidebarTitle: '',
+                    sidebarContent: '',
+                    sidebarType: 'agent',
+                    sidebarMetadata: {}
                 };
             },
             async mounted() {
@@ -210,27 +225,53 @@
                 },
 
                 viewAgentDetails(data) {
-                    // Handle agent details viewing (will be expanded in later tasks)
-                    console.log('View agent details:', data);
-                    // Future: Open sidebar with agent details
+                    const { agent } = data;
+                    this.sidebarTitle = agent.name || 'Unnamed Agent';
+                    this.sidebarContent = agent.content || '';
+                    this.sidebarType = 'agent';
+                    this.sidebarMetadata = {
+                        filePath: agent.filePath || '',
+                        description: agent.description || ''
+                    };
+                    this.sidebarVisible = true;
                 },
 
                 viewCommandDetails(data) {
-                    // Handle command details viewing (will be expanded in later tasks)
-                    console.log('View command details:', data);
-                    // Future: Open sidebar with command details
+                    const { command } = data;
+                    this.sidebarTitle = command.name || 'Unnamed Command';
+                    this.sidebarContent = command.content || '';
+                    this.sidebarType = 'command';
+                    this.sidebarMetadata = {
+                        filePath: command.filePath || '',
+                        description: command.description || ''
+                    };
+                    this.sidebarVisible = true;
                 },
 
                 viewHookDetails(data) {
-                    // Handle hook details viewing (will be expanded in later tasks)
-                    console.log('View hook details:', data);
-                    // Future: Open sidebar with hook details
+                    const { hook } = data;
+                    this.sidebarTitle = `${hook.event || 'Unknown Event'} Hook`;
+                    this.sidebarContent = hook;
+                    this.sidebarType = 'hook';
+                    this.sidebarMetadata = {
+                        event: hook.event || '',
+                        command: hook.command || '',
+                        scope: hook.scope || ''
+                    };
+                    this.sidebarVisible = true;
                 },
 
                 viewMCPDetails(data) {
-                    // Handle MCP server details viewing (will be expanded in later tasks)
-                    console.log('View MCP server details:', data);
-                    // Future: Open sidebar with MCP server details
+                    const { mcp } = data;
+                    this.sidebarTitle = mcp.name || 'Unnamed MCP Server';
+                    this.sidebarContent = mcp;
+                    this.sidebarType = 'mcp';
+                    this.sidebarMetadata = {
+                        command: mcp.command || '',
+                        transport: mcp.transport || '',
+                        args: mcp.args || []
+                    };
+                    this.sidebarVisible = true;
                 }
             }
         });
@@ -240,6 +281,7 @@
         app.component('command-card', CommandCard);
         app.component('hook-card', HookCard);
         app.component('mcp-card', MCPCard);
+        app.component('detail-sidebar', DetailSidebar);
 
         // Mount the app
         app.mount('#app');
