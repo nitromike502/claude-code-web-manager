@@ -29,10 +29,6 @@
                 />
             </div>
             <div class="header-actions">
-                <button class="btn-user active" @click="goToUserView" title="User configurations" aria-label="User configurations">
-                    <i class="fas fa-user"></i>
-                    <span>User</span>
-                </button>
                 <button class="theme-toggle" @click="toggleTheme" :title="currentTheme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'">
                     <i :class="currentTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon'"></i>
                 </button>
