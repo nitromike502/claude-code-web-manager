@@ -27,9 +27,15 @@
                     @input="filterProjects"
                 />
             </div>
-            <button class="theme-toggle" @click="toggleTheme" :title="currentTheme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'">
-                <i :class="currentTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon'"></i>
-            </button>
+            <div class="header-actions">
+                <button class="btn-user" @click="goToUserView" title="User configurations" aria-label="User configurations">
+                    <i class="fas fa-user"></i>
+                    <span>User</span>
+                </button>
+                <button class="theme-toggle" @click="toggleTheme" :title="currentTheme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'">
+                    <i :class="currentTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon'"></i>
+                </button>
+            </div>
         </header>
 
         <!-- Breadcrumbs -->
@@ -199,6 +205,9 @@
                 selectProject(project) {
                     // Navigate to project detail page with project ID
                     window.location.href = `/project-detail.html?id=${encodeURIComponent(project.id)}`;
+                },
+                goToUserView() {
+                    window.location.href = '/user-view.html';
                 }
             }
         }).mount('#app');
@@ -232,6 +241,39 @@
 
         .search-input::placeholder {
             color: var(--text-muted);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .btn-user {
+            background-color: var(--bg-tertiary);
+            border: 1px solid var(--border-primary);
+            color: var(--text-primary);
+            padding: 0.625rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9375rem;
+            font-weight: 500;
+        }
+
+        .btn-user:hover {
+            background-color: var(--bg-hover);
+            border-color: var(--color-mcp);
+            color: var(--color-mcp);
+        }
+
+        .btn-user.active {
+            background-color: var(--color-mcp);
+            border-color: var(--color-mcp);
+            color: white;
         }
 
         .theme-toggle {
@@ -401,7 +443,7 @@
                 flex: 1;
             }
 
-            .theme-toggle {
+            .header-actions {
                 order: 2;
             }
 
@@ -409,6 +451,10 @@
                 order: 3;
                 width: 100%;
                 min-width: 100%;
+            }
+
+            .btn-user span {
+                display: none;
             }
 
             .breadcrumbs {

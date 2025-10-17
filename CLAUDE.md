@@ -108,12 +108,12 @@ See subagent proposals in project `.claude/agents/` directory.
 1. ✅ Requirements gathering (PRD complete)
 2. ✅ Create wireframe mockups (Approved)
 3. ✅ Build backend API with automated testing (COMPLETE - 100%)
-4. ⏳ Build frontend UI with automated testing (IN PROGRESS - 60%)
+4. ⏳ Build frontend UI with automated testing (IN PROGRESS - 75%)
    - ✅ Story 3.1: Project Detail View Structure (COMPLETE - 80 min)
    - ✅ Story 3.2: Configuration Cards (COMPLETE - 150 min)
    - ✅ Story 3.3: Interactive Features (COMPLETE - 120 min)
-   - ⏳ Story 3.4: Search & Filter (Pending - 3 tasks)
-   - ⏳ Story 3.5: Final Polish (Pending - 3 tasks)
+   - ✅ Story 3.4: User/Global Configuration View (COMPLETE - 95 min)
+   - ⏳ Story 3.5: Integration & Testing (Pending - 3 tasks)
 5. ⏳ Integration verification & cross-platform testing
 6. ⏳ Polish & final quality review
 
@@ -151,7 +151,7 @@ All code changes must pass automated tests before PR creation:
 - [x] BUG-001 and BUG-002 resolved
 - [x] Automated test suite passing (Jest)
 
-### Frontend (60% Complete)
+### Frontend (75% Complete)
 - [x] Project detail page structure created
 - [x] Breadcrumb navigation with back button
 - [x] Routing from dashboard to detail view
@@ -167,7 +167,9 @@ All code changes must pass automated tests before PR creation:
 - [x] Sidebar content rendering (markdown parsing, syntax highlighting)
 - [x] Sidebar navigation (copy to clipboard, keyboard shortcuts)
 - [x] Structured data display for hooks and MCP servers
-- [ ] User/global configuration view
+- [x] User/global configuration view
+- [x] User button navigation from all pages
+- [x] User-level API integration for all config types
 - [ ] Search/filter functionality
 - [ ] Cross-browser compatibility verified
 
