@@ -1,35 +1,23 @@
 # Claude Code Manager
 
-A web-based tool for managing Claude Code projects, subagents, slash commands, hooks, and MCP servers.
+A web-based interface for viewing and managing Claude Code projects, subagents, slash commands, hooks, and MCP servers across your local machine.
 
 ## Overview
 
-Claude Code Manager provides a centralized interface to view and manage Claude Code configurations across all projects on your local machine. Access all your Claude Code projects, subagents, commands, hooks, and MCP server configurations from a single, intuitive web interface.
-
-**Status:** Phase 1 (MVP) - Read-only viewing interface
+Claude Code Manager provides a centralized dashboard to browse all your Claude Code configurations from one place. View your project structures, explore subagent definitions, review slash commands, inspect hooks, and examine MCP server configurations—all from a clean, intuitive web interface.
 
 ## Features
 
-### Current (Phase 1 MVP)
 - **Project Discovery** - Automatically discovers all Claude Code projects from `~/.claude.json`
-- **Subagent Viewing** - Browse and view all project and user-level subagents
+- **Subagent Viewing** - Browse and view all project and user-level subagents with full frontmatter specs
 - **Slash Command Viewing** - View all custom slash commands across projects
 - **Hooks Viewing** - Display configured hooks from settings files
 - **MCP Server Viewing** - View MCP server configurations
 - **Search & Filter** - Quickly find specific configurations
-- **Dark Mode** - Built-in dark mode support
+- **Dark Mode** - Built-in dark/light theme toggle
 - **Manual Refresh** - Rescan projects on demand
-
-### Planned (Future Phases)
-- CRUD operations for subagents, commands, hooks, and MCP servers
-- Configuration validation and testing
-- Templates and import/export functionality
-
-## Tech Stack
-
-- **Backend:** Node.js + Express (port 8420)
-- **Frontend:** Vue 3 + PrimeVue (CDN-hosted)
-- **Data Source:** Live file system reads (no database)
+- **Detail Sidebar** - View full content with markdown rendering and syntax highlighting
+- **Responsive Design** - Works on desktop, tablet, and mobile devices
 
 ## Prerequisites
 
@@ -40,11 +28,12 @@ Claude Code Manager provides a centralized interface to view and manage Claude C
 ## Installation
 
 ```bash
-# Clone the repository
+# Install from npm
+npm install -g claude-code-manager
+
+# Or install from source
 git clone <repository-url>
 cd manager
-
-# Install dependencies
 npm install
 ```
 
@@ -53,16 +42,16 @@ npm install
 ### Starting the Server
 
 ```bash
-# Production mode
-npm start
+# If installed globally
+claude-code-manager
 
-# Development mode (with auto-reload on file changes)
-npm run dev
+# Or from source
+npm start
 ```
 
 ### Accessing the Application
 
-Open your browser to:
+Once the server is running, open your browser to:
 ```
 http://localhost:8420
 ```
@@ -72,181 +61,78 @@ The application will automatically:
 2. Display all discovered projects in the dashboard
 3. Allow you to view agents, commands, hooks, and MCP servers for each project
 
-### Available Scripts
+### Navigating the Interface
 
-- `npm start` - Start the production server
-- `npm run dev` - Start the development server with auto-reload (Node.js 18+)
-- `npm test` - Run backend tests (when implemented)
-- `./scripts/ensure-server-running.sh` - Check server status and start if needed
+- **Dashboard** - View all discovered projects
+- **Project Detail** - Click any project to see its configurations
+- **User Configs** - Click the purple "User" card to view global configurations
+- **Detail Sidebar** - Click any item to view its full content
+- **Search** - Use the search bar to filter configurations
+- **Theme Toggle** - Switch between dark and light modes
+- **Rescan** - Click the refresh button to reload project list
 
-## Architecture
+## How It Works
 
-### Project Structure
+Claude Code Manager reads your Claude Code configurations directly from the file system:
 
-```
-manager/
-├── docs/                       # Project documentation
-│   ├── PRD-Phase1-MVP.md      # MVP requirements
-│   └── PRD-Phase*.md          # Future phase requirements
-├── src/
-│   ├── backend/               # Express server & API
-│   └── frontend/              # Vue 3 + PrimeVue UI
-├── .claude/                   # Claude Code configurations
-│   ├── agents/                # Specialized subagents
-│   ├── commands/              # Custom slash commands
-│   ├── hooks/                 # Project hooks
-│   └── settings.json          # Project settings
-└── CLAUDE.md                  # Project instructions
-```
-
-### API Endpoints
-
-```
-GET  /api/projects                        # List all projects
-GET  /api/projects/:projectId/agents      # Get project subagents
-GET  /api/projects/:projectId/commands    # Get project commands
-GET  /api/projects/:projectId/hooks       # Get project hooks
-GET  /api/projects/:projectId/mcp         # Get project MCP servers
-GET  /api/user/agents                     # Get user subagents
-GET  /api/user/commands                   # Get user commands
-GET  /api/user/hooks                      # Get user hooks
-GET  /api/user/mcp                        # Get user MCP servers
-POST /api/projects/scan                   # Trigger project refresh
-```
-
-## Configuration Sources
-
-The application reads from the following locations:
-
-### Project-Level
+### Project-Level Configurations
 - `.claude/agents/*.md` - Subagent definitions
-- `.claude/commands/**/*.md` - Slash commands (supports nested directories)
+- `.claude/commands/**/*.md` - Slash commands
 - `.claude/settings.json` - Project settings and hooks
-- `.claude/settings.local.json` - Local project settings
 - `.mcp.json` - MCP server configurations
 
-### User-Level
+### User-Level Configurations
 - `~/.claude/agents/*.md` - User subagents
 - `~/.claude/commands/**/*.md` - User commands
 - `~/.claude/settings.json` - User settings, hooks, and MCP servers
 - `~/.claude.json` - Project registry
 
-## Development
-
-This project uses Claude Code with specialized subagents for parallel development:
-
-- **Backend Architect** - API design and implementation
-- **Frontend Developer** - Vue components and UI
-- **Data Parser** - File parsing and data extraction
-- **Git Workflow Specialist** - Version control and PR management
-- **Subagent Orchestrator** - Multi-agent coordination
-- **Documentation Engineer** - Documentation creation and maintenance
-
-See `.claude/agents/` for the complete team structure.
-
-### Development Workflow
-
-1. ✅ Requirements gathering (Phase 1 complete)
-2. ✅ Wireframe creation
-3. ✅ Backend API implementation (100% complete with error handling)
-4. ⏳ Frontend UI implementation (NOT STARTED)
-5. ⏳ Integration & testing
-6. ⏳ Cross-platform verification (pending)
-
-### Making Changes
-
-1. **Backend Changes**: Edit files in `src/backend/`, server will auto-reload in dev mode
-2. **Frontend Changes**: Edit files in `src/frontend/`, refresh browser to see changes
-3. **No Build Step**: Both backend and frontend run directly without compilation
-
-### Testing
-
-```bash
-# Ensure server is running (checks health and starts if needed)
-./scripts/ensure-server-running.sh
-
-# Test project discovery
-curl http://localhost:8420/api/projects
-```
-
 ## Platform Support
 
+Claude Code Manager works on:
 - Linux
 - macOS
-- Windows (WSL and native)
+- Windows (both WSL and native)
 
-## Contributing
+## Future Plans
 
-This project is built using the SWARM methodology with Claude Code subagents. Contributions should follow the established patterns in the codebase.
+**Phase 2 - CRUD Operations** (Planned)
+- Create, edit, and delete subagents, commands, hooks, and MCP servers
+- Configuration validation and testing
+- Real-time file watching for automatic updates
+
+**Phase 3 - Advanced Features** (Future)
+- Configuration templates
+- Import/export functionality
+- Bulk operations and batch editing
+- Version history and rollback
 
 ## License
 
-MIT License (see LICENSE file)
+MIT License
 
 ## Support
 
-For issues and questions, please refer to the project documentation in the `docs/` directory or create an issue in the repository.
-
-## Roadmap
-
-### Phase 1 - MVP (Current) - Backend Complete, Frontend Pending
-**Backend (100% Complete):**
-- [x] Project discovery from `~/.claude.json`
-- [x] All 8 API endpoints implemented and tested
-- [x] Resilient error handling (malformed files skipped with warnings)
-- [x] All 4 parsers functional (agents, commands, hooks, MCP)
-- [x] Warnings system implemented
-- [x] Cross-platform path handling
-- [x] BUG-001 and BUG-002 resolved
-
-**Frontend (0% Complete):**
-- [ ] Project dashboard view
-- [ ] Project detail view with config cards
-- [ ] User/global configuration view
-- [ ] View subagents, commands, hooks, and MCP servers in UI
-- [ ] Search and filter functionality
-- [ ] Dark/light mode support
-- [ ] Responsive design
-- [ ] Display warnings from backend
-- [ ] Cross-platform testing (Windows, Mac, Linux)
-
-### Phase 2 - CRUD Operations (Planned)
-- [ ] Create new subagents, commands, hooks, and MCP servers
-- [ ] Edit existing configurations
-- [ ] Delete configurations
-- [ ] Configuration validation
-- [ ] Real-time file watching
-
-### Phase 3 - Advanced Features (Future)
-- [ ] Configuration templates
-- [ ] Import/export functionality
-- [ ] Bulk operations
-- [ ] Configuration testing
-- [ ] Version history
-
-See individual PRD documents in `docs/` for detailed phase specifications.
+For issues, questions, or feature requests, please create an issue in the repository.
 
 ## Troubleshooting
 
 ### Server Won't Start
 - Ensure Node.js 18+ is installed: `node --version`
-- Use the helper script to check and start: `./scripts/ensure-server-running.sh`
-- Check if port 8420 is available: `lsof -i :8420` (Mac/Linux) or `netstat -ano | findstr :8420` (Windows)
-- Install dependencies: `npm install`
-- View server logs: `cat .claude/logs/server.log`
+- Check if port 8420 is already in use
+- Reinstall dependencies: `npm install`
 
 ### No Projects Showing
 - Verify `~/.claude.json` exists and contains project paths
-- Check browser console for errors (F12)
 - Try clicking the "Rescan" button in the UI
+- Check browser console for errors (F12)
 
-### API Errors
-- Check backend server logs for error messages
+### Configurations Not Loading
 - Verify project directories exist and are accessible
-- Ensure `.claude/` directories have proper permissions
+- Ensure `.claude/` directories have proper read permissions
+- Check that configuration files are valid (proper YAML frontmatter for agents/commands)
 
 ### Frontend Not Loading
 - Clear browser cache and hard refresh (Ctrl+Shift+R or Cmd+Shift+R)
-- Check browser console for JavaScript errors
-- Verify CDN links are accessible (check Network tab)
+- Check browser console for JavaScript errors (F12)
 - Try a different browser
