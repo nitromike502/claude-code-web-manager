@@ -36,7 +36,7 @@ app.get('/api/health', (req, res) => {
     success: true,
     status: 'ok',
     timestamp: new Date().toISOString(),
-    version: '1.0.0',
+    version: '1.0.1',
     service: 'claude-code-manager'
   });
 });
