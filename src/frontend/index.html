@@ -27,15 +27,9 @@
                     @input="filterProjects"
                 />
             </div>
-            <div class="header-actions">
-                <button class="btn-user" @click="goToUserView" title="User configurations" aria-label="User configurations">
-                    <i class="fas fa-user"></i>
-                    <span>User</span>
-                </button>
-                <button class="theme-toggle" @click="toggleTheme" :title="currentTheme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'">
-                    <i :class="currentTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon'"></i>
-                </button>
-            </div>
+            <button class="theme-toggle" @click="toggleTheme" :title="currentTheme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'">
+                <i :class="currentTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon'"></i>
+            </button>
         </header>
 
         <!-- Breadcrumbs -->
@@ -72,6 +66,38 @@
 
             <!-- Project Grid -->
             <div v-if="!loading && !error" class="project-grid">
+                <!-- User Configuration Card (always first) -->
+                <div
+                    class="project-card user-card"
+                    @click="goToUserView"
+                    title="View user-level configurations"
+                >
+                    <div class="project-header">
+                        <i class="fas fa-user"></i>
+                        <h3 class="project-name">User Configurations</h3>
+                    </div>
+                    <div class="project-path">~/.claude/ • Applies to all projects</div>
+                    <div class="project-stats">
+                        <div class="stat stat-agents">
+                            <i class="fas fa-robot"></i>
+                            <span>Agents</span>
+                        </div>
+                        <div class="stat stat-commands">
+                            <i class="fas fa-terminal"></i>
+                            <span>Commands</span>
+                        </div>
+                        <div class="stat stat-hooks">
+                            <i class="fas fa-plug"></i>
+                            <span>Hooks</span>
+                        </div>
+                        <div class="stat stat-mcp">
+                            <i class="fas fa-server"></i>
+                            <span>MCP Servers</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project Cards -->
                 <div
                     v-for="project in filteredProjects"
                     :key="project.id"
@@ -243,37 +269,29 @@
             color: var(--text-muted);
         }
 
-        .header-actions {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
+        /* User Configuration Card - Purple accent */
+        .user-card {
+            background: linear-gradient(135deg, var(--bg-secondary) 0%, rgba(139, 92, 246, 0.15) 100%);
+            border: 2px solid var(--color-mcp);
         }
 
-        .btn-user {
-            background-color: var(--bg-tertiary);
-            border: 1px solid var(--border-primary);
-            color: var(--text-primary);
-            padding: 0.625rem 1rem;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.9375rem;
-            font-weight: 500;
-        }
-
-        .btn-user:hover {
-            background-color: var(--bg-hover);
+        .user-card:hover {
             border-color: var(--color-mcp);
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .user-card .project-header i {
             color: var(--color-mcp);
         }
 
-        .btn-user.active {
-            background-color: var(--color-mcp);
-            border-color: var(--color-mcp);
-            color: white;
+        .user-card .project-name {
+            color: var(--color-mcp);
+        }
+
+        .user-card .project-path {
+            color: var(--text-secondary);
+            font-style: italic;
         }
 
         .theme-toggle {
@@ -443,7 +461,7 @@
                 flex: 1;
             }
 
-            .header-actions {
+            .theme-toggle {
                 order: 2;
             }
 
@@ -451,10 +469,6 @@
                 order: 3;
                 width: 100%;
                 min-width: 100%;
-            }
-
-            .btn-user span {
-                display: none;
             }
 
             .breadcrumbs {
