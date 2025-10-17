@@ -13,7 +13,7 @@ const { defineConfig, devices } = require('@playwright/test');
 module.exports = defineConfig({
   // Test directories (searches recursively for *.spec.js files)
   testDir: './tests',
-  testMatch: ['**/tests/{frontend,e2e}/**/*.spec.js'],
+  testMatch: ['**/tests/{frontend,e2e,responsive}/**/*.spec.js'],
 
   // Run tests in parallel
   fullyParallel: true,
@@ -78,21 +78,20 @@ module.exports = defineConfig({
     },
   },
 
-  // Configure projects for major browsers (Phase 1: Chromium only)
+  // Configure projects for major browsers (Phase 2: Multi-browser testing enabled)
   projects: [
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
     },
-    // Phase 2: Uncomment for multi-browser testing
-    // {
-    //   name: 'firefox',
-    //   use: { ...devices['Desktop Firefox'] },
-    // },
-    // {
-    //   name: 'webkit',
-    //   use: { ...devices['Desktop Safari'] },
-    // },
+    {
+      name: 'firefox',
+      use: { ...devices['Desktop Firefox'] },
+    },
+    {
+      name: 'webkit',
+      use: { ...devices['Desktop Safari'] },
+    },
   ],
 
   // Run local dev server before starting tests
