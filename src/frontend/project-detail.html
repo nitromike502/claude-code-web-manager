@@ -248,8 +248,9 @@
                     this.sidebarContent = agent.content || '';
                     this.sidebarType = 'agent';
                     this.sidebarMetadata = {
-                        filePath: agent.filePath || '',
-                        description: agent.description || ''
+                        filePath: agent.path || agent.filePath || '',
+                        description: agent.description || '',
+                        frontmatter: agent.frontmatter || null
                     };
                     this.sidebarVisible = true;
                 },
@@ -260,8 +261,9 @@
                     this.sidebarContent = command.content || '';
                     this.sidebarType = 'command';
                     this.sidebarMetadata = {
-                        filePath: command.filePath || '',
-                        description: command.description || ''
+                        filePath: command.path || command.filePath || '',
+                        description: command.description || '',
+                        frontmatter: command.frontmatter || null
                     };
                     this.sidebarVisible = true;
                 },
