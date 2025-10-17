@@ -34,10 +34,10 @@ app.use(express.static(frontendPath));
 app.get('/api/health', (req, res) => {
   res.json({
     success: true,
-    status: 'healthy',
+    status: 'ok',
     timestamp: new Date().toISOString(),
     version: '1.0.0',
-    service: 'Claude Code Manager Backend'
+    service: 'claude-code-manager'
   });
 });
 
