@@ -60,9 +60,9 @@ test.describe('E2E Flow: Theme Toggle & Persistence', () => {
     const storedTheme = await page.evaluate(() => localStorage.getItem('theme'));
     expect(storedTheme).toBe('light');
 
-    // STEP 3: Navigate to project detail page
+    // STEP 3: Navigate to project detail page (nth(1) skips User card)
     await page.waitForSelector('.project-card', { timeout: 10000 });
-    await page.click('.project-card');
+    await page.locator('.project-card').nth(1).click();
     await page.waitForURL(/project-detail\.html/);
 
     // Verify theme persisted across navigation
@@ -126,8 +126,8 @@ test.describe('E2E Flow: Theme Toggle & Persistence', () => {
     await page.waitForTimeout(100);
     expect(await html.getAttribute('data-theme')).toBe('light');
 
-    // Navigate to detail page
-    await page.click('.project-card');
+    // Navigate to detail page (nth(1) skips User card)
+    await page.locator('.project-card').nth(1).click();
     await page.waitForURL(/project-detail\.html/);
     await page.waitForSelector('.project-content', { timeout: 10000 });
 

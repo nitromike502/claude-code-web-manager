@@ -92,12 +92,12 @@ expect: {
 
 Baselines are stored in:
 ```
-/home/claude/manager/tests/frontend/visual/visual-regression.spec.js-snapshots/
+/home/claude/manager/tests/frontend/visual/300-visual-regression.spec.js-snapshots/
 ```
 
 Structure:
 ```
-visual-regression.spec.js-snapshots/
+300-visual-regression.spec.js-snapshots/
 └── chromium/
     ├── dashboard-with-projects.png
     ├── dashboard-dark-mode.png
@@ -197,7 +197,7 @@ toHaveScreenshot: {
 
 **Always commit baseline screenshots to git**:
 ```bash
-git add tests/frontend/visual/visual-regression.spec.js-snapshots/
+git add tests/frontend/visual/300-visual-regression.spec.js-snapshots/
 git commit -m "test: update visual regression baselines after header redesign"
 ```
 
@@ -246,7 +246,7 @@ Visual tests **BLOCK** PR creation. Any visual regression must be:
 
 ### Adding New Visual Tests
 
-1. Create test in `/home/claude/manager/tests/frontend/visual/visual-regression.spec.js`
+1. Create test in `/home/claude/manager/tests/frontend/visual/300-visual-regression.spec.js`
 2. Follow existing patterns (mock API, wait for render, capture screenshot)
 3. Run once to generate baseline: `npm run test:visual:update`
 4. Verify baseline looks correct by inspecting the image file
@@ -319,6 +319,6 @@ If you encounter issues with visual regression tests:
 
 1. Check this documentation first
 2. Review the test report: `npm run test:visual:report`
-3. Inspect baseline images in `tests/frontend/visual/visual-regression.spec.js-snapshots/`
+3. Inspect baseline images in `tests/frontend/visual/300-visual-regression.spec.js-snapshots/`
 4. Check Playwright configuration in `playwright.config.js`
 5. Run with debug flag: `PWDEBUG=1 npm run test:frontend:visual`

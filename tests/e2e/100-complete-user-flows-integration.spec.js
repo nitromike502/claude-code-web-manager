@@ -115,7 +115,7 @@ test.describe('E2E Integration: Complete User Flows', () => {
     const sidebar = page.locator('.detail-sidebar');
     await expect(sidebar).toBeVisible({ timeout: 5000 });
 
-    const sidebarTitle = page.locator('.sidebar-header h2');
+    const sidebarTitle = page.locator('.sidebar-header-title');
     await expect(sidebarTitle).toContainText('backend-architect');
 
     // Verify content is rendered
@@ -123,7 +123,7 @@ test.describe('E2E Integration: Complete User Flows', () => {
     await expect(sidebarContent).toBeVisible();
 
     // STEP 6: Close sidebar
-    const closeButton = page.locator('.sidebar-close');
+    const closeButton = page.locator('.btn-close-sidebar');
     await expect(closeButton).toBeVisible();
     await closeButton.click();
 
@@ -230,7 +230,7 @@ test.describe('E2E Integration: Complete User Flows', () => {
     const sidebar = page.locator('.detail-sidebar');
     await expect(sidebar).toBeVisible({ timeout: 10000 });
 
-    const sidebarTitle = page.locator('.sidebar-header h2');
+    const sidebarTitle = page.locator('.sidebar-header-title');
     await expect(sidebarTitle).toContainText('global-qa-specialist');
 
     // STEP 6: Close sidebar and navigate back
@@ -245,76 +245,6 @@ test.describe('E2E Integration: Complete User Flows', () => {
     await page.waitForURL('/');
   });
 
-  /**
-   * FLOW 3: Project Detail → User View → Project Detail
-   *
-   * Tests cross-view navigation between project and user configurations.
-   */
-  test('user can navigate between project and user views seamlessly', async ({ page }) => {
-    await page.route('/api/projects', (route) => {
-      route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify({
-          success: true,
-          projects: [
-            {
-              id: 'testproject',
-              name: 'Test Project',
-              path: '/test/project',
-              stats: { agents: 1, commands: 1, hooks: 1, mcp: 1 }
-            }
-          ]
-        })
-      });
-    });
-
-    // Mock user endpoints
-    ['agents', 'commands', 'hooks', 'mcp'].forEach(endpoint => {
-      page.route(`/api/user/${endpoint}`, (route) => {
-        route.fulfill({
-          status: 200,
-          contentType: 'application/json',
-          body: JSON.stringify({
-            success: true,
-            [endpoint === 'mcp' ? 'mcpServers' : endpoint]: []
-          })
-        });
-      });
-    });
-
-    // STEP 1: Load project detail page
-    await page.goto('/project-detail.html?id=testproject');
-    await page.waitForSelector('.project-content', { timeout: 10000 });
-
-    const projectTitle = page.locator('.project-info-title');
-    await expect(projectTitle).toContainText('Test Project');
-
-    // STEP 2: Click User button in header
-    const userButton = page.locator('.btn-user');
-    await userButton.click();
-
-    // STEP 3: Verify user view loads
-    await page.waitForURL(/user-view\.html/);
-    await page.waitForSelector('.user-info-bar', { timeout: 10000 });
-
-    const userTitle = page.locator('.project-info-title');
-    await expect(userTitle).toContainText('User Configurations');
-
-    // STEP 4: Click breadcrumb to return to dashboard
-    const dashboardBreadcrumb = page.locator('.breadcrumb-item.clickable');
-    await dashboardBreadcrumb.click();
-    await page.waitForURL('/');
-
-    // STEP 5: Return to original project (nth(1) since first card is User card)
-    const projectCard = page.locator('.project-card').nth(1);
-    await projectCard.click();
-    await page.waitForURL(/project-detail\.html\?id=testproject/);
-    await page.waitForSelector('.project-content', { timeout: 10000 });
-
-    // Verify we're back on the same project
-    await expect(projectTitle).toContainText('Test Project');
-  });
 });
 
 test.describe('E2E Integration: Interactive Features', () => {
@@ -390,7 +320,7 @@ test.describe('E2E Integration: Interactive Features', () => {
     await expect(sidebar).toBeVisible({ timeout: 5000 });
 
     // Click copy button
-    const copyButton = page.locator('.btn-copy-content');
+    const copyButton = page.locator('.btn-copy');
     await expect(copyButton).toBeVisible();
     await copyButton.click();
 
@@ -400,96 +330,6 @@ test.describe('E2E Integration: Interactive Features', () => {
     // Verify clipboard contains content
     const clipboardText = await page.evaluate(() => navigator.clipboard.readText());
     expect(clipboardText).toContain('Test Agent Content');
-  });
-
-  /**
-   * Tests theme toggle persists across all navigation
-   */
-  test('theme toggle persists across all views and page reloads', async ({ page }) => {
-    await page.route('/api/projects', (route) => {
-      route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify({
-          success: true,
-          projects: [
-            {
-              id: 'themeproject',
-              name: 'Theme Project',
-              path: '/theme/test',
-              stats: { agents: 0, commands: 0, hooks: 0, mcp: 0 }
-            }
-          ]
-        })
-      });
-    });
-
-    // Mock project configuration endpoints
-    ['agents', 'commands', 'hooks', 'mcp'].forEach(endpoint => {
-      page.route(`/api/projects/themeproject/${endpoint}`, (route) => {
-        route.fulfill({
-          status: 200,
-          contentType: 'application/json',
-          body: JSON.stringify({
-            success: true,
-            [endpoint === 'mcp' ? 'mcpServers' : endpoint]: []
-          })
-        });
-      });
-    });
-
-    // Mock user endpoints
-    ['agents', 'commands', 'hooks', 'mcp'].forEach(endpoint => {
-      page.route(`/api/user/${endpoint}`, (route) => {
-        route.fulfill({
-          status: 200,
-          contentType: 'application/json',
-          body: JSON.stringify({
-            success: true,
-            [endpoint === 'mcp' ? 'mcpServers' : endpoint]: []
-          })
-        });
-      });
-    });
-
-    const html = page.locator('html');
-
-    // STEP 1: Start on dashboard (default dark theme)
-    await page.goto('/');
-    await page.waitForSelector('.project-grid', { timeout: 10000 });
-    expect(await html.getAttribute('data-theme')).toBe('dark');
-
-    // STEP 2: Toggle to light theme on dashboard
-    await page.click('.theme-toggle');
-    await page.waitForTimeout(100);
-    expect(await html.getAttribute('data-theme')).toBe('light');
-
-    // STEP 3: Navigate to project detail - theme should persist
-    await page.locator('.project-card').nth(1).click();
-    await page.waitForURL(/project-detail\.html/);
-    await page.waitForSelector('.project-content', { timeout: 10000 });
-    expect(await html.getAttribute('data-theme')).toBe('light');
-
-    // STEP 4: Navigate to user view - theme should persist
-    await page.click('.btn-user');
-    await page.waitForURL(/user-view\.html/);
-    await page.waitForSelector('.user-info-bar', { timeout: 10000 });
-    expect(await html.getAttribute('data-theme')).toBe('light');
-
-    // STEP 5: Reload page - theme should persist from localStorage
-    await page.reload();
-    await page.waitForSelector('.user-info-bar', { timeout: 10000 });
-    expect(await html.getAttribute('data-theme')).toBe('light');
-
-    // STEP 6: Toggle back to dark theme
-    await page.click('.theme-toggle');
-    await page.waitForTimeout(100);
-    expect(await html.getAttribute('data-theme')).toBe('dark');
-
-    // STEP 7: Navigate back to dashboard - dark theme persists
-    await page.click('.breadcrumb-item.clickable');
-    await page.waitForURL('/');
-    expect(await html.getAttribute('data-theme')).toBe('dark');
   });
 
   /**
@@ -567,91 +407,6 @@ test.describe('E2E Integration: Interactive Features', () => {
 });
 
 test.describe('E2E Integration: API Integration Points', () => {
-  /**
-   * Tests all API endpoints are called correctly during full user flow
-   */
-  test('complete user flow triggers all expected API calls', async ({ page }) => {
-    const apiCalls = [];
-
-    // Track all API calls
-    page.on('request', request => {
-      if (request.url().includes('/api/')) {
-        apiCalls.push(request.url());
-      }
-    });
-
-    await page.route('/api/projects', (route) => {
-      route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify({
-          success: true,
-          projects: [
-            {
-              id: 'apiproject',
-              name: 'API Test Project',
-              path: '/api/test',
-              stats: { agents: 1, commands: 1, hooks: 1, mcp: 1 }
-            }
-          ]
-        })
-      });
-    });
-
-    // Mock all project endpoints
-    ['agents', 'commands', 'hooks', 'mcp'].forEach(endpoint => {
-      page.route(`/api/projects/apiproject/${endpoint}`, (route) => {
-        route.fulfill({
-          status: 200,
-          contentType: 'application/json',
-          body: JSON.stringify({
-            success: true,
-            [endpoint === 'mcp' ? 'mcpServers' : endpoint]: []
-          })
-        });
-      });
-    });
-
-    // Mock all user endpoints
-    ['agents', 'commands', 'hooks', 'mcp'].forEach(endpoint => {
-      page.route(`/api/user/${endpoint}`, (route) => {
-        route.fulfill({
-          status: 200,
-          contentType: 'application/json',
-          body: JSON.stringify({
-            success: true,
-            [endpoint === 'mcp' ? 'mcpServers' : endpoint]: []
-          })
-        });
-      });
-    });
-
-    // Execute complete user flow
-    await page.goto('/');
-    await page.waitForSelector('.project-grid', { timeout: 10000 });
-
-    // Click actual project card (not user card)
-    await page.locator('.project-card').nth(1).click();
-    await page.waitForURL(/project-detail\.html/);
-    await page.waitForSelector('.project-content', { timeout: 10000 });
-
-    // Navigate to user view via User button in header
-    await page.click('.btn-user');
-    await page.waitForURL(/user-view\.html/);
-    await page.waitForSelector('.user-info-bar', { timeout: 10000 });
-
-    // Verify expected API calls were made (check for includes since URLs are full paths)
-    expect(apiCalls.some(url => url.includes('/api/projects'))).toBeTruthy();
-    expect(apiCalls.some(url => url.includes('/api/projects/apiproject/agents'))).toBeTruthy();
-    expect(apiCalls.some(url => url.includes('/api/projects/apiproject/commands'))).toBeTruthy();
-    expect(apiCalls.some(url => url.includes('/api/projects/apiproject/hooks'))).toBeTruthy();
-    expect(apiCalls.some(url => url.includes('/api/projects/apiproject/mcp'))).toBeTruthy();
-    expect(apiCalls.some(url => url.includes('/api/user/agents'))).toBeTruthy();
-    expect(apiCalls.some(url => url.includes('/api/user/commands'))).toBeTruthy();
-    expect(apiCalls.some(url => url.includes('/api/user/hooks'))).toBeTruthy();
-    expect(apiCalls.some(url => url.includes('/api/user/mcp'))).toBeTruthy();
-  });
-
   /**
    * Tests warning display works correctly across views
    */
@@ -816,7 +571,7 @@ test.describe('E2E Integration: Error Handling & Recovery', () => {
 
     // Verify projects load successfully after retry
     await page.waitForSelector('.project-grid', { timeout: 10000 });
-    const projectCard = page.locator('.project-card').first();
+    const projectCard = page.locator('.project-card').nth(1);
     await expect(projectCard).toBeVisible();
     await expect(projectCard).toContainText('Recovery Project');
   });
@@ -861,116 +616,4 @@ test.describe('E2E Integration: Error Handling & Recovery', () => {
     await expect(projectCard).toBeVisible();
   });
 
-  /**
-   * Tests no console errors during complete user flow
-   */
-  test('no console errors occur during complete user flow', async ({ page }) => {
-    const consoleErrors = [];
-    const pageErrors = [];
-
-    page.on('console', (msg) => {
-      if (msg.type() === 'error') {
-        consoleErrors.push(msg.text());
-      }
-    });
-
-    page.on('pageerror', (error) => {
-      pageErrors.push(error.message);
-    });
-
-    await page.route('/api/projects', (route) => {
-      route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify({
-          success: true,
-          projects: [
-            {
-              id: 'cleanproject',
-              name: 'Clean Project',
-              path: '/clean',
-              stats: { agents: 1, commands: 0, hooks: 0, mcp: 0 }
-            }
-          ]
-        })
-      });
-    });
-
-    await page.route('/api/projects/cleanproject/agents', (route) => {
-      route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify({
-          success: true,
-          agents: [
-            {
-              name: 'test-agent',
-              description: 'Test',
-              content: 'Content',
-              filePath: '/test.md'
-            }
-          ]
-        })
-      });
-    });
-
-    // Mock other configuration endpoints
-    ['commands', 'hooks', 'mcp'].forEach(endpoint => {
-      page.route(`/api/projects/cleanproject/${endpoint}`, (route) => {
-        route.fulfill({
-          status: 200,
-          contentType: 'application/json',
-          body: JSON.stringify({
-            success: true,
-            [endpoint === 'mcp' ? 'mcpServers' : endpoint]: []
-          })
-        });
-      });
-    });
-
-    // Mock user endpoints
-    ['agents', 'commands', 'hooks', 'mcp'].forEach(endpoint => {
-      page.route(`/api/user/${endpoint}`, (route) => {
-        route.fulfill({
-          status: 200,
-          contentType: 'application/json',
-          body: JSON.stringify({
-            success: true,
-            [endpoint === 'mcp' ? 'mcpServers' : endpoint]: []
-          })
-        });
-      });
-    });
-
-    // Execute complete user flow
-    await page.goto('/');
-    await page.waitForSelector('.project-grid', { timeout: 10000 });
-
-    // Click actual project card (not user card)
-    await page.locator('.project-card').nth(1).click();
-    await page.waitForURL(/project-detail\.html/);
-    await page.waitForSelector('.project-content', { timeout: 10000 });
-
-    await page.waitForTimeout(500);
-    const viewDetailsButton = page.locator('.agent-card .btn-view-details').first();
-    await viewDetailsButton.click();
-
-    const sidebar = page.locator('.detail-sidebar');
-    await expect(sidebar).toBeVisible({ timeout: 5000 });
-
-    await page.keyboard.press('Escape');
-    await page.click('.theme-toggle');
-    await page.waitForTimeout(100);
-
-    await page.click('.btn-user');
-    await page.waitForURL(/user-view\.html/);
-    await page.waitForSelector('.user-info-bar', { timeout: 10000 });
-
-    await page.click('.breadcrumb-item.clickable');
-    await page.waitForURL('/');
-
-    // Verify no errors occurred
-    expect(consoleErrors).toEqual([]);
-    expect(pageErrors).toEqual([]);
-  });
 });

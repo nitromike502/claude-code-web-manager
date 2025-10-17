@@ -134,6 +134,24 @@ All code changes must pass automated tests before PR creation:
 - **Backend (Jest + Supertest):** API endpoint tests, parser unit tests, error handling, regression tests
 - **Frontend (Playwright):** Component rendering, user interactions, API integration, visual verification
 
+**Test File Naming Convention:**
+
+All Playwright test files use numbered prefixes for easy identification:
+- **Frontend Component Tests (01-99):** `tests/frontend/XX-test-name.spec.js`
+- **E2E Integration Tests (100-199):** `tests/e2e/1XX-test-name.spec.js`
+- **Responsive Tests (200-299):** `tests/responsive/2XX-test-name.spec.js`
+- **Visual Regression Tests (300-399):** `tests/visual/3XX-test-name.spec.js`
+- **Backend Jest Tests:** No number prefix (standard Jest convention)
+
+**Test Reference Format:**
+
+Use `[Test XXX]` format in commit messages and bug reports:
+- `test: add [Test 06] new component rendering tests`
+- `test: fix [Test 100] timeout in user flow navigation`
+- `[Test 201] failing due to responsive layout issue`
+
+See `/home/claude/manager/.claude/templates/test-template.md` for detailed guidelines.
+
 **Test Reports:** All test results are saved to `/home/claude/manager/docs/testing/test-reports/`
 
 **Hard Block:** PRs cannot be created if tests fail. This prevents broken code from being merged.
@@ -315,7 +333,24 @@ feat: add project discovery service
 fix: resolve sidebar scrolling issue
 docs: update API endpoint documentation
 chore: consolidate sidebar fix docs
+test: add [Test 06] sidebar interaction tests
+test: fix [Test 100] complete user flow timeout
 ```
+
+**Test-Related Commit Messages:**
+
+When working with tests, include the test number reference:
+```
+test: add [Test XXX] description
+test: fix [Test XXX] description
+test: remove [Test XXX] description
+```
+
+Where XXX is the test file number:
+- 01-99: Frontend component tests
+- 100-199: E2E integration tests
+- 200-299: Responsive tests
+- 300-399: Visual regression tests
 
 ### Why This Workflow?
 

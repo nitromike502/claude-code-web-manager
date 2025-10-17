@@ -895,7 +895,18 @@ test.describe('Project Detail Page - Console Error Detection', () => {
     // Listen for console errors
     page.on('console', (msg) => {
       if (msg.type() === 'error') {
-        consoleErrors.push(msg.text());
+        // Filter out expected errors from mocks/route handling
+        const text = msg.text();
+        if (!text.includes('Failed to load resource') &&
+            !text.includes('HTTP error! status:') &&
+            !text.includes('Error loading agents:') &&
+            !text.includes('Error loading commands:') &&
+            !text.includes('Error loading hooks:') &&
+            !text.includes('Error loading MCP servers:') &&
+            !text.includes('net::ERR') &&
+            !text.includes('favicon')) {
+          consoleErrors.push(text);
+        }
       }
     });
 

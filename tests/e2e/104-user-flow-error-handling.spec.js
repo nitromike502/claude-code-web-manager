@@ -73,10 +73,10 @@ test.describe('E2E Flow: Error Handling', () => {
     // Verify error is gone
     await expect(errorState).not.toBeVisible();
 
-    // Verify projects loaded
+    // Verify projects loaded (User card + 1 project = 2 total)
     const projectCards = page.locator('.project-card');
-    expect(await projectCards.count()).toBe(1);
-    await expect(projectCards.first()).toContainText('Recovered Project');
+    expect(await projectCards.count()).toBe(2);
+    await expect(projectCards.nth(1)).toContainText('Recovered Project'); // Skip User card at index 0
   });
 
   test('user navigates through application with warnings present', async ({ page }) => {
@@ -107,11 +107,11 @@ test.describe('E2E Flow: Error Handling', () => {
     await page.waitForSelector('.project-grid', { timeout: 10000 });
 
     // Dashboard should work normally despite warnings
-    const projectCard = page.locator('.project-card');
-    await expect(projectCard).toBeVisible();
+    const projectCards = page.locator('.project-card');
+    await expect(projectCards.first()).toBeVisible();
 
-    // STEP 2: Navigate to project detail
-    await projectCard.click();
+    // STEP 2: Navigate to project detail (nth(1) skips User card)
+    await projectCards.nth(1).click();
     await page.waitForURL(/project-detail\.html/);
 
     // STEP 3: Warnings should be displayed
@@ -141,7 +141,7 @@ test.describe('E2E Flow: Error Handling', () => {
     await page.waitForURL('/');
 
     // Dashboard still works
-    await expect(projectCard).toBeVisible();
+    await expect(projectCards.first()).toBeVisible();
   });
 
   test('missing project ID shows helpful error message', async ({ page }) => {
@@ -337,8 +337,8 @@ test.describe('E2E Flow: Error Handling', () => {
     await page.click('.btn-retry');
     await page.waitForSelector('.project-grid', { timeout: 10000 });
 
-    // Verify projects loaded
-    const projectCard = page.locator('.project-card');
+    // Verify projects loaded (nth(1) skips User card)
+    const projectCard = page.locator('.project-card').nth(1);
     await expect(projectCard).toBeVisible();
     await expect(projectCard).toContainText('Persistent Project');
   });
@@ -380,9 +380,11 @@ test.describe('E2E Flow: Error Handling', () => {
         // Filter out expected error logging from the app itself
         const text = msg.text();
         if (!text.includes('Failed to load resource') &&
+            !text.includes('HTTP error! status:') &&
             !text.includes('net::') &&
             !text.includes('Error loading projects:') &&
-            !text.includes('Error loading project:')) {
+            !text.includes('Error loading project:') &&
+            !text.includes('favicon')) {
           consoleErrors.push(text);
         }
       }

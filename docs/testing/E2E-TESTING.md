@@ -8,24 +8,29 @@ This document describes the end-to-end (e2e) test suite for the Claude Code Mana
 
 ```
 tests/
-├── e2e/                                          # End-to-end flow tests
-│   ├── user-flow-project-discovery.spec.js      # First-time user project discovery
-│   ├── user-flow-configuration-viewing.spec.js  # Configuration browsing
-│   ├── user-flow-theme-toggle.spec.js           # Theme persistence
-│   ├── user-flow-error-handling.spec.js         # Error recovery
-│   └── user-flow-search-filter.spec.js          # Search/filter functionality
-├── frontend/                                     # Component-level tests
-│   ├── app-smoke.spec.js                        # Basic app functionality
-│   └── project-detail.spec.js                   # Project detail components
-└── helpers/                                      # Test utilities
-    └── page-objects.js                          # Page object models
+├── e2e/                                                 # End-to-end flow tests
+│   ├── 100-complete-user-flows-integration.spec.js     # Complete user flows
+│   ├── 101-user-flow-project-discovery.spec.js         # First-time user project discovery
+│   ├── 102-user-flow-configuration-viewing.spec.js     # Configuration browsing
+│   ├── 103-user-flow-search-filter.spec.js             # Search/filter functionality
+│   ├── 104-user-flow-error-handling.spec.js            # Error recovery
+│   └── 105-user-flow-theme-toggle.spec.js              # Theme persistence
+├── frontend/                                            # Component-level tests
+│   ├── 01-app-smoke.spec.js                            # Basic app functionality
+│   ├── 02-project-detail.spec.js                       # Project detail components
+│   └── visual/
+│       └── 300-visual-regression.spec.js                # Visual regression tests
+├── responsive/
+│   └── 200-layout-responsive.spec.js                    # Responsive layout tests
+└── helpers/                                             # Test utilities
+    └── page-objects.js                                  # Page object models
 ```
 
 ## Critical User Flows
 
 ### Flow 1: First-Time User - Project Discovery
 
-**Test File:** `user-flow-project-discovery.spec.js`
+**Test File:** `101-user-flow-project-discovery.spec.js`
 
 **Journey:**
 1. User opens app (empty state or project list)
@@ -44,7 +49,7 @@ tests/
 
 ### Flow 2: Configuration Viewing Journey
 
-**Test File:** `user-flow-configuration-viewing.spec.js`
+**Test File:** `102-user-flow-configuration-viewing.spec.js`
 
 **Journey:**
 1. User selects a project
@@ -66,7 +71,7 @@ tests/
 
 ### Flow 3: Theme Toggle & Persistence
 
-**Test File:** `user-flow-theme-toggle.spec.js`
+**Test File:** `105-user-flow-theme-toggle.spec.js`
 
 **Journey:**
 1. User opens application (default theme loads)
@@ -86,7 +91,7 @@ tests/
 
 ### Flow 4: Error Handling
 
-**Test File:** `user-flow-error-handling.spec.js`
+**Test File:** `104-user-flow-error-handling.spec.js`
 
 **Journey:**
 1. User encounters API errors
@@ -108,7 +113,7 @@ tests/
 
 ### Flow 5: Search & Filter
 
-**Test File:** `user-flow-search-filter.spec.js`
+**Test File:** `103-user-flow-search-filter.spec.js`
 
 **Journey:**
 1. User sees full project list
@@ -265,7 +270,7 @@ npm run test:frontend:component
 
 ### Run specific test file
 ```bash
-npx playwright test tests/e2e/user-flow-project-discovery.spec.js
+npx playwright test tests/e2e/101-user-flow-project-discovery.spec.js
 ```
 
 ### Run tests in headed mode (see browser)

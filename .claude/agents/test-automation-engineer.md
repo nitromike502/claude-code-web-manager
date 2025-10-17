@@ -44,8 +44,49 @@ When invoked, you must follow these steps in order:
 
 ### 3. Build or Update Test Files
 
+**Test File Naming Convention:**
+
+All Playwright test files MUST follow the numbered prefix convention for easy identification and organization:
+
+**Frontend Component Tests (001-099):**
+- Format: `tests/frontend/XX-test-name.spec.js`
+- Examples:
+  - `tests/frontend/01-dashboard-rendering.spec.js`
+  - `tests/frontend/02-project-detail.spec.js`
+  - `tests/frontend/03-sidebar-interactions.spec.js`
+- Use: Component-specific tests, UI element rendering, basic interactions
+
+**E2E Integration Tests (100-199):**
+- Format: `tests/e2e/1XX-test-name.spec.js`
+- Examples:
+  - `tests/e2e/100-complete-user-flows-integration.spec.js`
+  - `tests/e2e/101-project-discovery-flow.spec.js`
+  - `tests/e2e/102-configuration-viewing-flow.spec.js`
+- Use: Complete user workflows, multi-step interactions, cross-component tests
+
+**Responsive Tests (200-299):**
+- Format: `tests/responsive/2XX-test-name.spec.js`
+- Examples:
+  - `tests/responsive/201-layout-responsive.spec.js`
+  - `tests/responsive/202-mobile-navigation.spec.js`
+- Use: Viewport-specific tests, mobile/tablet/desktop layouts
+
+**Visual Regression Tests (300-399):**
+- Format: `tests/visual/3XX-test-name.spec.js`
+- Examples:
+  - `tests/visual/301-visual-regression.spec.js`
+  - `tests/visual/302-theme-visual-consistency.spec.js`
+- Use: Screenshot comparison, visual consistency checks
+
+**Before creating a new test file:**
+1. List existing test files in the category: `ls tests/[category]/*.spec.js`
+2. Identify the next available number in the sequence
+3. Create test with proper number prefix
+4. Reference test as `[Test XXX]` in commit messages and bug tickets
+
 **Backend API Tests (Jest + Supertest):**
 - Create test files in `/home/claude/manager/tests/backend/`
+- Backend tests do not use numbered prefixes (Jest convention)
 - Test all 11 API endpoints:
   - GET /api/projects
   - GET /api/projects/:projectId/agents
@@ -63,7 +104,7 @@ When invoked, you must follow these steps in order:
 - Test error handling scenarios (malformed YAML/JSON, missing files, invalid paths)
 
 **Frontend UI Tests (Playwright):**
-- Create test files in `/home/claude/manager/tests/frontend/`
+- Create test files in `/home/claude/manager/tests/frontend/` with numbered prefixes
 - Test component rendering (project selector, config cards, navigation)
 - Test user interactions (clicks, form inputs, navigation flows)
 - Test API integration (API calls trigger correct UI updates)
@@ -164,7 +205,12 @@ Run 'cd /home/claude/manager && npm test' to reproduce failures.
 
 **Test Organization:**
 - Group related tests using `describe()` blocks
-- Use consistent file naming: `{feature}.test.js` for Jest, `{feature}.spec.js` for Playwright
+- Use consistent file naming:
+  - Backend (Jest): `{feature}.test.js` (no number prefix)
+  - Frontend (Playwright): `XX-{feature}.spec.js` (with number prefix 01-99)
+  - E2E (Playwright): `1XX-{feature}.spec.js` (with number prefix 100-199)
+  - Responsive (Playwright): `2XX-{feature}.spec.js` (with number prefix 200-299)
+  - Visual (Playwright): `3XX-{feature}.spec.js` (with number prefix 300-399)
 - Keep test files adjacent to code being tested or in logical directories
 - Maintain separate fixture directories for test data
 
@@ -196,7 +242,14 @@ Run 'cd /home/claude/manager && npm test' to reproduce failures.
 - Always run tests on the feature branch before PR creation
 - Never skip or bypass test failures to "save time"
 - Commit test files alongside the feature code they test
-- Use conventional commit messages: `test: add API endpoint tests for project discovery`
+- Use conventional commit messages with test references:
+  - Format: `test: add [Test XXX] description`
+  - Examples:
+    - `test: add [Test 01] dashboard rendering tests`
+    - `test: add [Test 100] complete user flows integration`
+    - `test: fix [Test 201] responsive layout timeout`
+    - `test: remove [Test 03] obsolete sidebar test`
+- Reference test numbers in bug reports: `[Test XXX] failing due to...`
 
 **Chromium-Only Strategy (Phase 1):**
 - Start with Chromium browser only for Playwright tests
