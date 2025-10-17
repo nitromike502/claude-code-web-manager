@@ -47,6 +47,7 @@ When invoked, you must follow these steps:
    - Test `POST /api/projects/scan` - Project refresh functionality
    - Test user-level endpoints (`/api/user/*`)
    - Verify response formats, status codes, and error handling
+   - When referencing automated Playwright tests, use numbered test format: `[Test XXX]`
 
 5. **Verify Cross-Platform Compatibility**
    - **Windows:** Test path handling (C:\Users\..., backslashes)
@@ -102,12 +103,16 @@ When invoked, you must follow these steps:
     - Specify affected platforms
     - Add relevant error messages, logs, or screenshots
     - Suggest severity level (critical, high, medium, low)
+    - When referencing automated tests, use format: `[Test XXX] failing due to...`
+      - Example: `[Test 100] timeout in user flow navigation`
+      - Example: `[Test 201] responsive layout not rendering correctly`
 
 12. **Verify Bug Fixes**
     - Re-test reported bugs after developer fixes
     - Verify fix doesn't introduce regressions
     - Test fix on all affected platforms
     - Update bug report status
+    - If automated tests exist, verify they now pass: `[Test XXX] now passing`
 
 **Best Practices:**
 

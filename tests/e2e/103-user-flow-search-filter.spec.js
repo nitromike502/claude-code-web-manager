@@ -53,12 +53,12 @@ test.describe('E2E Flow: Search & Filter', () => {
       });
     });
 
-    // STEP 1: User sees full project list
+    // STEP 1: User sees full project list (User card + 4 projects = 5 total)
     await page.goto('/');
     await page.waitForSelector('.project-grid', { timeout: 10000 });
 
     let projectCards = page.locator('.project-card');
-    expect(await projectCards.count()).toBe(4);
+    expect(await projectCards.count()).toBe(5); // User card + 4 projects
 
     // STEP 2: User types in search field
     const searchInput = page.locator('.search-input');
@@ -85,9 +85,9 @@ test.describe('E2E Flow: Search & Filter', () => {
     await searchInput.clear();
     await page.waitForTimeout(200);
 
-    // STEP 5: Full list returns
+    // STEP 5: Full list returns (User card + 4 projects = 5 total)
     projectCards = page.locator('.project-card');
-    expect(await projectCards.count()).toBe(4);
+    expect(await projectCards.count()).toBe(5);
   });
 
   test('search by project path filters correctly', async ({ page }) => {
@@ -126,12 +126,12 @@ test.describe('E2E Flow: Search & Filter', () => {
 
     const searchInput = page.locator('.search-input');
 
-    // Search by path
+    // Search by path (User card remains visible)
     await searchInput.fill('work');
     await page.waitForTimeout(200);
 
     const projectCards = page.locator('.project-card');
-    expect(await projectCards.count()).toBe(2);
+    expect(await projectCards.count()).toBe(3); // 2 work projects + User card
 
     const visibleProjects = await projectCards.allTextContents();
     expect(visibleProjects.join(' ')).toContain('Work Project 1');
@@ -169,25 +169,25 @@ test.describe('E2E Flow: Search & Filter', () => {
 
     const searchInput = page.locator('.search-input');
 
-    // Test uppercase
+    // Test uppercase (User card remains visible, doesn't match search)
     await searchInput.fill('MYAPP');
     await page.waitForTimeout(200);
     let projectCards = page.locator('.project-card');
-    expect(await projectCards.count()).toBe(1);
+    expect(await projectCards.count()).toBe(2); // MyApplication + User card
 
     // Test lowercase
     await searchInput.clear();
     await searchInput.fill('myapp');
     await page.waitForTimeout(200);
     projectCards = page.locator('.project-card');
-    expect(await projectCards.count()).toBe(1);
+    expect(await projectCards.count()).toBe(2); // MyApplication + User card
 
     // Test mixed case
     await searchInput.clear();
     await searchInput.fill('MyApP');
     await page.waitForTimeout(200);
     projectCards = page.locator('.project-card');
-    expect(await projectCards.count()).toBe(1);
+    expect(await projectCards.count()).toBe(2); // MyApplication + User card
   });
 
   test('empty search shows all projects', async ({ page }) => {
@@ -213,20 +213,20 @@ test.describe('E2E Flow: Search & Filter', () => {
     const searchInput = page.locator('.search-input');
     const projectCards = page.locator('.project-card');
 
-    // All projects initially visible
-    expect(await projectCards.count()).toBe(5);
+    // All projects initially visible (User card + 5 projects = 6 total)
+    expect(await projectCards.count()).toBe(6);
 
-    // Search for something
+    // Search for something (User card remains visible)
     await searchInput.fill('Project 1');
     await page.waitForTimeout(200);
-    expect(await projectCards.count()).toBe(1);
+    expect(await projectCards.count()).toBe(2); // Project 1 + User card
 
     // Clear search
     await searchInput.clear();
     await page.waitForTimeout(200);
 
-    // All projects visible again
-    expect(await projectCards.count()).toBe(5);
+    // All projects visible again (User card + 5 projects = 6 total)
+    expect(await projectCards.count()).toBe(6);
   });
 
   test('search with no results shows empty state', async ({ page }) => {
@@ -255,15 +255,15 @@ test.describe('E2E Flow: Search & Filter', () => {
     await searchInput.fill('NonExistentProject');
     await page.waitForTimeout(200);
 
-    // Empty state should appear
+    // Empty state should appear (but User card still visible)
     const emptyState = page.locator('.empty-state');
     await expect(emptyState).toBeVisible();
     await expect(emptyState).toContainText('No projects found');
     await expect(emptyState).toContainText('Try a different search term');
 
-    // Project grid should be hidden or empty
+    // Only User card visible (no matching projects)
     const projectCards = page.locator('.project-card');
-    expect(await projectCards.count()).toBe(0);
+    expect(await projectCards.count()).toBe(1); // Just User card
   });
 
   test('search works after navigating back from detail page', async ({ page }) => {
@@ -294,8 +294,8 @@ test.describe('E2E Flow: Search & Filter', () => {
     await page.goto('/');
     await page.waitForSelector('.project-grid', { timeout: 10000 });
 
-    // Navigate to detail page
-    await page.click('.project-card:first-child');
+    // Navigate to detail page (skip User card at index 0, click first project at index 1)
+    await page.locator('.project-card').nth(1).click();
     await page.waitForURL(/project-detail\.html/);
 
     // Navigate back
@@ -303,14 +303,15 @@ test.describe('E2E Flow: Search & Filter', () => {
     await page.waitForURL('/');
     await page.waitForSelector('.project-grid', { timeout: 10000 });
 
-    // Search should still work
+    // Search should still work (User card remains visible)
     const searchInput = page.locator('.search-input');
     await searchInput.fill('Beta');
     await page.waitForTimeout(200);
 
     const projectCards = page.locator('.project-card');
-    expect(await projectCards.count()).toBe(1);
-    await expect(projectCards.first()).toContainText('Beta Project');
+    expect(await projectCards.count()).toBe(2); // Beta Project + User card
+    // Find the Beta Project card (not the User card)
+    await expect(projectCards.nth(1)).toContainText('Beta Project');
   });
 
   test('rapid search input updates filter correctly', async ({ page }) => {
@@ -335,7 +336,7 @@ test.describe('E2E Flow: Search & Filter', () => {
     const searchInput = page.locator('.search-input');
     const projectCards = page.locator('.project-card');
 
-    // Type rapidly
+    // Type rapidly (User card remains visible)
     await searchInput.fill('A');
     await page.waitForTimeout(50);
     await searchInput.fill('Aa');
@@ -343,18 +344,19 @@ test.describe('E2E Flow: Search & Filter', () => {
     await searchInput.fill('Aar');
     await page.waitForTimeout(200);
 
-    // Should filter to Aardvark
-    expect(await projectCards.count()).toBe(1);
-    await expect(projectCards.first()).toContainText('Aardvark');
+    // Should filter to Aardvark + User card
+    expect(await projectCards.count()).toBe(2); // Aardvark + User card
+    // User card is first, Aardvark is second
+    await expect(projectCards.nth(1)).toContainText('Aardvark');
 
     // Change search rapidly
     await searchInput.clear();
     await searchInput.fill('C');
     await page.waitForTimeout(200);
 
-    // Should filter to Cheetah
-    expect(await projectCards.count()).toBe(1);
-    await expect(projectCards.first()).toContainText('Cheetah');
+    // Should filter to Cheetah + User card
+    expect(await projectCards.count()).toBe(2); // Cheetah + User card
+    await expect(projectCards.nth(1)).toContainText('Cheetah');
   });
 
   test('search field maintains focus during typing', async ({ page }) => {
@@ -414,8 +416,8 @@ test.describe('E2E Flow: Search & Filter', () => {
     await searchInput.fill('Test');
     await page.waitForTimeout(200);
 
-    // Click project card
-    await page.click('.project-card');
+    // Click project card (User card at index 0, Test Project at index 1)
+    await page.locator('.project-card').nth(1).click();
     await page.waitForURL(/project-detail\.html/);
 
     // Navigate back
@@ -430,7 +432,7 @@ test.describe('E2E Flow: Search & Filter', () => {
     await page.waitForTimeout(200);
 
     const projectCards = page.locator('.project-card');
-    expect(await projectCards.count()).toBe(1);
+    expect(await projectCards.count()).toBe(2); // Test Project + User card
   });
 
   test('search functionality works on mobile viewport', async ({ page }) => {
@@ -461,8 +463,8 @@ test.describe('E2E Flow: Search & Filter', () => {
     await page.waitForTimeout(200);
 
     const projectCards = page.locator('.project-card');
-    expect(await projectCards.count()).toBe(1);
-    await expect(projectCards.first()).toContainText('Mobile App');
+    expect(await projectCards.count()).toBe(2); // Mobile App + User card
+    await expect(projectCards.nth(1)).toContainText('Mobile App');
   });
 
   test('no console errors during search operations', async ({ page }) => {

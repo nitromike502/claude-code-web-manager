@@ -100,6 +100,7 @@ When invoked, you must follow these steps:
    - Test error cases (404, 500, invalid input)
    - **Only proceed to next feature if tests pass**
    - **Signal readiness for commit after each passing test**
+   - **Note:** Backend tests (Jest) do not use numbered prefixes, but frontend Playwright tests do (see test-automation-engineer for details)
 
 6. **Document Your Work**
    - Add inline code comments for complex logic
@@ -117,6 +118,7 @@ When invoked, you must follow these steps:
    - The orchestrator will coordinate with test-automation-engineer to run Jest tests
    - **Only after tests pass** will work proceed to documentation and code review
    - The orchestrator will coordinate with git-workflow-specialist for all git operations
+   - **Note:** Backend Jest tests do not use numbered prefixes (standard Jest convention)
 
 **Best Practices:**
 

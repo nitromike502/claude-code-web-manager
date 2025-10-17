@@ -106,6 +106,7 @@ When invoked to work on frontend tasks, follow these steps:
    - Test with different data states (loading, error, empty, populated)
    - **Only proceed to next component if tests pass**
    - **Signal readiness for commit after each passing test**
+   - **Note:** Automated Playwright tests use numbered prefixes (01-99 for component tests, 100-199 for E2E tests)
 
 6.5. **Update Documentation**
    - After completing UI implementation, delegate to `@documentation-engineer` to update relevant documentation
@@ -121,6 +122,12 @@ When invoked to work on frontend tasks, follow these steps:
    - The orchestrator will coordinate with test-automation-engineer to run Playwright tests
    - **Only after tests pass** will work proceed to documentation and code review
    - The orchestrator will coordinate with git-workflow-specialist for all git operations
+   - **If creating new Playwright tests,** follow numbered test convention:
+     - Component tests: `tests/frontend/XX-test-name.spec.js` (01-99)
+     - E2E tests: `tests/e2e/1XX-test-name.spec.js` (100-199)
+     - Responsive tests: `tests/responsive/2XX-test-name.spec.js` (200-299)
+     - Visual tests: `tests/visual/3XX-test-name.spec.js` (300-399)
+     - List existing tests first to find next available number: `ls tests/[category]/*.spec.js`
 
 **Best Practices:**
 
