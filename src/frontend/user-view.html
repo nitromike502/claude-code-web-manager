@@ -76,77 +76,32 @@
 
             <!-- Configuration Cards -->
             <div class="config-cards-container">
-                <!-- Agent Card Placeholder -->
-                <div class="config-card agent-card">
-                    <div class="card-header">
-                        <div class="card-title">
-                            <i class="fas fa-robot card-icon"></i>
-                            <span>Subagents</span>
-                            <span class="count-badge">0</span>
-                        </div>
-                    </div>
-                    <div class="card-content">
-                        <div class="empty-state">
-                            <i class="fas fa-robot empty-icon"></i>
-                            <p>No subagents configured</p>
-                        </div>
-                    </div>
-                </div>
+                <agent-card
+                    @view-details="viewAgentDetails"
+                ></agent-card>
 
-                <!-- Command Card Placeholder -->
-                <div class="config-card command-card">
-                    <div class="card-header">
-                        <div class="card-title">
-                            <i class="fas fa-terminal card-icon"></i>
-                            <span>Slash Commands</span>
-                            <span class="count-badge">0</span>
-                        </div>
-                    </div>
-                    <div class="card-content">
-                        <div class="empty-state">
-                            <i class="fas fa-terminal empty-icon"></i>
-                            <p>No commands configured</p>
-                        </div>
-                    </div>
-                </div>
+                <command-card
+                    @view-details="viewCommandDetails"
+                ></command-card>
 
-                <!-- Hook Card Placeholder -->
-                <div class="config-card hook-card">
-                    <div class="card-header">
-                        <div class="card-title">
-                            <i class="fas fa-bolt card-icon"></i>
-                            <span>Hooks</span>
-                            <span class="count-badge">0</span>
-                        </div>
-                    </div>
-                    <div class="card-content">
-                        <div class="empty-state">
-                            <i class="fas fa-bolt empty-icon"></i>
-                            <p>No hooks configured</p>
-                        </div>
-                    </div>
-                </div>
+                <hook-card
+                    @view-details="viewHookDetails"
+                ></hook-card>
 
-                <!-- MCP Server Card Placeholder -->
-                <div class="config-card mcp-card">
-                    <div class="card-header">
-                        <div class="card-title">
-                            <i class="fas fa-server card-icon"></i>
-                            <span>MCP Servers</span>
-                            <span class="count-badge">0</span>
-                        </div>
-                    </div>
-                    <div class="card-content">
-                        <div class="empty-state">
-                            <i class="fas fa-server empty-icon"></i>
-                            <p>No MCP servers configured</p>
-                        </div>
-                    </div>
-                </div>
+                <mcp-card
+                    @view-details="viewMCPDetails"
+                ></mcp-card>
             </div>
         </main>
 
-        <!-- Detail Sidebar (Placeholder for Task 3.4.3) -->
+        <!-- Detail Sidebar -->
+        <detail-sidebar
+            v-model:visible="sidebarVisible"
+            :title="sidebarTitle"
+            :content="sidebarContent"
+            :type="sidebarType"
+            :metadata="sidebarMetadata"
+        ></detail-sidebar>
     </div>
 
     <!-- Vue 3 CDN -->
@@ -158,9 +113,490 @@
     <!-- Highlight.js for syntax highlighting -->
     <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11/build/highlight.min.js"></script>
 
-    <!-- App Script -->
+    <!-- Import Components -->
     <script type="module">
+        import DetailSidebar from './components/DetailSidebar.js';
+
         const { createApp } = Vue;
+
+        // Agent Card Component (User version)
+        const AgentCard = {
+            data() {
+                return {
+                    agents: [],
+                    loading: true,
+                    error: null,
+                    visibleCount: 5,
+                    showingAll: false
+                };
+            },
+            computed: {
+                displayedAgents() {
+                    return this.showingAll ? this.agents : this.agents.slice(0, this.visibleCount);
+                },
+                remainingCount() {
+                    return this.agents.length - this.visibleCount;
+                },
+                hasMore() {
+                    return this.agents.length > this.visibleCount && !this.showingAll;
+                }
+            },
+            async mounted() {
+                await this.loadAgents();
+            },
+            methods: {
+                async loadAgents() {
+                    this.loading = true;
+                    this.error = null;
+
+                    try {
+                        const response = await fetch('/api/user/agents');
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+
+                        const data = await response.json();
+                        if (data.success) {
+                            this.agents = data.agents || [];
+                            if (data.warnings && data.warnings.length > 0) {
+                                this.$emit('warnings', data.warnings);
+                            }
+                        } else {
+                            this.error = data.error || 'Failed to load agents';
+                        }
+                    } catch (err) {
+                        this.error = err.message || 'Failed to connect to server';
+                        console.error('Error loading user agents:', err);
+                    } finally {
+                        this.loading = false;
+                    }
+                },
+                showAllAgents() {
+                    this.showingAll = true;
+                },
+                viewAgentDetails(agent) {
+                    this.$emit('view-details', { agent, type: 'agent' });
+                }
+            },
+            template: `
+                <div class="config-card agent-card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <i class="fas fa-robot card-icon"></i>
+                            <span>Subagents</span>
+                            <span v-if="!loading" class="count-badge">{{ agents.length }}</span>
+                        </div>
+                    </div>
+
+                    <div class="card-content">
+                        <div v-if="loading" class="loading-skeleton">
+                            <div class="skeleton-item"></div>
+                            <div class="skeleton-item"></div>
+                            <div class="skeleton-item"></div>
+                        </div>
+
+                        <div v-else-if="error" class="error-message">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <p>{{ error }}</p>
+                            <button @click="loadAgents" class="btn-retry-small">Retry</button>
+                        </div>
+
+                        <div v-else-if="agents.length === 0" class="empty-state">
+                            <i class="fas fa-robot empty-icon"></i>
+                            <p>No subagents configured</p>
+                        </div>
+
+                        <div v-else class="agent-list">
+                            <div
+                                v-for="agent in displayedAgents"
+                                :key="agent.name"
+                                class="agent-item"
+                                @click="viewAgentDetails(agent)"
+                            >
+                                <div class="agent-info">
+                                    <div class="agent-name">{{ agent.name || 'Unnamed Agent' }}</div>
+                                    <div class="agent-description">{{ agent.description || 'No description available' }}</div>
+                                </div>
+                                <button class="btn-view-details">
+                                    <i class="fas fa-eye"></i>
+                                    View Details
+                                </button>
+                            </div>
+
+                            <button
+                                v-if="hasMore"
+                                @click="showAllAgents"
+                                class="btn-show-more"
+                            >
+                                Show {{ remainingCount }} more...
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `
+        };
+
+        // Command Card Component (User version)
+        const CommandCard = {
+            data() {
+                return {
+                    commands: [],
+                    loading: true,
+                    error: null,
+                    visibleCount: 5,
+                    showingAll: false
+                };
+            },
+            computed: {
+                displayedCommands() {
+                    return this.showingAll ? this.commands : this.commands.slice(0, this.visibleCount);
+                },
+                remainingCount() {
+                    return this.commands.length - this.visibleCount;
+                },
+                hasMore() {
+                    return this.commands.length > this.visibleCount && !this.showingAll;
+                }
+            },
+            async mounted() {
+                await this.loadCommands();
+            },
+            methods: {
+                async loadCommands() {
+                    this.loading = true;
+                    this.error = null;
+
+                    try {
+                        const response = await fetch('/api/user/commands');
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+
+                        const data = await response.json();
+                        if (data.success) {
+                            this.commands = data.commands || [];
+                            if (data.warnings && data.warnings.length > 0) {
+                                this.$emit('warnings', data.warnings);
+                            }
+                        } else {
+                            this.error = data.error || 'Failed to load commands';
+                        }
+                    } catch (err) {
+                        this.error = err.message || 'Failed to connect to server';
+                        console.error('Error loading user commands:', err);
+                    } finally {
+                        this.loading = false;
+                    }
+                },
+                showAllCommands() {
+                    this.showingAll = true;
+                },
+                viewCommandDetails(command) {
+                    this.$emit('view-details', { command, type: 'command' });
+                }
+            },
+            template: `
+                <div class="config-card command-card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <i class="fas fa-terminal card-icon"></i>
+                            <span>Slash Commands</span>
+                            <span v-if="!loading" class="count-badge">{{ commands.length }}</span>
+                        </div>
+                    </div>
+
+                    <div class="card-content">
+                        <div v-if="loading" class="loading-skeleton">
+                            <div class="skeleton-item"></div>
+                            <div class="skeleton-item"></div>
+                            <div class="skeleton-item"></div>
+                        </div>
+
+                        <div v-else-if="error" class="error-message">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <p>{{ error }}</p>
+                            <button @click="loadCommands" class="btn-retry-small">Retry</button>
+                        </div>
+
+                        <div v-else-if="commands.length === 0" class="empty-state">
+                            <i class="fas fa-terminal empty-icon"></i>
+                            <p>No commands configured</p>
+                        </div>
+
+                        <div v-else class="command-list">
+                            <div
+                                v-for="command in displayedCommands"
+                                :key="command.name"
+                                class="command-item"
+                                @click="viewCommandDetails(command)"
+                            >
+                                <div class="command-info">
+                                    <div class="command-name">{{ command.name || 'Unnamed Command' }}</div>
+                                    <div class="command-description">{{ command.description || 'No description available' }}</div>
+                                </div>
+                                <button class="btn-view-details">
+                                    <i class="fas fa-eye"></i>
+                                    View Details
+                                </button>
+                            </div>
+
+                            <button
+                                v-if="hasMore"
+                                @click="showAllCommands"
+                                class="btn-show-more"
+                            >
+                                Show {{ remainingCount }} more...
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `
+        };
+
+        // Hook Card Component (User version)
+        const HookCard = {
+            data() {
+                return {
+                    hooks: [],
+                    loading: true,
+                    error: null,
+                    visibleCount: 5,
+                    showingAll: false
+                };
+            },
+            computed: {
+                displayedHooks() {
+                    return this.showingAll ? this.hooks : this.hooks.slice(0, this.visibleCount);
+                },
+                remainingCount() {
+                    return this.hooks.length - this.visibleCount;
+                },
+                hasMore() {
+                    return this.hooks.length > this.visibleCount && !this.showingAll;
+                }
+            },
+            async mounted() {
+                await this.loadHooks();
+            },
+            methods: {
+                async loadHooks() {
+                    this.loading = true;
+                    this.error = null;
+
+                    try {
+                        const response = await fetch('/api/user/hooks');
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+
+                        const data = await response.json();
+                        if (data.success) {
+                            this.hooks = data.hooks || [];
+                            if (data.warnings && data.warnings.length > 0) {
+                                this.$emit('warnings', data.warnings);
+                            }
+                        } else {
+                            this.error = data.error || 'Failed to load hooks';
+                        }
+                    } catch (err) {
+                        this.error = err.message || 'Failed to connect to server';
+                        console.error('Error loading user hooks:', err);
+                    } finally {
+                        this.loading = false;
+                    }
+                },
+                showAllHooks() {
+                    this.showingAll = true;
+                },
+                viewHookDetails(hook) {
+                    this.$emit('view-details', { hook, type: 'hook' });
+                }
+            },
+            template: `
+                <div class="config-card hook-card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <i class="fas fa-bolt card-icon"></i>
+                            <span>Hooks</span>
+                            <span v-if="!loading" class="count-badge">{{ hooks.length }}</span>
+                        </div>
+                    </div>
+
+                    <div class="card-content">
+                        <div v-if="loading" class="loading-skeleton">
+                            <div class="skeleton-item"></div>
+                            <div class="skeleton-item"></div>
+                            <div class="skeleton-item"></div>
+                        </div>
+
+                        <div v-else-if="error" class="error-message">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <p>{{ error }}</p>
+                            <button @click="loadHooks" class="btn-retry-small">Retry</button>
+                        </div>
+
+                        <div v-else-if="hooks.length === 0" class="empty-state">
+                            <i class="fas fa-bolt empty-icon"></i>
+                            <p>No hooks configured</p>
+                        </div>
+
+                        <div v-else class="hook-list">
+                            <div
+                                v-for="(hook, index) in displayedHooks"
+                                :key="index"
+                                class="hook-item"
+                                @click="viewHookDetails(hook)"
+                            >
+                                <div class="hook-info">
+                                    <div class="hook-header">
+                                        <span class="hook-event">{{ hook.event || 'Unknown Event' }}</span>
+                                        <span class="scope-badge" :class="'scope-' + (hook.scope || 'user').toLowerCase()">
+                                            {{ hook.scope || 'user' }}
+                                        </span>
+                                    </div>
+                                    <div class="hook-command">{{ hook.command || 'No command specified' }}</div>
+                                    <div v-if="hook.description" class="hook-description">{{ hook.description }}</div>
+                                </div>
+                                <button class="btn-view-details">
+                                    <i class="fas fa-eye"></i>
+                                    View Details
+                                </button>
+                            </div>
+
+                            <button
+                                v-if="hasMore"
+                                @click="showAllHooks"
+                                class="btn-show-more"
+                            >
+                                Show {{ remainingCount }} more...
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `
+        };
+
+        // MCP Card Component (User version)
+        const MCPCard = {
+            data() {
+                return {
+                    mcpServers: [],
+                    loading: true,
+                    error: null,
+                    visibleCount: 5,
+                    showingAll: false
+                };
+            },
+            computed: {
+                displayedServers() {
+                    return this.showingAll ? this.mcpServers : this.mcpServers.slice(0, this.visibleCount);
+                },
+                remainingCount() {
+                    return this.mcpServers.length - this.visibleCount;
+                },
+                hasMore() {
+                    return this.mcpServers.length > this.visibleCount && !this.showingAll;
+                }
+            },
+            async mounted() {
+                await this.loadMcpServers();
+            },
+            methods: {
+                async loadMcpServers() {
+                    this.loading = true;
+                    this.error = null;
+
+                    try {
+                        const response = await fetch('/api/user/mcp');
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+
+                        const data = await response.json();
+                        if (data.success) {
+                            this.mcpServers = data.mcpServers || [];
+                            if (data.warnings && data.warnings.length > 0) {
+                                this.$emit('warnings', data.warnings);
+                            }
+                        } else {
+                            this.error = data.error || 'Failed to load MCP servers';
+                        }
+                    } catch (err) {
+                        this.error = err.message || 'Failed to connect to server';
+                        console.error('Error loading user MCP servers:', err);
+                    } finally {
+                        this.loading = false;
+                    }
+                },
+                showAllServers() {
+                    this.showingAll = true;
+                },
+                viewMCPDetails(mcp) {
+                    this.$emit('view-details', { mcp, type: 'mcp' });
+                }
+            },
+            template: `
+                <div class="config-card mcp-card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <i class="fas fa-server card-icon"></i>
+                            <span>MCP Servers</span>
+                            <span v-if="!loading" class="count-badge">{{ mcpServers.length }}</span>
+                        </div>
+                    </div>
+
+                    <div class="card-content">
+                        <div v-if="loading" class="loading-skeleton">
+                            <div class="skeleton-item"></div>
+                            <div class="skeleton-item"></div>
+                            <div class="skeleton-item"></div>
+                        </div>
+
+                        <div v-else-if="error" class="error-message">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <p>{{ error }}</p>
+                            <button @click="loadMcpServers" class="btn-retry-small">Retry</button>
+                        </div>
+
+                        <div v-else-if="mcpServers.length === 0" class="empty-state">
+                            <i class="fas fa-server empty-icon"></i>
+                            <p>No MCP servers configured</p>
+                        </div>
+
+                        <div v-else class="mcp-list">
+                            <div
+                                v-for="mcp in displayedServers"
+                                :key="mcp.name"
+                                class="mcp-item"
+                                @click="viewMCPDetails(mcp)"
+                            >
+                                <div class="mcp-info">
+                                    <div class="mcp-header">
+                                        <span class="mcp-name">{{ mcp.name || 'Unnamed MCP Server' }}</span>
+                                        <div class="mcp-badges">
+                                            <span class="transport-badge">{{ mcp.transport || 'stdio' }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="mcp-command">{{ mcp.command || 'No command specified' }}</div>
+                                </div>
+                                <button class="btn-view-details">
+                                    <i class="fas fa-eye"></i>
+                                    View Details
+                                </button>
+                            </div>
+
+                            <button
+                                v-if="hasMore"
+                                @click="showAllServers"
+                                class="btn-show-more"
+                            >
+                                Show {{ remainingCount }} more...
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `
+        };
 
         const app = createApp({
             data() {
@@ -244,9 +680,20 @@
                         args: mcp.args || []
                     };
                     this.sidebarVisible = true;
+                },
+
+                handleWarnings(warnings) {
+                    this.warnings.push(...warnings);
                 }
             }
         });
+
+        // Register components
+        app.component('agent-card', AgentCard);
+        app.component('command-card', CommandCard);
+        app.component('hook-card', HookCard);
+        app.component('mcp-card', MCPCard);
+        app.component('detail-sidebar', DetailSidebar);
 
         // Mount the app
         app.mount('#app');
