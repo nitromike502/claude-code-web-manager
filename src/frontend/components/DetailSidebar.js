@@ -265,6 +265,20 @@ export default {
 
         <!-- Sidebar Content -->
         <div class="sidebar-content">
+          <!-- Frontmatter Specs (Agents & Commands) -->
+          <div v-if="(type === 'agent' || type === 'command') && metadata.frontmatter && metadata.frontmatter.specs" class="structured-content">
+            <div class="metadata-section">
+              <h3 class="section-title">Frontmatter Specs</h3>
+              <div class="metadata-grid">
+                <div v-for="(value, key) in metadata.frontmatter.specs" :key="key" class="metadata-item full-width">
+                  <label class="metadata-label">{{ key }}</label>
+                  <div class="metadata-value code-value" v-if="typeof value === 'object'">{{ JSON.stringify(value, null, 2) }}</div>
+                  <div class="metadata-value" v-else>{{ value }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <!-- Markdown Content (Agents & Commands) -->
           <div v-if="type === 'agent' || type === 'command'" class="markdown-content" v-html="renderedContent"></div>
 
