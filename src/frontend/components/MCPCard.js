@@ -62,7 +62,7 @@ export default {
       this.showingAll = true;
     },
     viewServerDetails(server) {
-      this.$emit('view-details', { server, type: 'mcp' });
+      this.$emit('view-details', { mcp: server, type: 'mcp' });
     },
     getScopeLabel(source) {
       // Determine scope from source
