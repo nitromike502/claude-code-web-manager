@@ -1,8 +1,17 @@
 {
-  "name": "claude-code-manager",
+  "name": "claude-code-config-manager",
   "version": "1.0.0",
   "description": "Web-based tool for managing Claude Code projects, subagents, slash commands, hooks, and MCP servers",
   "main": "src/backend/server.js",
+  "bin": {
+    "claude-code-config-manager": "./bin/cli.js"
+  },
+  "files": [
+    "bin/",
+    "src/",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "start": "node src/backend/server.js",
     "dev": "node --watch src/backend/server.js",
@@ -24,7 +33,7 @@
     "subagents",
     "mcp"
   ],
-  "author": "",
+  "author": "Mike Eckert",
   "license": "MIT",
   "dependencies": {
     "cors": "^2.8.5",
@@ -38,5 +47,17 @@
   },
   "engines": {
     "node": ">=18.0.0"
-  }
+  },
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nitromike502/claude-code-web-manager.git"
+  },
+  "bugs": {
+    "url": "https://github.com/nitromike502/claude-code-web-manager/issues"
+  },
+  "homepage": "https://github.com/nitromike502/claude-code-web-manager#readme"
 }
