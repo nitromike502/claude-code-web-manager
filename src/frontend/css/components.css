@@ -307,10 +307,19 @@
   background-color: var(--bg-secondary);
   box-shadow: -4px 0 20px rgba(0, 0, 0, 0.3);
   height: 100%;
+  width: 75%;
+  max-width: 1200px;
   display: flex;
   flex-direction: column;
   animation: slideIn 0.3s ease;
   overflow: hidden;
+}
+
+/* Tablet portrait and below - full width */
+@media (max-width: 767px) {
+  .detail-sidebar {
+    width: 100%;
+  }
 }
 
 @keyframes slideIn {
@@ -805,11 +814,7 @@
     width: 100%;
   }
 
-  /* Sidebar responsive styles */
-  .detail-sidebar {
-    width: 100% !important;
-  }
-
+  /* Sidebar responsive styles - already handled above */
   .sidebar-header {
     padding: 1rem;
   }
@@ -990,9 +995,17 @@
 }
 
 .agent-name {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   font-weight: 600;
   color: var(--text-emphasis);
   margin-bottom: 0.25rem;
+}
+
+.agent-name .error-icon {
+  font-size: 0.875rem;
+  color: #f59e0b;
 }
 
 .agent-description {
@@ -1134,10 +1147,18 @@
 }
 
 .command-name {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   font-weight: 600;
   color: var(--text-emphasis);
   margin-bottom: 0.25rem;
   font-family: 'Courier New', monospace;
+}
+
+.command-name .error-icon {
+  font-size: 0.875rem;
+  color: #f59e0b;
 }
 
 .command-description {

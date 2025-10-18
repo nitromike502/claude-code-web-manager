@@ -106,10 +106,14 @@ export default {
             v-for="command in displayedCommands"
             :key="command.name"
             class="command-item"
+            :class="{ 'has-error': command.hasError }"
             @click="viewCommandDetails(command)"
           >
             <div class="command-info">
-              <div class="command-name">{{ formatCommandName(command.name) || 'Unnamed Command' }}</div>
+              <div class="command-name">
+                <span>{{ formatCommandName(command.name) || 'Unnamed Command' }}</span>
+                <i v-if="command.hasError" class="fas fa-exclamation-triangle error-icon" title="YAML parsing error"></i>
+              </div>
               <div class="command-description">{{ command.description || 'No description available' }}</div>
             </div>
             <button class="btn-view-details">

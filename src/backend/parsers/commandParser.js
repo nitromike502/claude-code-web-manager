@@ -18,17 +18,43 @@ const matter = require('gray-matter');
 async function parseCommand(filePath, baseDir, scope = 'project') {
   try {
     const content = await fs.readFile(filePath, 'utf-8');
-    const parsed = matter(content);
-
-    // Extract frontmatter and content
-    const { data, content: commandContent } = parsed;
-
-    // Get filename without extension
     const filename = path.basename(filePath, '.md');
 
     // Calculate namespace from directory structure
     const relativePath = path.relative(baseDir, path.dirname(filePath));
     const namespace = relativePath === '' ? null : relativePath.replace(path.sep, '/');
+
+    let parsed;
+    let parseError = null;
+
+    try {
+      parsed = matter(content);
+    } catch (yamlError) {
+      // YAML parsing failed - still create an entry with error indicator
+      console.warn(`YAML parsing error in ${filePath}:`, yamlError.message);
+      parseError = yamlError.message;
+
+      // Extract description from first non-empty line as fallback
+      let description = 'Error parsing YAML frontmatter';
+      const firstLine = content.split('\n').find(line => line.trim() !== '' && !line.trim().startsWith('---'));
+      if (firstLine) {
+        description = firstLine.replace(/^#+\s*/, '').trim();
+      }
+
+      return {
+        name: filename,
+        namespace: namespace,
+        description: description,
+        content: content,
+        filePath: filePath,
+        scope: scope,
+        parseError: parseError,
+        hasError: true
+      };
+    }
+
+    // Extract frontmatter and content
+    const { data, content: commandContent } = parsed;
 
     // Extract description from frontmatter or first non-empty line
     let description = data.description || '';
@@ -46,7 +72,9 @@ async function parseCommand(filePath, baseDir, scope = 'project') {
       description: description,
       content: commandContent.trim(),
       filePath: filePath,
-      scope: scope
+      scope: scope,
+      parseError: null,
+      hasError: false
     };
   } catch (error) {
     console.error(`Error parsing command ${filePath}:`, error.message);

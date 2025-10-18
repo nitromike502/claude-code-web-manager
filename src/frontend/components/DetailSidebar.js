@@ -35,7 +35,7 @@ export default {
   },
   computed: {
     sidebarWidth() {
-      return window.innerWidth < 768 ? '100%' : '600px';
+      return window.innerWidth < 768 ? '100%' : '75%';
     },
     iconClass() {
       const icons = {
