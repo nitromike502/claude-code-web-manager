@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
+import { projectsAPI } from '../frontend/js/api'
 
 export const useProjectsStore = defineStore('projects', () => {
   const projects = ref([])
@@ -23,9 +24,7 @@ export const useProjectsStore = defineStore('projects', () => {
     isLoading.value = true
     error.value = null
     try {
-      const response = await fetch('/api/projects')
-      if (!response.ok) throw new Error('Failed to load projects')
-      const data = await response.json()
+      const data = await projectsAPI.getAll()
       projects.value = data.projects || []
     } catch (err) {
       error.value = err.message
@@ -37,8 +36,13 @@ export const useProjectsStore = defineStore('projects', () => {
 
   // Refresh projects from backend
   async function refreshProjects() {
-    await fetch('/api/projects/scan', { method: 'POST' })
-    await loadProjects()
+    try {
+      await projectsAPI.scan()
+      await loadProjects()
+    } catch (err) {
+      error.value = err.message
+      console.error('Error refreshing projects:', err)
+    }
   }
 
   // Select a project
