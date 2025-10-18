@@ -1,16 +1,20 @@
 import { createApp } from 'vue'
+import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
+import { useThemeStore } from './stores/theme'
 
 // Initialize Vue app
 const app = createApp(App)
+const pinia = createPinia()
 
-// Use Vue Router
+// Use Pinia and Vue Router
+app.use(pinia)
 app.use(router)
 
-// Load theme preference from localStorage
-const savedTheme = localStorage.getItem('claude-code-manager-theme') || 'light'
-document.documentElement.setAttribute('data-theme', savedTheme)
+// Load theme before mounting
+const themeStore = useThemeStore()
+themeStore.loadTheme()
 
 // Mount to #app
 app.mount('#app')
