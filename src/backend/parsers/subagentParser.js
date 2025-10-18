@@ -16,13 +16,35 @@ const matter = require('gray-matter');
 async function parseSubagent(filePath, scope = 'project') {
   try {
     const content = await fs.readFile(filePath, 'utf-8');
-    const parsed = matter(content);
+    const filename = path.basename(filePath, '.md');
+
+    let parsed;
+    let parseError = null;
+
+    try {
+      parsed = matter(content);
+    } catch (yamlError) {
+      // YAML parsing failed - still create an entry with error indicator
+      console.warn(`YAML parsing error in ${filePath}:`, yamlError.message);
+      parseError = yamlError.message;
+
+      // Return a partial object with error information
+      return {
+        name: filename,
+        description: 'Error parsing YAML frontmatter',
+        tools: [],
+        model: 'inherit',
+        color: null,
+        systemPrompt: content,
+        filePath: filePath,
+        scope: scope,
+        parseError: parseError,
+        hasError: true
+      };
+    }
 
     // Extract frontmatter fields
     const { data, content: systemPrompt } = parsed;
-
-    // Get filename without extension as fallback name
-    const filename = path.basename(filePath, '.md');
 
     // Handle tools field - can be string or array
     let tools = [];
@@ -43,7 +65,9 @@ async function parseSubagent(filePath, scope = 'project') {
       color: data.color || null,
       systemPrompt: systemPrompt.trim(),
       filePath: filePath,
-      scope: scope
+      scope: scope,
+      parseError: null,
+      hasError: false
     };
   } catch (error) {
     console.error(`Error parsing subagent ${filePath}:`, error.message);
