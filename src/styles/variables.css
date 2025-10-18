@@ -10,6 +10,11 @@
   --bg-code: #1a1a1a;
   --bg-hover: #2a2a2a;
 
+  /* PrimeVue compatibility aliases */
+  --surface-ground: #121212;
+  --surface-card: #1e1e1e;
+  --surface-border: #3e3e3e;
+
   /* Borders */
   --border-primary: #3e3e3e;
   --border-secondary: #2e2e2e;
@@ -27,6 +32,13 @@
   --color-primary-hover: #005fa3;
   --color-primary-active: #004d82;
   --color-primary-disabled: #003d66;
+
+  /* PrimeVue compatibility aliases */
+  --primary-color: #007ad9;
+  --primary-color-dark: #005fa3;
+  --red-500: #EF5350;
+  --red-600: #d32f2f;
+  --border-color: #3e3e3e;
 
   --color-link: #64B5F6;
   --color-link-hover: #42A5F5;
@@ -47,6 +59,7 @@
   --color-commands: #2196F3;
   --color-hooks: #FF9800;
   --color-mcp: #9C27B0;
+  --color-user: #9C27B0;
 
   /* Shadows */
   --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.3);
@@ -80,6 +93,11 @@
   --bg-code: #f8f8f8;
   --bg-hover: #fafafa;
 
+  /* PrimeVue compatibility aliases */
+  --surface-ground: #f5f5f5;
+  --surface-card: #ffffff;
+  --surface-border: #e0e0e0;
+
   /* Borders */
   --border-primary: #e0e0e0;
   --border-secondary: #eeeeee;
@@ -97,6 +115,13 @@
   --color-primary-hover: #1565c0;
   --color-primary-active: #0d47a1;
   --color-primary-disabled: #bbdefb;
+
+  /* PrimeVue compatibility aliases */
+  --primary-color: #1976d2;
+  --primary-color-dark: #1565c0;
+  --red-500: #d32f2f;
+  --red-600: #b71c1c;
+  --border-color: #e0e0e0;
 
   --color-link: #1976d2;
   --color-link-hover: #1565c0;
@@ -117,6 +142,7 @@
   --color-commands: #1976d2;
   --color-hooks: #f57c00;
   --color-mcp: #7b1fa2;
+  --color-user: #7b1fa2;
 
   /* Shadows */
   --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.08);

@@ -62,9 +62,9 @@ export default {
 }
 
 .app-header {
-  background: var(--header-bg, #f5f5f5);
+  background: var(--bg-header);
   padding: 1rem 2rem;
-  border-bottom: 1px solid var(--border-color, #ddd);
+  border-bottom: 1px solid var(--border-primary);
 }
 
 .header-content {
@@ -76,7 +76,7 @@ export default {
 
 .theme-toggle {
   background: none;
-  border: 1px solid var(--border-color, #ddd);
+  border: 1px solid var(--border-primary);
   padding: 0.5rem 1rem;
   cursor: pointer;
   font-size: 1.2rem;
@@ -84,7 +84,7 @@ export default {
 }
 
 .theme-toggle:hover {
-  background: var(--hover-bg, #e0e0e0);
+  background: var(--bg-hover);
 }
 
 .app-nav {
@@ -93,7 +93,7 @@ export default {
 }
 
 .app-nav a {
-  color: #0066cc;
+  color: var(--color-link);
   text-decoration: none;
   font-weight: 500;
 }
@@ -119,8 +119,8 @@ export default {
 .notification {
   padding: 1rem;
   border-radius: 4px;
-  background: #fff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background: var(--bg-secondary);
+  box-shadow: var(--shadow-card);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -129,19 +129,19 @@ export default {
 }
 
 .notification-success {
-  border-left: 4px solid #4caf50;
+  border-left: 4px solid var(--color-success);
 }
 
 .notification-error {
-  border-left: 4px solid #f44336;
+  border-left: 4px solid var(--color-error);
 }
 
 .notification-warning {
-  border-left: 4px solid #ff9800;
+  border-left: 4px solid var(--color-warning);
 }
 
 .notification-info {
-  border-left: 4px solid #2196f3;
+  border-left: 4px solid var(--color-info);
 }
 
 .notification button {
@@ -149,7 +149,7 @@ export default {
   border: none;
   cursor: pointer;
   font-size: 1.2rem;
-  color: #999;
+  color: var(--text-muted);
 }
 
 @keyframes slideIn {
@@ -163,9 +163,5 @@ export default {
   }
 }
 
-:root[data-theme="dark"] {
-  --header-bg: #333;
-  --border-color: #555;
-  --hover-bg: #444;
-}
+/* Theme-specific overrides are now handled in variables.css */
 </style>
