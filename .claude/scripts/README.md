@@ -2,7 +2,21 @@
 
 Utility scripts for managing and analyzing Claude Code sessions.
 
+> **Note:** The core scripts `condense-transcript.js` and `analyze-session.js` have been converted to Claude Code Skills for automatic discovery. See `.claude/skills/` for the skill versions. This directory maintains the original standalone scripts for reference and direct usage.
+
+## Skills vs. Scripts
+
+**Recommended:** Use the skills in `.claude/skills/` which Claude can automatically invoke:
+- `.claude/skills/transcript-condenser/` - Auto-invoked when analyzing sessions
+- `.claude/skills/session-analyzer/` - Auto-invoked when discovering sessions
+
+**Legacy Scripts:** The scripts in this directory remain functional for direct CLI usage but may not receive updates.
+
+---
+
 ## condense-transcript.js
+
+**Status:** ⚠️ Migrated to skill at `.claude/skills/transcript-condenser/`
 
 Condenses Claude Code session transcripts into human-readable summaries by filtering out verbose metadata, system notifications, and command artifacts.
 
@@ -236,9 +250,11 @@ Part of the Claude Code Manager project.
 
 ## analyze-session.js
 
+**Status:** ⚠️ Migrated to skill at `.claude/skills/session-analyzer/`
+
 **Purpose:** Analyzes Claude Code session transcripts to identify workflow improvements, inefficiencies, and optimization opportunities.
 
-**Status:** 🚧 In Development - Core session discovery complete, analysis logic pending
+**Development Status:** 🚧 In Development - Core session discovery complete, analysis logic pending
 
 ### Usage
 
