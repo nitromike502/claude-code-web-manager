@@ -132,18 +132,22 @@ describe('subagentParser', () => {
     test('should return null for malformed YAML frontmatter', async () => {
       const filePath = path.join(fixturesPath, 'invalid-yaml.md');
 
-      // Spy on console.error to verify warning is logged
-      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
+      // Spy on console.warn to verify warning is logged (YAML errors use warn, not error)
+      const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation();
 
       const result = await subagentParser.parseSubagent(filePath);
 
-      expect(result).toBeNull();
-      expect(consoleErrorSpy).toHaveBeenCalledWith(
-        expect.stringContaining(`Error parsing subagent ${filePath}`),
+      // After error handling improvements, malformed files return partial objects with hasError=true
+      // rather than null, allowing graceful display even for malformed content
+      expect(result).not.toBeNull();
+      expect(result.hasError).toBe(true);
+      expect(result.parseError).toBeDefined();
+      expect(consoleWarnSpy).toHaveBeenCalledWith(
+        expect.stringContaining('YAML parsing error'),
         expect.any(String)
       );
 
-      consoleErrorSpy.mockRestore();
+      consoleWarnSpy.mockRestore();
     });
 
     test('should handle file with missing frontmatter', async () => {
