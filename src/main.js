@@ -4,6 +4,11 @@ import App from './App.vue'
 import router from './router'
 import { useThemeStore } from './stores/theme'
 
+// Import global styles
+import './styles/variables.css'
+import './styles/global.css'
+import './styles/components.css'
+
 // Initialize Vue app
 const app = createApp(App)
 const pinia = createPinia()
