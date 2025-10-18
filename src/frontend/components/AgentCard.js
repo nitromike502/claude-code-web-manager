@@ -102,10 +102,14 @@ export default {
             v-for="agent in displayedAgents"
             :key="agent.name"
             class="agent-item"
+            :class="{ 'has-error': agent.hasError }"
             @click="viewAgentDetails(agent)"
           >
             <div class="agent-info">
-              <div class="agent-name">{{ agent.name || 'Unnamed Agent' }}</div>
+              <div class="agent-name">
+                <span>{{ agent.name || 'Unnamed Agent' }}</span>
+                <i v-if="agent.hasError" class="fas fa-exclamation-triangle error-icon" title="YAML parsing error"></i>
+              </div>
               <div class="agent-description">{{ agent.description || 'No description available' }}</div>
             </div>
             <button class="btn-view-details">
