@@ -1,11 +1,13 @@
-# Product Requirements Document: Phase 2 - Slash Command Management
+# Product Requirements Document: Phase 4 - Slash Command Management
 
-**Version:** 1.0
-**Phase:** 2 - Edit/Create/Delete Slash Commands
-**Last Updated:** 2025-10-06
+**Version:** 1.1
+**Phase:** 4 - Edit/Create/Delete Slash Commands
+**Last Updated:** 2025-10-18
 **Status:** Future - Not Yet Started
 
 ⚠️ **This document has not been fully reviewed and will require detailed review before implementation.**
+
+**Prerequisites:** Phase 1 MVP + Phase 2 (Vite+Vue3 SPA Migration) + Phase 3 (Subagent Edit) must be complete.
 
 ---
 
@@ -13,7 +15,7 @@
 
 **Goal:** Add full CRUD capabilities for managing slash commands at both project and user levels.
 
-**Prerequisites:** Phase 1 MVP must be complete.
+**Prerequisites:** Phase 1 MVP + Phase 2 + Phase 3 must be complete.
 
 ---
 
