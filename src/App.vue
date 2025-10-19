@@ -3,8 +3,9 @@
     <header class="app-header">
       <div class="header-content">
         <h1>Claude Code Manager</h1>
-        <button @click="themeStore.toggleTheme" class="theme-toggle">
-          {{ themeStore.currentTheme === 'light' ? '🌙' : '☀️' }}
+        <button @click="themeStore.toggleTheme" class="theme-toggle" :title="`Switch to ${themeStore.currentTheme === 'light' ? 'dark' : 'light'} mode`">
+          <span class="theme-icon">{{ themeStore.currentTheme === 'light' ? '🌙' : '☀️' }}</span>
+          <span class="theme-text">{{ themeStore.currentTheme === 'light' ? 'Dark' : 'Light' }}</span>
         </button>
       </div>
 
@@ -79,12 +80,26 @@ export default {
   border: 1px solid var(--border-primary);
   padding: 0.5rem 1rem;
   cursor: pointer;
-  font-size: 1.2rem;
+  font-size: 0.9rem;
   border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: background-color 0.2s;
 }
 
 .theme-toggle:hover {
   background: var(--bg-hover);
+}
+
+.theme-icon {
+  font-size: 1.2rem;
+  display: inline-block;
+  line-height: 1;
+}
+
+.theme-text {
+  font-weight: 500;
 }
 
 .app-nav {

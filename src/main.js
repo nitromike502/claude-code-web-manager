@@ -9,6 +9,9 @@ import './styles/variables.css'
 import './styles/global.css'
 import './styles/components.css'
 
+// Import PrimeIcons
+import 'primeicons/primeicons.css'
+
 // Initialize Vue app
 const app = createApp(App)
 const pinia = createPinia()
