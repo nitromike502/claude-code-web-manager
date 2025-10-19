@@ -1,6 +1,19 @@
 /**
  * Responsive Design Tests
  *
+ * ⚠️ PHASE 2 PARTIAL COMPATIBILITY - SOME TESTS MAY FAIL ⚠️
+ *
+ * These tests were written for Phase 1 but are partially compatible with Phase 2.
+ * Tests may fail due to:
+ * - Navigation URL patterns changed (SPA routing)
+ * - Some CSS class name differences
+ * - Different component structure
+ *
+ * WORKING: Layout, grid, typography, viewport adaptation
+ * FAILING: Navigation tests that expect multi-page URLs
+ *
+ * See: tests/e2e/PHASE2-MIGRATION-NOTES.md for full migration details
+ *
  * Tests application layout and behavior across different screen sizes:
  * - Mobile: 375x667 (iPhone SE)
  * - Tablet: 768x1024 (iPad)
