@@ -544,45 +544,107 @@ test.describe('Project Detail Page - Theme Toggle', () => {
   });
 });
 
-test.describe.skip('Project Detail Page - Error Handling', () => {
-  // PHASE 2 NOTE: These tests need to be rewritten to mock individual config endpoints
-  // (/api/projects/:id/agents, /api/projects/:id/commands, etc.) instead of just /api/projects
-  test('shows error when project ID is missing', async ({ page }) => {
-    await page.route('**/api/projects*', (route) => {
+test.describe('Project Detail Page - Error Handling', () => {
+  test('shows error when project ID is empty string', async ({ page }) => {
+    // Mock config endpoints to fail for empty project ID
+    await page.route('**/api/projects//agents', (route) => {
       route.fulfill({
-        status: 200,
+        status: 404,
         contentType: 'application/json',
         body: JSON.stringify({
-          success: true,
-          projects: []
+          success: false,
+          error: 'Project not found'
         })
       });
     });
 
-    // Navigate without ID parameter
-    await page.goto('/project/');
+    await page.route('**/api/projects//commands', (route) => {
+      route.fulfill({
+        status: 404,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          success: false,
+          error: 'Project not found'
+        })
+      });
+    });
+
+    await page.route('**/api/projects//hooks', (route) => {
+      route.fulfill({
+        status: 404,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          success: false,
+          error: 'Project not found'
+        })
+      });
+    });
+
+    await page.route('**/api/projects//mcp', (route) => {
+      route.fulfill({
+        status: 404,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          success: false,
+          error: 'Project not found'
+        })
+      });
+    });
+
+    // Navigate with empty string as ID (Vue Router will still match)
+    await page.goto('/project/ ');
+
+    // Wait for Vue app to mount
+    await page.waitForSelector('.app-container');
 
     // Verify error state is displayed
     const errorState = page.locator('.error-state');
     await expect(errorState).toBeVisible({ timeout: 10000 });
-    await expect(errorState).toContainText('No project ID provided in URL');
+    await expect(errorState).toContainText('Project not found');
   });
 
   test('shows error when project ID is not found', async ({ page }) => {
-    await page.route('**/api/projects*', (route) => {
+    // Mock config endpoints to return 404 error
+    await page.route('**/api/projects/nonexistent/agents', (route) => {
       route.fulfill({
-        status: 200,
+        status: 404,
         contentType: 'application/json',
         body: JSON.stringify({
-          success: true,
-          projects: [
-            {
-              id: 'existingproject',
-              name: 'Existing Project',
-              path: '/existing',
-              stats: { agents: 0, commands: 0, hooks: 0, mcp: 0 }
-            }
-          ]
+          success: false,
+          error: 'Project not found'
+        })
+      });
+    });
+
+    await page.route('**/api/projects/nonexistent/commands', (route) => {
+      route.fulfill({
+        status: 404,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          success: false,
+          error: 'Project not found'
+        })
+      });
+    });
+
+    await page.route('**/api/projects/nonexistent/hooks', (route) => {
+      route.fulfill({
+        status: 404,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          success: false,
+          error: 'Project not found'
+        })
+      });
+    });
+
+    await page.route('**/api/projects/nonexistent/mcp', (route) => {
+      route.fulfill({
+        status: 404,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          success: false,
+          error: 'Project not found'
         })
       });
     });
@@ -590,7 +652,7 @@ test.describe.skip('Project Detail Page - Error Handling', () => {
     // Navigate with non-existent project ID
     await page.goto('/project/nonexistent');
 
-   
+
     // Wait for Vue app to mount
     await page.waitForSelector('.app-container');
  // Verify error state is displayed
@@ -599,44 +661,25 @@ test.describe.skip('Project Detail Page - Error Handling', () => {
     await expect(errorState).toContainText('Project not found');
   });
 
-  test('shows error when API returns success:false', async ({ page }) => {
-    await page.route('**/api/projects*', (route) => {
-      route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify({
-          success: false,
-          error: 'Failed to load project'
-        })
-      });
-    });
-
-    await page.goto('/project/anyproject');
-
-   
-    // Wait for Vue app to mount
-    await page.waitForSelector('.app-container');
- // Verify error state is displayed
-    const errorState = page.locator('.error-state');
-    await expect(errorState).toBeVisible({ timeout: 10000 });
-    await expect(errorState).toContainText('Failed to load project');
-  });
-
   test('shows error when API returns HTTP error status', async ({ page }) => {
-    await page.route('**/api/projects*', (route) => {
-      route.fulfill({
-        status: 500,
-        contentType: 'application/json',
-        body: JSON.stringify({
-          success: false,
-          error: 'Internal Server Error'
-        })
+    // Mock all config endpoints to return 500 error
+    const errorRoutes = ['agents', 'commands', 'hooks', 'mcp'];
+    for (const endpoint of errorRoutes) {
+      await page.route(`**/api/projects/anyproject/${endpoint}`, (route) => {
+        route.fulfill({
+          status: 500,
+          contentType: 'application/json',
+          body: JSON.stringify({
+            success: false,
+            error: 'Internal Server Error'
+          })
+        });
       });
-    });
+    }
 
     await page.goto('/project/anyproject');
 
-   
+
     // Wait for Vue app to mount
     await page.waitForSelector('.app-container');
  // Verify error state is displayed
@@ -647,13 +690,17 @@ test.describe.skip('Project Detail Page - Error Handling', () => {
   });
 
   test('shows error when network request fails', async ({ page }) => {
-    await page.route('**/api/projects*', (route) => {
-      route.abort('failed');
-    });
+    // Mock all config endpoints to fail
+    const errorRoutes = ['agents', 'commands', 'hooks', 'mcp'];
+    for (const endpoint of errorRoutes) {
+      await page.route(`**/api/projects/anyproject/${endpoint}`, (route) => {
+        route.abort('failed');
+      });
+    }
 
     await page.goto('/project/anyproject');
 
-   
+
     // Wait for Vue app to mount
     await page.waitForSelector('.app-container');
  // Verify error state is displayed
@@ -663,43 +710,44 @@ test.describe.skip('Project Detail Page - Error Handling', () => {
   });
 
   test('retry button reloads project data', async ({ page }) => {
-    let requestCount = 0;
+    const requestCounts = { agents: 0, commands: 0, hooks: 0, mcp: 0 };
 
-    await page.route('**/api/projects*', (route) => {
-      requestCount++;
-      if (requestCount === 1) {
-        // First request fails
-        route.fulfill({
-          status: 500,
-          contentType: 'application/json',
-          body: JSON.stringify({
-            success: false,
-            error: 'Internal Server Error'
-          })
-        });
-      } else {
-        // Second request succeeds
-        route.fulfill({
-          status: 200,
-          contentType: 'application/json',
-          body: JSON.stringify({
-            success: true,
-            projects: [
-              {
-                id: 'retryproject',
-                name: 'Retry Project',
-                path: '/retry/project',
-                stats: { agents: 1, commands: 1, hooks: 1, mcp: 1 }
-              }
-            ]
-          })
-        });
-      }
-    });
+    // Mock each config endpoint to fail once, then succeed
+    const mockEndpoint = (endpoint) => {
+      page.route(`**/api/projects/retryproject/${endpoint}`, (route) => {
+        requestCounts[endpoint]++;
+        if (requestCounts[endpoint] === 1) {
+          // First request fails
+          route.fulfill({
+            status: 500,
+            contentType: 'application/json',
+            body: JSON.stringify({
+              success: false,
+              error: 'Internal Server Error'
+            })
+          });
+        } else {
+          // Second request succeeds
+          route.fulfill({
+            status: 200,
+            contentType: 'application/json',
+            body: JSON.stringify({
+              [endpoint]: [],
+              warnings: []
+            })
+          });
+        }
+      });
+    };
+
+    mockEndpoint('agents');
+    mockEndpoint('commands');
+    mockEndpoint('hooks');
+    mockEndpoint('mcp');
 
     await page.goto('/project/retryproject');
 
-   
+
     // Wait for Vue app to mount
     await page.waitForSelector('.app-container');
  // Wait for error state
@@ -714,35 +762,58 @@ test.describe.skip('Project Detail Page - Error Handling', () => {
     // Verify project loaded successfully after retry
     await page.waitForSelector('.config-cards-container', { timeout: 10000 });
     const projectTitle = page.locator('.project-info-title');
-    await expect(projectTitle).toContainText('Retry Project');
+    await expect(projectTitle).toContainText('retryproject');
   });
 
   test('displays warnings when present in API response', async ({ page }) => {
-    await page.route('**/api/projects*', (route) => {
+    // Mock config endpoints with warnings
+    await page.route('**/api/projects/warningproject/agents', (route) => {
       route.fulfill({
         status: 200,
         contentType: 'application/json',
         body: JSON.stringify({
-          success: true,
-          projects: [
-            {
-              id: 'warningproject',
-              name: 'Warning Project',
-              path: '/warning/project',
-              stats: { agents: 0, commands: 0, hooks: 0, mcp: 0 }
-            }
-          ],
-          warnings: [
-            'Warning 1: Could not parse agent file',
-            'Warning 2: Missing settings.json'
-          ]
+          agents: [],
+          warnings: ['Warning 1: Could not parse agent file']
+        })
+      });
+    });
+
+    await page.route('**/api/projects/warningproject/commands', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          commands: [],
+          warnings: ['Warning 2: Missing settings.json']
+        })
+      });
+    });
+
+    await page.route('**/api/projects/warningproject/hooks', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          hooks: [],
+          warnings: []
+        })
+      });
+    });
+
+    await page.route('**/api/projects/warningproject/mcp', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          mcpServers: [],
+          warnings: []
         })
       });
     });
 
     await page.goto('/project/warningproject');
 
-   
+
     // Wait for Vue app to mount
     await page.waitForSelector('.app-container');
  // Wait for warnings to appear
@@ -761,39 +832,39 @@ test.describe.skip('Project Detail Page - Error Handling', () => {
   });
 });
 
-test.describe.skip('Project Detail Page - Loading State', () => {
-  // PHASE 2 NOTE: Loading states need updated selectors for Vue components
+test.describe('Project Detail Page - Loading State', () => {
   test('shows loading state while fetching project', async ({ page }) => {
-    let routeHandled = false;
+    let routeHandled = { agents: false, commands: false, hooks: false, mcp: false };
 
-    await page.route('**/api/projects*', async (route) => {
-      if (!routeHandled) {
-        routeHandled = true;
-        // Delay response to observe loading state
-        await new Promise(resolve => setTimeout(resolve, 500));
-        await route.fulfill({
-          status: 200,
-          contentType: 'application/json',
-          body: JSON.stringify({
-            success: true,
-            projects: [
-              {
-                id: 'loadingproject',
-                name: 'Loading Project',
-                path: '/loading/project',
-                stats: { agents: 0, commands: 0, hooks: 0, mcp: 0 }
-              }
-            ]
-          })
-        });
-      } else {
-        await route.continue();
-      }
-    });
+    // Mock config endpoints with delays
+    const mockWithDelay = (endpoint) => {
+      page.route(`**/api/projects/loadingproject/${endpoint}`, async (route) => {
+        if (!routeHandled[endpoint]) {
+          routeHandled[endpoint] = true;
+          // Delay response to observe loading state
+          await new Promise(resolve => setTimeout(resolve, 500));
+          await route.fulfill({
+            status: 200,
+            contentType: 'application/json',
+            body: JSON.stringify({
+              [endpoint]: [],
+              warnings: []
+            })
+          });
+        } else {
+          await route.continue();
+        }
+      });
+    };
+
+    mockWithDelay('agents');
+    mockWithDelay('commands');
+    mockWithDelay('hooks');
+    mockWithDelay('mcp');
 
     await page.goto('/project/loadingproject');
 
-   
+
     // Wait for Vue app to mount
     await page.waitForSelector('.app-container');
  // Loading state should appear briefly
@@ -808,28 +879,28 @@ test.describe.skip('Project Detail Page - Loading State', () => {
 
   test('loading state shows spinner and text', async ({ page }) => {
     // Create a slow response to keep loading state visible
-    await page.route('**/api/projects*', async (route) => {
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify({
-          success: true,
-          projects: [
-            {
-              id: 'spinnerproject',
-              name: 'Spinner Project',
-              path: '/spinner/project',
-              stats: { agents: 0, commands: 0, hooks: 0, mcp: 0 }
-            }
-          ]
-        })
+    const mockWithSlowDelay = (endpoint) => {
+      page.route(`**/api/projects/spinnerproject/${endpoint}`, async (route) => {
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        await route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify({
+            [endpoint]: [],
+            warnings: []
+          })
+        });
       });
-    });
+    };
+
+    mockWithSlowDelay('agents');
+    mockWithSlowDelay('commands');
+    mockWithSlowDelay('hooks');
+    mockWithSlowDelay('mcp');
 
     await page.goto('/project/spinnerproject');
 
-   
+
     // Wait for Vue app to mount
     await page.waitForSelector('.app-container');
  // Verify loading state elements

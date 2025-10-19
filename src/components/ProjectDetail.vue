@@ -11,9 +11,30 @@
       </div>
 
       <!-- Loading State -->
-      <div v-if="loading" class="loading-container">
+      <div v-if="loading" class="loading-container loading-state">
         <div class="spinner"></div>
-        <p>Loading project configurations...</p>
+        <p>Loading project...</p>
+      </div>
+
+      <!-- Error State -->
+      <div v-else-if="error" class="error-container error-state">
+        <i class="pi pi-exclamation-triangle"></i>
+        <p>{{ errorMessage }}</p>
+        <button @click="retryLoad" class="retry-btn">
+          <i class="pi pi-refresh"></i>
+          Retry
+        </button>
+      </div>
+
+      <!-- Warning Banner -->
+      <div v-else-if="warnings.length > 0" class="warning-banner">
+        <div class="warning-header">
+          <i class="pi pi-exclamation-circle"></i>
+          <span>{{ warnings.length }} Warning{{ warnings.length > 1 ? 's' : '' }}</span>
+        </div>
+        <ul class="warning-list">
+          <li v-for="(warning, index) in warnings" :key="index">{{ warning }}</li>
+        </ul>
       </div>
 
       <!-- Config Cards Container -->
@@ -297,6 +318,10 @@ export default {
     const loadingHooks = ref(false)
     const loadingMCP = ref(false)
 
+    const error = ref(false)
+    const errorMessage = ref('')
+    const warnings = ref([])
+
     const initialDisplayCount = 5
     const showingAllAgents = ref(false)
     const showingAllCommands = ref(false)
@@ -353,23 +378,60 @@ export default {
     // Load project data
     const loadProjectData = async () => {
       loading.value = true
+      error.value = false
+      errorMessage.value = ''
+      warnings.value = []
+
+      // Validate project ID
+      if (!projectId.value) {
+        error.value = true
+        errorMessage.value = 'No project ID provided in URL'
+        loading.value = false
+        return
+      }
 
       // Decode project ID to get path
       projectPath.value = decodeURIComponent(projectId.value)
       projectName.value = projectPath.value.split('/').pop()
 
       try {
-        await Promise.all([
+        const results = await Promise.all([
           loadAgents(),
           loadCommands(),
           loadHooks(),
           loadMCP()
         ])
+
+        // Collect warnings from all config loads
+        results.forEach(result => {
+          if (result?.warnings && result.warnings.length > 0) {
+            warnings.value.push(...result.warnings)
+          }
+        })
       } catch (err) {
         console.error('Error loading project data:', err)
+        error.value = true
+
+        // Parse error message
+        if (err.message.includes('timeout')) {
+          errorMessage.value = 'Request timed out. Please try again.'
+        } else if (err.message.includes('Failed to fetch') || err.message.includes('NetworkError')) {
+          errorMessage.value = 'Failed to connect to server. Please check your connection.'
+        } else if (err.message.includes('404')) {
+          errorMessage.value = 'Project not found'
+        } else if (err.message.includes('500')) {
+          errorMessage.value = 'Failed to connect to server'
+        } else {
+          errorMessage.value = err.message || 'An error occurred while loading the project'
+        }
       } finally {
         loading.value = false
       }
+    }
+
+    // Retry loading after error
+    const retryLoad = () => {
+      loadProjectData()
     }
 
     const loadAgents = async () => {
@@ -377,9 +439,11 @@ export default {
       try {
         const data = await projectsAPI.getAgents(projectId.value)
         agents.value = data.agents || []
+        return data
       } catch (err) {
         console.error('Error loading agents:', err)
         agents.value = []
+        throw err
       } finally {
         loadingAgents.value = false
       }
@@ -390,9 +454,11 @@ export default {
       try {
         const data = await projectsAPI.getCommands(projectId.value)
         commands.value = data.commands || []
+        return data
       } catch (err) {
         console.error('Error loading commands:', err)
         commands.value = []
+        throw err
       } finally {
         loadingCommands.value = false
       }
@@ -403,9 +469,11 @@ export default {
       try {
         const data = await projectsAPI.getHooks(projectId.value)
         hooks.value = data.hooks || []
+        return data
       } catch (err) {
         console.error('Error loading hooks:', err)
         hooks.value = []
+        throw err
       } finally {
         loadingHooks.value = false
       }
@@ -416,9 +484,11 @@ export default {
       try {
         const data = await projectsAPI.getMCP(projectId.value)
         mcpServers.value = data.mcpServers || []
+        return data
       } catch (err) {
         console.error('Error loading MCP servers:', err)
         mcpServers.value = []
+        throw err
       } finally {
         loadingMCP.value = false
       }
@@ -489,6 +559,10 @@ export default {
       loadingCommands,
       loadingHooks,
       loadingMCP,
+      error,
+      errorMessage,
+      warnings,
+      retryLoad,
       initialDisplayCount,
       showingAllAgents,
       showingAllCommands,
@@ -577,6 +651,98 @@ export default {
 
 .loading-container p {
   color: var(--text-secondary);
+}
+
+/* Error State */
+.error-container {
+  text-align: center;
+  padding: 3rem 1rem;
+  background: var(--surface-card);
+  border: 1px solid var(--surface-border);
+  border-radius: 8px;
+  margin-top: 2rem;
+}
+
+.error-container i {
+  font-size: 3rem;
+  color: #ef4444;
+  margin-bottom: 1rem;
+}
+
+.error-container p {
+  color: var(--text-primary);
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.retry-btn {
+  padding: 0.75rem 1.5rem;
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: background 0.2s;
+}
+
+.retry-btn:hover {
+  background: var(--primary-color-dark);
+}
+
+.retry-btn i {
+  font-size: 1rem;
+  color: white;
+  margin: 0;
+}
+
+/* Warning Banner */
+.warning-banner {
+  background: #fef3c7;
+  border: 1px solid #fbbf24;
+  border-radius: 8px;
+  padding: 1rem 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+[data-theme="dark"] .warning-banner {
+  background: #78350f;
+  border-color: #f59e0b;
+}
+
+.warning-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-weight: 600;
+  color: #92400e;
+  margin-bottom: 0.5rem;
+}
+
+[data-theme="dark"] .warning-header {
+  color: #fbbf24;
+}
+
+.warning-header i {
+  font-size: 1.25rem;
+}
+
+.warning-list {
+  margin: 0;
+  padding-left: 2rem;
+  color: #78350f;
+}
+
+[data-theme="dark"] .warning-list {
+  color: #fcd34d;
+}
+
+.warning-list li {
+  margin: 0.25rem 0;
+  font-size: 0.9rem;
 }
 
 /* Config Cards Container */
