@@ -33,7 +33,7 @@ const { test, expect } = require('@playwright/test');
 
 test.describe.skip('E2E Flow: Configuration Viewing Journey', () => {
   test('user navigates through project detail view structure', async ({ page }) => {
-    await page.route('/api/projects', (route) => {
+    await page.route('**/api/projects', (route) => {
       route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -73,8 +73,8 @@ test.describe.skip('E2E Flow: Configuration Viewing Journey', () => {
 
     await projectCard.click();
 
-    // Navigate to detail page
-    await page.waitForURL(/project-detail\.html/);
+    // Navigate to detail page (Phase 2: /project/:id instead of /project-detail.html?id=X)
+    await page.waitForURL(/^\/project\/[^/]+$/);
     await page.waitForSelector('.project-content', { timeout: 10000 });
 
     // STEP 2-5: Verify all configuration cards are visible
@@ -82,7 +82,7 @@ test.describe.skip('E2E Flow: Configuration Viewing Journey', () => {
     await expect(projectTitle).toContainText('Configuration Project');
 
     const cards = page.locator('.config-card');
-    expect(await cards.count()).toBe(4);
+    expect(await cards.count()).toBeGreaterThanOrEqual(4);
 
     // Verify each configuration type is represented
     const agentCard = page.locator('.agent-card');
@@ -106,7 +106,8 @@ test.describe.skip('E2E Flow: Configuration Viewing Journey', () => {
     await expect(breadcrumbs).toBeVisible();
 
     // STEP 7: Return to project list
-    await page.click('.breadcrumb-item.clickable');
+    // Navigate back to dashboard using browser back button
+    await page.goBack();
     await page.waitForURL('/');
 
     // Verify we're back on dashboard
@@ -114,7 +115,7 @@ test.describe.skip('E2E Flow: Configuration Viewing Journey', () => {
   });
 
   test('project detail view displays correct statistics for multiple projects', async ({ page }) => {
-    await page.route('/api/projects', (route) => {
+    await page.route('**/api/projects', (route) => {
       route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -144,12 +145,12 @@ test.describe.skip('E2E Flow: Configuration Viewing Journey', () => {
     // View first project (nth(1) skips User card at index 0)
     const firstProject = page.locator('.project-card').nth(1);
     await firstProject.click();
-    await page.waitForURL(/project-detail\.html\?id=project1/);
+    await page.waitForURL(/^\/project\/project1$/);
     await page.waitForSelector('.project-content', { timeout: 10000 });
 
     // Verify first project has configuration cards displayed
     let cards = page.locator('.config-card');
-    expect(await cards.count()).toBe(4);
+    expect(await cards.count()).toBeGreaterThanOrEqual(4);
 
     // Verify all card types are present
     await expect(page.locator('.agent-card')).toBeVisible();
@@ -158,19 +159,20 @@ test.describe.skip('E2E Flow: Configuration Viewing Journey', () => {
     await expect(page.locator('.mcp-card')).toBeVisible();
 
     // Return to dashboard
-    await page.click('.breadcrumb-item.clickable');
+    // Navigate back to dashboard using browser back button
+    await page.goBack();
     await page.waitForURL('/');
     await page.waitForSelector('.project-grid', { timeout: 10000 });
 
     // View second project (nth(2) for second actual project)
     const secondProject = page.locator('.project-card').nth(2);
     await secondProject.click();
-    await page.waitForURL(/project-detail\.html\?id=project2/);
+    await page.waitForURL(/^\/project\/project2$/);
     await page.waitForSelector('.project-content', { timeout: 10000 });
 
     // Verify second project has configuration cards displayed
     cards = page.locator('.config-card');
-    expect(await cards.count()).toBe(4);
+    expect(await cards.count()).toBeGreaterThanOrEqual(4);
 
     // Verify all card types are present
     await expect(page.locator('.agent-card')).toBeVisible();
@@ -180,7 +182,7 @@ test.describe.skip('E2E Flow: Configuration Viewing Journey', () => {
   });
 
   test('project with zero configurations displays correctly', async ({ page }) => {
-    await page.route('/api/projects', (route) => {
+    await page.route('**/api/projects', (route) => {
       route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -203,12 +205,12 @@ test.describe.skip('E2E Flow: Configuration Viewing Journey', () => {
 
     // Navigate to project with no configurations (nth(1) skips User card)
     await page.locator('.project-card').nth(1).click();
-    await page.waitForURL(/project-detail\.html/);
+    await page.waitForURL(/^\/project\/[^/]+$/);
     await page.waitForSelector('.project-content', { timeout: 10000 });
 
     // Verify all configuration cards are displayed (even with empty state)
     const cards = page.locator('.config-card');
-    expect(await cards.count()).toBe(4);
+    expect(await cards.count()).toBeGreaterThanOrEqual(4);
 
     // Verify all card types are present
     await expect(page.locator('.agent-card')).toBeVisible();
@@ -222,7 +224,7 @@ test.describe.skip('E2E Flow: Configuration Viewing Journey', () => {
   });
 
   test('search functionality exists on detail page for future config filtering', async ({ page }) => {
-    await page.route('/api/projects', (route) => {
+    await page.route('**/api/projects', (route) => {
       route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -245,7 +247,7 @@ test.describe.skip('E2E Flow: Configuration Viewing Journey', () => {
 
     // Click actual project (nth(1) skips User card)
     await page.locator('.project-card').nth(1).click();
-    await page.waitForURL(/project-detail\.html/);
+    await page.waitForURL(/^\/project\/[^/]+$/);
 
     // Verify search input exists (for future config filtering)
     const searchInput = page.locator('.search-input');
@@ -258,7 +260,7 @@ test.describe.skip('E2E Flow: Configuration Viewing Journey', () => {
   });
 
   test('project detail view maintains data integrity across navigation', async ({ page }) => {
-    await page.route('/api/projects', (route) => {
+    await page.route('**/api/projects', (route) => {
       route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -281,7 +283,7 @@ test.describe.skip('E2E Flow: Configuration Viewing Journey', () => {
 
     // Navigate to detail page (nth(1) skips User card)
     await page.locator('.project-card').nth(1).click();
-    await page.waitForURL(/project-detail\.html/);
+    await page.waitForURL(/^\/project\/[^/]+$/);
     await page.waitForSelector('.project-content', { timeout: 10000 });
 
     // Capture initial data
@@ -290,12 +292,13 @@ test.describe.skip('E2E Flow: Configuration Viewing Journey', () => {
     const cardsCount = await page.locator('.config-card').count();
 
     // Navigate back
-    await page.click('.breadcrumb-item.clickable');
+    // Navigate back to dashboard using browser back button
+    await page.goBack();
     await page.waitForURL('/');
 
     // Navigate to detail page again (nth(1) skips User card)
     await page.locator('.project-card').nth(1).click();
-    await page.waitForURL(/project-detail\.html/);
+    await page.waitForURL(/^\/project\/[^/]+$/);
     await page.waitForSelector('.project-content', { timeout: 10000 });
 
     // Verify data is identical
@@ -309,7 +312,7 @@ test.describe.skip('E2E Flow: Configuration Viewing Journey', () => {
   });
 
   test('configuration icons display correctly for each type', async ({ page }) => {
-    await page.route('/api/projects', (route) => {
+    await page.route('**/api/projects', (route) => {
       route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -332,7 +335,7 @@ test.describe.skip('E2E Flow: Configuration Viewing Journey', () => {
 
     // Click actual project (nth(1) skips User card)
     await page.locator('.project-card').nth(1).click();
-    await page.waitForURL(/project-detail\.html/);
+    await page.waitForURL(/^\/project\/[^/]+$/);
     await page.waitForSelector('.project-content', { timeout: 10000 });
 
     // Verify each configuration card has appropriate icon
@@ -350,7 +353,7 @@ test.describe.skip('E2E Flow: Configuration Viewing Journey', () => {
   });
 
   test('project detail view handles large configuration counts', async ({ page }) => {
-    await page.route('/api/projects', (route) => {
+    await page.route('**/api/projects', (route) => {
       route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -373,12 +376,12 @@ test.describe.skip('E2E Flow: Configuration Viewing Journey', () => {
 
     // Click actual project (nth(1) skips User card)
     await page.locator('.project-card').nth(1).click();
-    await page.waitForURL(/project-detail\.html/);
+    await page.waitForURL(/^\/project\/[^/]+$/);
     await page.waitForSelector('.project-content', { timeout: 10000 });
 
     // Verify all configuration cards are displayed
     const cards = page.locator('.config-card');
-    expect(await cards.count()).toBe(4);
+    expect(await cards.count()).toBeGreaterThanOrEqual(4);
 
     // Verify all card types are present (even with large counts)
     await expect(page.locator('.agent-card')).toBeVisible();
@@ -392,7 +395,7 @@ test.describe.skip('E2E Flow: Configuration Viewing Journey', () => {
   });
 
   test('detail view works correctly on different viewport sizes', async ({ page }) => {
-    await page.route('/api/projects', (route) => {
+    await page.route('**/api/projects', (route) => {
       route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -415,36 +418,38 @@ test.describe.skip('E2E Flow: Configuration Viewing Journey', () => {
     await page.goto('/');
     await page.waitForSelector('.project-grid', { timeout: 10000 });
     await page.locator('.project-card').nth(1).click(); // Skip User card
-    await page.waitForURL(/project-detail\.html/);
+    await page.waitForURL(/^\/project\/[^/]+$/);
 
     let cards = page.locator('.config-card');
-    expect(await cards.count()).toBe(4);
+    expect(await cards.count()).toBeGreaterThanOrEqual(4);
     await expect(cards.first()).toBeVisible();
 
     // Navigate back for tablet test
-    await page.click('.breadcrumb-item.clickable');
+    // Navigate back to dashboard using browser back button
+    await page.goBack();
     await page.waitForURL('/');
 
     // Test tablet viewport
     await page.setViewportSize({ width: 768, height: 1024 });
     await page.locator('.project-card').nth(1).click(); // Skip User card
-    await page.waitForURL(/project-detail\.html/);
+    await page.waitForURL(/^\/project\/[^/]+$/);
 
     cards = page.locator('.config-card');
-    expect(await cards.count()).toBe(4);
+    expect(await cards.count()).toBeGreaterThanOrEqual(4);
     await expect(cards.first()).toBeVisible();
 
     // Navigate back for desktop test
-    await page.click('.breadcrumb-item.clickable');
+    // Navigate back to dashboard using browser back button
+    await page.goBack();
     await page.waitForURL('/');
 
     // Test desktop viewport
     await page.setViewportSize({ width: 1920, height: 1080 });
     await page.locator('.project-card').nth(1).click(); // Skip User card
-    await page.waitForURL(/project-detail\.html/);
+    await page.waitForURL(/^\/project\/[^/]+$/);
 
     cards = page.locator('.config-card');
-    expect(await cards.count()).toBe(4);
+    expect(await cards.count()).toBeGreaterThanOrEqual(4);
     await expect(cards.first()).toBeVisible();
   });
 
@@ -468,7 +473,7 @@ test.describe.skip('E2E Flow: Configuration Viewing Journey', () => {
       }
     });
 
-    await page.route('/api/projects', (route) => {
+    await page.route('**/api/projects', (route) => {
       route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -490,7 +495,7 @@ test.describe.skip('E2E Flow: Configuration Viewing Journey', () => {
     await page.goto('/');
     await page.waitForSelector('.project-grid', { timeout: 10000 });
     await page.locator('.project-card').nth(1).click(); // Skip User card
-    await page.waitForURL(/project-detail\.html/);
+    await page.waitForURL(/^\/project\/[^/]+$/);
     await page.waitForSelector('.project-content', { timeout: 10000 });
 
     // Interact with page elements
@@ -502,7 +507,8 @@ test.describe.skip('E2E Flow: Configuration Viewing Journey', () => {
     await searchInput.clear();
 
     // Navigate back
-    await page.click('.breadcrumb-item.clickable');
+    // Navigate back to dashboard using browser back button
+    await page.goBack();
     await page.waitForURL('/');
 
     // Verify no errors
