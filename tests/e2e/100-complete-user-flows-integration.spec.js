@@ -312,7 +312,7 @@ test.describe('100.002: E2E Integration: Interactive Features', () => {
    * Tests sidebar interactions work across all views
    */
   // Test 100.002.001: sidebar copy to clipboard functionality works in all contexts (SKIPPED)
-  test.skip('100.002.001: sidebar copy to clipboard functionality works in all contexts', async ({ page }) => {
+  test('100.002.001: sidebar copy to clipboard functionality works in all contexts', async ({ page }) => {
     // FIX 1: **/api/* pattern
     await page.route('**/api/projects', (route) => {
       route.fulfill({
@@ -431,7 +431,7 @@ test.describe('100.002: E2E Integration: Interactive Features', () => {
    * Tests sidebar keyboard shortcuts (Escape key to close)
    */
   // Test 100.002.002: sidebar responds to keyboard shortcuts across all views (SKIPPED)
-  test.skip('100.002.002: sidebar responds to keyboard shortcuts across all views', async ({ page }) => {
+  test('100.002.002: sidebar responds to keyboard shortcuts across all views', async ({ page }) => {
     await page.route('**/api/projects', (route) => {
       route.fulfill({
         status: 200,
@@ -543,7 +543,7 @@ test.describe('100.003: E2E Integration: API Integration Points', () => {
    * Tests warning display works correctly across views
    */
   // Test 100.003.001: warnings from API are displayed correctly in all views (SKIPPED)
-  test.skip('100.003.001: warnings from API are displayed correctly in all views', async ({ page }) => {
+  test('100.003.001: warnings from API are displayed correctly in all views', async ({ page }) => {
     await page.route('**/api/projects', (route) => {
       route.fulfill({
         status: 200,
