@@ -22,14 +22,14 @@ const { test, expect } = require('@playwright/test');
  */
 
 // Test Suite 100.001: E2E Integration: Complete User Flows
-test.describe('E2E Integration: Complete User Flows', () => {
+test.describe('100.001: E2E Integration: Complete User Flows', () => {
   /**
    * FLOW 1: Dashboard → Project Detail → Sidebar → Back
    *
    * This is the primary user journey for viewing project configurations.
    */
   // Test 100.001.001: user can navigate from dashboard to project and view config details in sidebar
-  test('user can navigate from dashboard to project and view config details in sidebar', async ({ page }) => {
+  test('100.001.001: user can navigate from dashboard to project and view config details in sidebar', async ({ page }) => {
     // Mock API responses (FIX 1: **/api/* pattern for Vite proxy)
     await page.route('**/api/projects', (route) => {
       route.fulfill({
@@ -196,7 +196,7 @@ test.describe('E2E Integration: Complete User Flows', () => {
    * Tests user-level configuration viewing workflow.
    */
   // Test 100.001.002: user can access user configurations and view details in sidebar
-  test('user can access user configurations and view details in sidebar', async ({ page }) => {
+  test('100.001.002: user can access user configurations and view details in sidebar', async ({ page }) => {
     // FIX 1: **/api/* pattern
     await page.route('**/api/projects', (route) => {
       route.fulfill({
@@ -307,12 +307,12 @@ test.describe('E2E Integration: Complete User Flows', () => {
 });
 
 // Test Suite 100.002: E2E Integration: Interactive Features
-test.describe('E2E Integration: Interactive Features', () => {
+test.describe('100.002: E2E Integration: Interactive Features', () => {
   /**
    * Tests sidebar interactions work across all views
    */
   // Test 100.002.001: sidebar copy to clipboard functionality works in all contexts (SKIPPED)
-  test.skip('sidebar copy to clipboard functionality works in all contexts', async ({ page }) => {
+  test.skip('100.002.001: sidebar copy to clipboard functionality works in all contexts', async ({ page }) => {
     // FIX 1: **/api/* pattern
     await page.route('**/api/projects', (route) => {
       route.fulfill({
@@ -431,7 +431,7 @@ test.describe('E2E Integration: Interactive Features', () => {
    * Tests sidebar keyboard shortcuts (Escape key to close)
    */
   // Test 100.002.002: sidebar responds to keyboard shortcuts across all views (SKIPPED)
-  test.skip('sidebar responds to keyboard shortcuts across all views', async ({ page }) => {
+  test.skip('100.002.002: sidebar responds to keyboard shortcuts across all views', async ({ page }) => {
     await page.route('**/api/projects', (route) => {
       route.fulfill({
         status: 200,
@@ -538,12 +538,12 @@ test.describe('E2E Integration: Interactive Features', () => {
 });
 
 // Test Suite 100.003: E2E Integration: API Integration Points
-test.describe('E2E Integration: API Integration Points', () => {
+test.describe('100.003: E2E Integration: API Integration Points', () => {
   /**
    * Tests warning display works correctly across views
    */
   // Test 100.003.001: warnings from API are displayed correctly in all views (SKIPPED)
-  test.skip('warnings from API are displayed correctly in all views', async ({ page }) => {
+  test.skip('100.003.001: warnings from API are displayed correctly in all views', async ({ page }) => {
     await page.route('**/api/projects', (route) => {
       route.fulfill({
         status: 200,
@@ -667,7 +667,7 @@ test.describe('E2E Integration: API Integration Points', () => {
    * Tests empty state displays correctly when no data exists
    */
   // Test 100.003.002: empty states display correctly across all configuration types
-  test('empty states display correctly across all configuration types', async ({ page }) => {
+  test('100.003.002: empty states display correctly across all configuration types', async ({ page }) => {
     await page.route('**/api/projects', (route) => {
       route.fulfill({
         status: 200,
@@ -757,12 +757,12 @@ test.describe('E2E Integration: API Integration Points', () => {
 });
 
 // Test Suite 100.004: E2E Integration: Error Handling & Recovery
-test.describe('E2E Integration: Error Handling & Recovery', () => {
+test.describe('100.004: E2E Integration: Error Handling & Recovery', () => {
   /**
    * Tests application handles network failures gracefully
    */
   // Test 100.004.001: application handles API failures and provides recovery options
-  test('application handles API failures and provides recovery options', async ({ page }) => {
+  test('100.004.001: application handles API failures and provides recovery options', async ({ page }) => {
     let requestCount = 0;
 
     await page.route('**/api/projects', (route) => {
@@ -846,7 +846,7 @@ test.describe('E2E Integration: Error Handling & Recovery', () => {
    * Tests invalid project ID handling
    */
   // Test 100.004.002: application handles invalid project ID gracefully
-  test('application handles invalid project ID gracefully', async ({ page }) => {
+  test('100.004.002: application handles invalid project ID gracefully', async ({ page }) => {
     await page.route('**/api/projects', (route) => {
       route.fulfill({
         status: 200,

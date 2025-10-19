@@ -32,9 +32,9 @@ const { test, expect } = require('@playwright/test');
  */
 
 // Test Suite 102.001: E2E Flow: Configuration Viewing Journey
-test.describe.skip('E2E Flow: Configuration Viewing Journey', () => {
+test.describe.skip('102.001: E2E Flow: Configuration Viewing Journey', () => {
   // Test 102.001.001: user navigates through project detail view structure
-  test('user navigates through project detail view structure', async ({ page }) => {
+  test('102.001.001: user navigates through project detail view structure', async ({ page }) => {
     await page.route('**/api/projects', (route) => {
       route.fulfill({
         status: 200,
@@ -117,7 +117,7 @@ test.describe.skip('E2E Flow: Configuration Viewing Journey', () => {
   });
 
   // Test 102.001.002: project detail view displays correct statistics for multiple projects
-  test('project detail view displays correct statistics for multiple projects', async ({ page }) => {
+  test('102.001.002: project detail view displays correct statistics for multiple projects', async ({ page }) => {
     await page.route('**/api/projects', (route) => {
       route.fulfill({
         status: 200,
@@ -185,7 +185,7 @@ test.describe.skip('E2E Flow: Configuration Viewing Journey', () => {
   });
 
   // Test 102.001.003: project with zero configurations displays correctly
-  test('project with zero configurations displays correctly', async ({ page }) => {
+  test('102.001.003: project with zero configurations displays correctly', async ({ page }) => {
     await page.route('**/api/projects', (route) => {
       route.fulfill({
         status: 200,
@@ -228,7 +228,7 @@ test.describe.skip('E2E Flow: Configuration Viewing Journey', () => {
   });
 
   // Test 102.001.004: search functionality exists on detail page for future config filtering
-  test('search functionality exists on detail page for future config filtering', async ({ page }) => {
+  test('102.001.004: search functionality exists on detail page for future config filtering', async ({ page }) => {
     await page.route('**/api/projects', (route) => {
       route.fulfill({
         status: 200,
@@ -265,7 +265,7 @@ test.describe.skip('E2E Flow: Configuration Viewing Journey', () => {
   });
 
   // Test 102.001.005: project detail view maintains data integrity across navigation
-  test('project detail view maintains data integrity across navigation', async ({ page }) => {
+  test('102.001.005: project detail view maintains data integrity across navigation', async ({ page }) => {
     await page.route('**/api/projects', (route) => {
       route.fulfill({
         status: 200,
@@ -318,7 +318,7 @@ test.describe.skip('E2E Flow: Configuration Viewing Journey', () => {
   });
 
   // Test 102.001.006: configuration icons display correctly for each type
-  test('configuration icons display correctly for each type', async ({ page }) => {
+  test('102.001.006: configuration icons display correctly for each type', async ({ page }) => {
     await page.route('**/api/projects', (route) => {
       route.fulfill({
         status: 200,
@@ -360,7 +360,7 @@ test.describe.skip('E2E Flow: Configuration Viewing Journey', () => {
   });
 
   // Test 102.001.007: project detail view handles large configuration counts
-  test('project detail view handles large configuration counts', async ({ page }) => {
+  test('102.001.007: project detail view handles large configuration counts', async ({ page }) => {
     await page.route('**/api/projects', (route) => {
       route.fulfill({
         status: 200,
@@ -403,7 +403,7 @@ test.describe.skip('E2E Flow: Configuration Viewing Journey', () => {
   });
 
   // Test 102.001.008: detail view works correctly on different viewport sizes
-  test('detail view works correctly on different viewport sizes', async ({ page }) => {
+  test('102.001.008: detail view works correctly on different viewport sizes', async ({ page }) => {
     await page.route('**/api/projects', (route) => {
       route.fulfill({
         status: 200,
@@ -463,7 +463,7 @@ test.describe.skip('E2E Flow: Configuration Viewing Journey', () => {
   });
 
   // Test 102.001.009: no console errors during configuration viewing flow
-  test('no console errors during configuration viewing flow', async ({ page }) => {
+  test('102.001.009: no console errors during configuration viewing flow', async ({ page }) => {
     const consoleErrors = [];
 
     page.on('console', (msg) => {

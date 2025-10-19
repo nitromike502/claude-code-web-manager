@@ -22,9 +22,9 @@ const { test, expect } = require('@playwright/test');
  */
 
 // Test Suite 101.001: E2E Flow: First-Time User - Project Discovery
-test.describe('E2E Flow: First-Time User - Project Discovery', () => {
+test.describe('101.001: E2E Flow: First-Time User - Project Discovery', () => {
   // Test 101.001.001: complete project discovery journey from dashboard to detail and back
-  test('complete project discovery journey from dashboard to detail and back', async ({ page }) => {
+  test('101.001.001: complete project discovery journey from dashboard to detail and back', async ({ page }) => {
     // Setup API mocks for consistent test data
     await page.route('**/api/projects', (route) => {
       route.fulfill({
@@ -209,7 +209,7 @@ test.describe('E2E Flow: First-Time User - Project Discovery', () => {
   });
 
   // Test 101.001.002: project discovery with empty state
-  test('project discovery with empty state', async ({ page }) => {
+  test('101.001.002: project discovery with empty state', async ({ page }) => {
     // Mock empty projects response
     await page.route('**/api/projects', (route) => {
       route.fulfill({
@@ -263,7 +263,7 @@ test.describe('E2E Flow: First-Time User - Project Discovery', () => {
   });
 
   // Test 101.001.003: project discovery with API errors shows helpful message
-  test('project discovery with API errors shows helpful message', async ({ page }) => {
+  test('101.001.003: project discovery with API errors shows helpful message', async ({ page }) => {
     // Mock API error
     await page.route('**/api/projects', (route) => {
       route.fulfill({
@@ -289,7 +289,7 @@ test.describe('E2E Flow: First-Time User - Project Discovery', () => {
   });
 
   // Test 101.001.004: loading state displays while fetching projects
-  test('loading state displays while fetching projects', async ({ page }) => {
+  test('101.001.004: loading state displays while fetching projects', async ({ page }) => {
     let requestCount = 0;
 
     await page.route('**/api/projects', async (route) => {
@@ -361,7 +361,7 @@ test.describe('E2E Flow: First-Time User - Project Discovery', () => {
   });
 
   // Test 101.001.005: performance: dashboard loads in under 2 seconds
-  test('performance: dashboard loads in under 2 seconds', async ({ page }) => {
+  test('101.001.005: performance: dashboard loads in under 2 seconds', async ({ page }) => {
     await page.route('**/api/projects', (route) => {
       route.fulfill({
         status: 200,
@@ -425,7 +425,7 @@ test.describe('E2E Flow: First-Time User - Project Discovery', () => {
   });
 
   // Test 101.001.006: no console errors during project discovery flow
-  test('no console errors during project discovery flow', async ({ page }) => {
+  test('101.001.006: no console errors during project discovery flow', async ({ page }) => {
     const consoleErrors = [];
     const pageErrors = [];
 
