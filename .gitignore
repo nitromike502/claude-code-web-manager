@@ -169,4 +169,6 @@ playwright-report/
 
 # Deleted files directory (for manual cleanup)
 .deleted/
-./screenshots
+
+# Screenshots (test artifacts)
+screenshots/
