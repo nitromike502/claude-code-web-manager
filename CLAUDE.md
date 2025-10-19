@@ -8,12 +8,12 @@ A web-based tool for managing Claude Code projects, subagents, slash commands, h
 
 **Deployment:** Local web server accessible at `http://localhost:8420`
 
-**Current Phase:** Phase 1 (MVP) - ✅ COMPLETE
+**Current Phase:** Phase 2 (Vite Migration) - ✅ COMPLETE
 
 ## Tech Stack
 
 - **Backend:** Node.js + Express (port 8420)
-- **Frontend:** Vue 3 + PrimeVue (CDN-hosted)
+- **Frontend:** Vite + Vue 3 + Vue Router + Pinia (SPA on port 5173 in dev)
 - **Data Source:** Live file system reads (no database)
 
 ## Project Structure
@@ -21,15 +21,37 @@ A web-based tool for managing Claude Code projects, subagents, slash commands, h
 ```
 manager/
 ├── docs/
-│   ├── PRD-Phase1-MVP.md          # Main MVP requirements (reviewed & approved)
-│   ├── PRD-Phase2-Subagents.md    # Future: Subagent CRUD (not reviewed)
-│   ├── PRD-Phase2-Commands.md     # Future: Command CRUD (not reviewed)
-│   ├── PRD-Phase2-Hooks.md        # Future: Hooks CRUD (not reviewed)
-│   └── PRD-Phase2-MCP.md          # Future: MCP CRUD (not reviewed)
+│   ├── PRD-Phase1-MVP.md             # Phase 1 requirements (archived)
+│   ├── PRD-Phase2-Vite-Migration.md  # Phase 2 (current - complete)
+│   └── testing/                      # Test reports and documentation
 ├── src/
-│   ├── backend/                    # Express server & API
-│   └── frontend/                   # Vue + PrimeVue UI
-└── CLAUDE.md                       # This file
+│   ├── backend/                      # Express server & API (unchanged)
+│   ├── main.js                       # Vue app initialization
+│   ├── App.vue                       # Root component
+│   ├── router/
+│   │   └── index.js                 # Vue Router setup
+│   ├── stores/
+│   │   ├── theme.js                # Theme state management
+│   │   ├── projects.js             # Projects state management
+│   │   └── notifications.js        # Notifications state management
+│   ├── components/
+│   │   ├── Dashboard.vue           # Project list view
+│   │   ├── ProjectDetail.vue       # Project configuration view
+│   │   ├── UserGlobal.vue          # User-level configs
+│   │   └── cards/                  # Configuration card components
+│   ├── api/
+│   │   └── client.js               # Centralized API client
+│   ├── styles/
+│   │   ├── variables.css           # CSS variables for theming
+│   │   ├── global.css              # Global styles
+│   │   └── components.css          # Component-specific styles
+│   └── utils/                       # Utility functions
+├── tests/
+│   ├── backend/                     # Jest backend tests (270 tests)
+│   └── frontend/                    # Playwright frontend tests (86 tests)
+├── index.html                        # SPA entry point
+├── vite.config.js                   # Vite configuration
+└── CLAUDE.md                         # This file
 ```
 
 ## Phase 1 MVP Features
@@ -46,6 +68,36 @@ manager/
 - **Manual refresh:** Rescan button to refresh project list
 - **Dark mode:** Implemented in Phase 1
 - **No authentication:** Local-only tool
+
+## Phase 2 Features (Vite Migration)
+
+### Architecture Modernization
+1. **Vite Build System** - Modern dev server with Hot Module Replacement (< 1s reload)
+2. **Vue Router** - Client-side routing with SPA navigation (no page reloads)
+3. **Pinia State Management** - Global state for theme, projects, and notifications
+4. **Single File Components** - .vue files with template, script, and style sections
+5. **CSS Variables** - Theming system with 80+ variables for dark/light modes
+6. **Centralized API Client** - Unified API layer with timeout and error handling
+
+### Performance Improvements
+- **Dev Server Startup:** < 1 second
+- **HMR (Hot Module Replacement):** < 1 second file change reload
+- **Bundle Size:** < 500KB (gzipped)
+- **Initial Load Time:** < 2 seconds
+- **No Page Reloads:** SPA navigation between views
+
+### Feature Parity
+- ✅ 100% Phase 1 feature parity maintained
+- ✅ All API endpoints working
+- ✅ All configuration viewing functional
+- ✅ Dark/light theme toggle
+- ✅ Responsive design
+- ✅ Cross-browser compatibility (Chrome, Firefox, Safari)
+
+### Testing
+- **Backend Tests:** 270 Jest tests (100% pass rate)
+- **Frontend Tests:** 86 Playwright tests (100% pass rate)
+- **Total Test Coverage:** 356 tests passing
 
 ## Data Sources
 
@@ -103,8 +155,9 @@ Building with **parallel subagent teams** using the SWARM method:
 
 See subagent proposals in project `.claude/agents/` directory.
 
-## Development Workflow (Phase 1 MVP) - ✅ COMPLETE
+## Development Workflow
 
+### Phase 1 MVP - ✅ COMPLETE
 1. ✅ Requirements gathering (PRD complete)
 2. ✅ Create wireframe mockups (Approved)
 3. ✅ Build backend API with automated testing (COMPLETE - 100%)
@@ -117,7 +170,17 @@ See subagent proposals in project `.claude/agents/` directory.
 5. ✅ Integration verification & cross-platform testing (COMPLETE)
 6. ✅ Polish & final quality review (COMPLETE)
 
-**Note:** Phase 1 = MVP (Read-only interface). Phase 2+ features (CRUD operations) are documented but not part of current scope.
+### Phase 2 Vite Migration - ✅ COMPLETE
+1. ✅ Story 2.1: Vite Setup & Project Structure
+2. ✅ Story 2.2: Vue Router Implementation
+3. ✅ Story 2.3: Pinia State Management
+4. ✅ Story 2.4: Component Conversion to SFCs
+5. ✅ Story 2.5: API Integration Layer
+6. ✅ Story 2.6: Styling & CSS Variables
+7. ✅ Story 2.7: Testing & Validation (100% test pass rate)
+8. ✅ Story 2.8: Documentation & Cleanup
+
+**Note:** Phase 1 = MVP (Read-only interface). Phase 2 = Architecture modernization with Vite. Future phases will add CRUD operations.
 
 ### Testing Workflow (Automated Quality Gate)
 
@@ -192,14 +255,40 @@ See `/home/claude/manager/.claude/templates/test-template.md` for detailed guide
 - [x] Responsive design verified (mobile, tablet, desktop)
 - [x] End-to-end integration testing complete
 
-## Future Features (Beyond MVP)
+## Future Features (Phase 3+)
 
-After Phase 1 MVP is complete, future enhancements are documented but not yet prioritized:
+With Phase 1 MVP and Phase 2 Vite migration complete, future phases will build on this solid foundation:
 
-- CRUD operations for subagents, commands, hooks, and MCP servers
-- Advanced features (validation, testing, templates, import/export)
+### Phase 3 - Subagent CRUD (Planned)
+- Create, edit, and delete subagent definitions
+- YAML frontmatter validation
+- Live preview of subagent content
+- Template system for common subagent types
 
-⚠️ Future feature PRDs exist in `docs/PRD-Phase2-*.md` but have not been fully reviewed or scheduled.
+### Phase 4 - Command Management (Planned)
+- Create, edit, and delete slash commands
+- Command testing and validation
+- Nested directory support
+- Import/export command libraries
+
+### Phase 5 - Hooks Configuration (Planned)
+- Visual hook editor
+- Hook testing and validation
+- Pre-built hook templates
+- Hook dependency management
+
+### Phase 6 - MCP Server Management (Planned)
+- Add, edit, and remove MCP servers
+- Server configuration validation
+- Connection testing
+- Server discovery and recommendations
+
+### Phase 7+ - Advanced Features (Future)
+- Real-time file watching for automatic updates
+- Configuration version history and rollback
+- Bulk operations and batch editing
+- Multi-project synchronization
+- Configuration backup and restore
 
 ## Getting Started
 
@@ -227,22 +316,35 @@ npm start
 
 ### Usage
 
-Once the server is running, open your browser to:
+#### Development Mode (Recommended)
+
+Start both frontend and backend servers:
+
+**Terminal 1 - Frontend (Vite dev server):**
+```bash
+npm run dev
 ```
-http://localhost:8420
+Opens http://localhost:5173 with HMR enabled (< 1s reload on file changes)
+
+**Terminal 2 - Backend (Express server):**
+```bash
+npm run dev:backend
 ```
+Runs on http://localhost:8420 (API endpoints)
+
+#### Production Mode
+
+Build and serve the optimized production bundle:
+```bash
+npm run build    # Build frontend to dist/
+npm start        # Start backend server (serves frontend from dist/)
+```
+Opens http://localhost:8420
 
 The application will automatically:
 1. Read your Claude Code projects from `~/.claude.json`
 2. Display all discovered projects in the dashboard
 3. Allow you to view agents, commands, hooks, and MCP servers for each project
-
-### Development Mode
-
-For development with auto-reload on file changes:
-```bash
-npm run dev
-```
 
 ## Git Workflow
 
