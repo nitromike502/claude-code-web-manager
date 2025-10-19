@@ -21,7 +21,9 @@ const { test, expect } = require('@playwright/test');
  * - State: Pinia stores
  */
 
+// Test Suite 101.001: E2E Flow: First-Time User - Project Discovery
 test.describe('E2E Flow: First-Time User - Project Discovery', () => {
+  // Test 101.001.001: complete project discovery journey from dashboard to detail and back
   test('complete project discovery journey from dashboard to detail and back', async ({ page }) => {
     // Setup API mocks for consistent test data
     await page.route('**/api/projects', (route) => {
@@ -206,6 +208,7 @@ test.describe('E2E Flow: First-Time User - Project Discovery', () => {
     expect(cardCount).toBeLessThanOrEqual(3); // At maximum: User card + 2 projects
   });
 
+  // Test 101.001.002: project discovery with empty state
   test('project discovery with empty state', async ({ page }) => {
     // Mock empty projects response
     await page.route('**/api/projects', (route) => {
@@ -259,6 +262,7 @@ test.describe('E2E Flow: First-Time User - Project Discovery', () => {
     await expect(emptyState).toContainText('Add projects in Claude Code and click "Rescan" to see them here.');
   });
 
+  // Test 101.001.003: project discovery with API errors shows helpful message
   test('project discovery with API errors shows helpful message', async ({ page }) => {
     // Mock API error
     await page.route('**/api/projects', (route) => {
@@ -284,6 +288,7 @@ test.describe('E2E Flow: First-Time User - Project Discovery', () => {
     await expect(retryButton).toBeVisible();
   });
 
+  // Test 101.001.004: loading state displays while fetching projects
   test('loading state displays while fetching projects', async ({ page }) => {
     let requestCount = 0;
 
@@ -355,6 +360,7 @@ test.describe('E2E Flow: First-Time User - Project Discovery', () => {
     await page.unrouteAll({ behavior: 'ignoreErrors' });
   });
 
+  // Test 101.001.005: performance: dashboard loads in under 2 seconds
   test('performance: dashboard loads in under 2 seconds', async ({ page }) => {
     await page.route('**/api/projects', (route) => {
       route.fulfill({
@@ -418,6 +424,7 @@ test.describe('E2E Flow: First-Time User - Project Discovery', () => {
     expect(await projectCards.count()).toBe(11);
   });
 
+  // Test 101.001.006: no console errors during project discovery flow
   test('no console errors during project discovery flow', async ({ page }) => {
     const consoleErrors = [];
     const pageErrors = [];
