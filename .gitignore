@@ -158,7 +158,6 @@ $RECYCLE.BIN/
 # Test artifacts and temporary test files
 .playwright-mcp/
 test-*.html
-vite.config.js
 test-results/
 playwright-report/
 
@@ -170,3 +169,4 @@ playwright-report/
 
 # Deleted files directory (for manual cleanup)
 .deleted/
+./screenshots

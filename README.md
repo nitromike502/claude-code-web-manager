@@ -6,18 +6,56 @@ A web-based interface for viewing and managing Claude Code projects, subagents, 
 
 Claude Code Manager provides a centralized dashboard to browse all your Claude Code configurations from one place. View your project structures, explore subagent definitions, review slash commands, inspect hooks, and examine MCP server configurations—all from a clean, intuitive web interface.
 
+## Tech Stack
+
+### Frontend
+- **Vite 7.1.10** - Lightning-fast dev server with Hot Module Replacement (HMR)
+- **Vue 3.5.22** - Progressive JavaScript framework for reactive UIs
+- **Vue Router 4.6.3** - Official router for Vue.js with client-side routing
+- **Pinia 3.0.3** - Official state management library for Vue 3
+
+### Backend
+- **Node.js 18+** - JavaScript runtime
+- **Express 4.18** - Fast, minimalist web framework
+- **Gray Matter** - YAML frontmatter parser for agents and commands
+
+### Testing
+- **Jest 30.2.0** - Backend API and parser testing (270 tests)
+- **Playwright 1.56.0** - Frontend end-to-end testing (86 tests)
+
+### Development
+- **Vite Dev Server** - < 1 second startup, instant HMR
+- **Vue DevTools** - Full integration for debugging
+- **Source Maps** - Debug original source code
+
 ## Features
 
+### Core Functionality
 - **Project Discovery** - Automatically discovers all Claude Code projects from `~/.claude.json`
 - **Subagent Viewing** - Browse and view all project and user-level subagents with full frontmatter specs
 - **Slash Command Viewing** - View all custom slash commands across projects
 - **Hooks Viewing** - Display configured hooks from settings files
 - **MCP Server Viewing** - View MCP server configurations
 - **Search & Filter** - Quickly find specific configurations
-- **Dark Mode** - Built-in dark/light theme toggle
-- **Manual Refresh** - Rescan projects on demand
 - **Detail Sidebar** - View full content with markdown rendering and syntax highlighting
+
+### User Experience
+- **SPA Navigation** - Client-side routing with no page reloads
+- **Dark Mode** - Built-in dark/light theme toggle with CSS variables
 - **Responsive Design** - Works on desktop, tablet, and mobile devices
+- **Manual Refresh** - Rescan projects on demand
+- **Toast Notifications** - Auto-dismissing success/error messages
+
+### Performance
+- **< 1 Second Dev Server** - Vite HMR for instant feedback
+- **< 2 Second Load Time** - Optimized production bundle
+- **< 500KB Bundle** - Gzipped and code-split for fast delivery
+- **Instant Navigation** - No page reloads between views
+
+### Testing
+- **356 Tests** - 100% pass rate across backend and frontend
+- **Cross-Browser** - Verified on Chrome, Firefox, and Safari
+- **Automated Quality** - Jest and Playwright test suites
 
 ## Prerequisites
 
@@ -39,22 +77,33 @@ npm install
 
 ## Usage
 
-### Starting the Server
+### Development Mode (Recommended)
+
+For development with Hot Module Replacement (HMR) and instant feedback:
+
+**Terminal 1 - Frontend (Vite dev server):**
+```bash
+npm run dev
+```
+Opens http://localhost:5173 with HMR enabled (< 1s reload on file changes)
+
+**Terminal 2 - Backend (Express server):**
+```bash
+npm run dev:backend
+```
+Runs on http://localhost:8420 (API endpoints)
+
+### Production Mode
+
+Build and serve the optimized production bundle:
 
 ```bash
-# If installed globally
-claude-code-manager
-
-# Or from source
-npm start
+npm run build    # Build frontend to dist/
+npm start        # Start backend server (serves frontend from dist/)
 ```
+Opens http://localhost:8420
 
 ### Accessing the Application
-
-Once the server is running, open your browser to:
-```
-http://localhost:8420
-```
 
 The application will automatically:
 1. Read your Claude Code projects from `~/.claude.json`

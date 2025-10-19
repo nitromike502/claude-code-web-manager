@@ -1,8 +1,11 @@
 // API Client for Claude Code Manager
+// NOTE: This file re-exports the centralized API client for backwards compatibility
+
+import * as apiClient from '../../api/client.js'
 
 const API_BASE_URL = '/api';
 
-// Helper function for fetch requests
+// Helper function for fetch requests (kept for backwards compatibility)
 async function fetchJSON(url, options = {}) {
   try {
     const response = await fetch(url, {
@@ -25,61 +28,59 @@ async function fetchJSON(url, options = {}) {
   }
 }
 
-// Projects API
+// Projects API (using centralized client)
 export const projectsAPI = {
   // Get all projects
   async getAll() {
-    return fetchJSON(`${API_BASE_URL}/projects`);
+    return apiClient.getProjects();
   },
 
   // Trigger rescan
   async scan() {
-    return fetchJSON(`${API_BASE_URL}/projects/scan`, {
-      method: 'POST',
-    });
+    return apiClient.scanProjects();
   },
 
   // Get project agents
   async getAgents(projectId) {
-    return fetchJSON(`${API_BASE_URL}/projects/${projectId}/agents`);
+    return apiClient.getProjectAgents(projectId);
   },
 
   // Get project commands
   async getCommands(projectId) {
-    return fetchJSON(`${API_BASE_URL}/projects/${projectId}/commands`);
+    return apiClient.getProjectCommands(projectId);
   },
 
   // Get project hooks
   async getHooks(projectId) {
-    return fetchJSON(`${API_BASE_URL}/projects/${projectId}/hooks`);
+    return apiClient.getProjectHooks(projectId);
   },
 
   // Get project MCP servers
   async getMCP(projectId) {
-    return fetchJSON(`${API_BASE_URL}/projects/${projectId}/mcp`);
+    return apiClient.getProjectMcp(projectId);
   },
 };
 
-// User API
+// User API (using centralized client)
 export const userAPI = {
   // Get user agents
   async getAgents() {
-    return fetchJSON(`${API_BASE_URL}/user/agents`);
+    return apiClient.getUserAgents();
   },
 
   // Get user commands
   async getCommands() {
-    return fetchJSON(`${API_BASE_URL}/user/commands`);
+    return apiClient.getUserCommands();
   },
 
   // Get user hooks
   async getHooks() {
-    return fetchJSON(`${API_BASE_URL}/user/hooks`);
+    return apiClient.getUserHooks();
   },
 
   // Get user MCP servers
   async getMCP() {
-    return fetchJSON(`${API_BASE_URL}/user/mcp`);
+    return apiClient.getUserMcp();
   },
 
   // Get user stats (counts for all categories)
@@ -102,7 +103,7 @@ export const userAPI = {
 
 // Health check
 export async function healthCheck() {
-  return fetchJSON(`${API_BASE_URL}/health`);
+  return apiClient.healthCheck();
 }
 
 export default {

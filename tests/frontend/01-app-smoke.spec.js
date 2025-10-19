@@ -20,17 +20,21 @@ test.describe('App Smoke Tests', () => {
   test('page contains main app structure', async ({ page }) => {
     await page.goto('/');
 
+    // Wait for Vue app to mount
+    await page.waitForSelector('.app-container');
+
     // Verify header is present
     const header = page.locator('.app-header');
     await expect(header).toBeVisible();
 
-    // Verify app title is visible
-    const appTitle = page.locator('.app-title');
+    // Verify app title is visible (h1 in header, not .app-title class)
+    const appTitle = page.locator('.app-header h1');
     await expect(appTitle).toBeVisible();
     await expect(appTitle).toContainText('Claude Code Manager');
   });
 
-  test('search input is present and functional', async ({ page }) => {
+  // Search feature removed in Phase 2 - planned for Phase 3
+  test.skip('search input is present and functional', async ({ page }) => {
     await page.goto('/');
 
     // Verify search input exists
@@ -48,6 +52,9 @@ test.describe('App Smoke Tests', () => {
   test('theme toggle button is present', async ({ page }) => {
     await page.goto('/');
 
+    // Wait for Vue app to mount
+    await page.waitForSelector('.app-container');
+
     // Verify theme toggle button exists
     const themeToggle = page.locator('.theme-toggle');
     await expect(themeToggle).toBeVisible();
@@ -56,17 +63,20 @@ test.describe('App Smoke Tests', () => {
   test('refresh button is present', async ({ page }) => {
     await page.goto('/');
 
-    // Verify refresh button exists
-    const refreshButton = page.locator('.btn-refresh');
+    // Wait for Vue app to mount
+    await page.waitForSelector('.app-container');
+
+    // Verify rescan button exists (renamed from refresh in Phase 2)
+    const refreshButton = page.locator('.rescan-btn');
     await expect(refreshButton).toBeVisible();
-    await expect(refreshButton).toContainText('Refresh');
+    await expect(refreshButton).toContainText('Rescan');
   });
 
   test('Vue app mounts successfully', async ({ page }) => {
     await page.goto('/');
 
-    // Verify Vue app div is present
-    const appDiv = page.locator('#app');
+    // Verify Vue app container is present (use .app-container to avoid duplicate #app)
+    const appDiv = page.locator('.app-container');
     await expect(appDiv).toBeVisible();
 
     // Verify content is rendered (not just empty div)
@@ -79,9 +89,12 @@ test.describe('Theme Toggle Functionality', () => {
   test('theme toggle changes between dark and light modes', async ({ page }) => {
     await page.goto('/');
 
-    // Get initial theme from html data-theme attribute
-    const html = page.locator('html');
-    const initialTheme = await html.getAttribute('data-theme');
+    // Wait for Vue app to mount
+    await page.waitForSelector('.app-container');
+
+    // Get initial theme from app-container data-theme attribute (Phase 2 uses div not html)
+    const appContainer = page.locator('.app-container');
+    const initialTheme = await appContainer.getAttribute('data-theme');
 
     // Click theme toggle
     await page.click('.theme-toggle');
@@ -90,7 +103,7 @@ test.describe('Theme Toggle Functionality', () => {
     await page.waitForTimeout(100);
 
     // Verify theme changed
-    const newTheme = await html.getAttribute('data-theme');
+    const newTheme = await appContainer.getAttribute('data-theme');
     expect(newTheme).not.toBe(initialTheme);
 
     // Click again to toggle back
@@ -98,7 +111,7 @@ test.describe('Theme Toggle Functionality', () => {
     await page.waitForTimeout(100);
 
     // Verify theme reverted
-    const revertedTheme = await html.getAttribute('data-theme');
+    const revertedTheme = await appContainer.getAttribute('data-theme');
     expect(revertedTheme).toBe(initialTheme);
   });
 });
@@ -108,7 +121,7 @@ test.describe('Loading State', () => {
     let routeHandled = false;
 
     // Intercept API call to delay response and observe loading state
-    await page.route('/api/projects', async (route) => {
+    await page.route('**/api/projects*', async (route) => {
       if (!routeHandled) {
         routeHandled = true;
         // Use setTimeout instead of page.waitForTimeout to avoid test ending error
@@ -138,8 +151,10 @@ test.describe('Loading State', () => {
 
 test.describe('API Integration', () => {
   test('successfully fetches projects from API', async ({ page }) => {
-    // Wait for API response
-    const responsePromise = page.waitForResponse('/api/projects');
+    // Wait for API response (accept any URL with /api/projects)
+    const responsePromise = page.waitForResponse(response =>
+      response.url().includes('/api/projects')
+    );
 
     await page.goto('/');
 
@@ -151,8 +166,8 @@ test.describe('API Integration', () => {
   });
 
   test('handles API errors gracefully', async ({ page }) => {
-    // Intercept API call and return error
-    await page.route('/api/projects', (route) => {
+    // Intercept all API calls and return error
+    await page.route('**/api/projects*', (route) => {
       route.fulfill({
         status: 500,
         contentType: 'application/json',
@@ -164,6 +179,9 @@ test.describe('API Integration', () => {
     });
 
     await page.goto('/');
+
+    // Wait for Vue app to mount first
+    await page.waitForSelector('.app-container');
 
     // Wait for error state to appear
     const errorState = page.locator('.error-state');

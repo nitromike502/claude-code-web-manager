@@ -35,8 +35,8 @@ module.exports = defineConfig({
 
   // Shared settings for all projects
   use: {
-    // Base URL for tests
-    baseURL: 'http://localhost:8420',
+    // Base URL for tests (Phase 2: Vite dev server on port 5173)
+    baseURL: 'http://localhost:5173',
 
     // Collect trace when retrying the failed test
     trace: 'on-first-retry',
@@ -96,8 +96,8 @@ module.exports = defineConfig({
 
   // Run local dev server before starting tests
   webServer: {
-    command: 'npm start',
-    url: 'http://localhost:8420',
+    command: 'npm run dev', // Phase 2: Use Vite dev server
+    url: 'http://localhost:5173',
     reuseExistingServer: !process.env.CI,
     timeout: 30 * 1000, // 30 seconds
     stdout: 'pipe',

@@ -16,8 +16,8 @@ const { test, expect } = require('@playwright/test');
 
 test.describe('E2E Flow: Theme Toggle & Persistence', () => {
   test('theme toggle persists across navigation and page reload', async ({ page }) => {
-    // Setup API mock
-    await page.route('/api/projects', (route) => {
+    // Setup API mocks
+    await page.route('**/api/projects', (route) => {
       route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -35,6 +35,70 @@ test.describe('E2E Flow: Theme Toggle & Persistence', () => {
       });
     });
 
+    await page.route('**/api/user/agents', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, agents: [] })
+      });
+    });
+
+    await page.route('**/api/user/commands', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, commands: [] })
+      });
+    });
+
+    await page.route('**/api/user/hooks', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, hooks: [] })
+      });
+    });
+
+    await page.route('**/api/user/mcp', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, mcpServers: [] })
+      });
+    });
+
+    await page.route('**/api/projects/themeproject/agents', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, agents: [] })
+      });
+    });
+
+    await page.route('**/api/projects/themeproject/commands', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, commands: [] })
+      });
+    });
+
+    await page.route('**/api/projects/themeproject/hooks', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, hooks: [] })
+      });
+    });
+
+    await page.route('**/api/projects/themeproject/mcp', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, mcpServers: [] })
+      });
+    });
+
     // STEP 1: User opens application
     await page.goto('/');
 
@@ -43,9 +107,9 @@ test.describe('E2E Flow: Theme Toggle & Persistence', () => {
     const initialTheme = await html.getAttribute('data-theme');
     expect(initialTheme).toBe('dark');
 
-    // Verify theme icon shows correct state
-    const themeToggle = page.locator('.theme-toggle i');
-    await expect(themeToggle).toHaveClass(/fa-sun/); // Sun icon in dark mode
+    // Verify theme icon shows correct state (emoji in span)
+    const themeToggle = page.locator('.theme-toggle span.theme-icon');
+    await expect(themeToggle).toHaveText('☀️'); // Sun emoji in dark mode
 
     // STEP 2: User toggles theme
     await page.click('.theme-toggle');
@@ -54,23 +118,23 @@ test.describe('E2E Flow: Theme Toggle & Persistence', () => {
     // Verify theme changed to light
     const newTheme = await html.getAttribute('data-theme');
     expect(newTheme).toBe('light');
-    await expect(themeToggle).toHaveClass(/fa-moon/); // Moon icon in light mode
+    await expect(themeToggle).toHaveText('🌙'); // Moon emoji in light mode
 
     // Verify localStorage was updated
-    const storedTheme = await page.evaluate(() => localStorage.getItem('theme'));
+    const storedTheme = await page.evaluate(() => localStorage.getItem('claude-code-manager-theme'));
     expect(storedTheme).toBe('light');
 
     // STEP 3: Navigate to project detail page (nth(1) skips User card)
     await page.waitForSelector('.project-card', { timeout: 10000 });
     await page.locator('.project-card').nth(1).click();
-    await page.waitForURL(/project-detail\.html/);
+    await page.waitForURL(/\/project\/[^/]+$/);
 
     // Verify theme persisted across navigation
     const detailPageTheme = await html.getAttribute('data-theme');
     expect(detailPageTheme).toBe('light');
 
-    const detailPageToggle = page.locator('.theme-toggle i');
-    await expect(detailPageToggle).toHaveClass(/fa-moon/);
+    const detailPageToggle = page.locator('.theme-toggle span.theme-icon');
+    await expect(detailPageToggle).toHaveText('🌙');
 
     // STEP 4: Reload page
     await page.reload();
@@ -88,7 +152,7 @@ test.describe('E2E Flow: Theme Toggle & Persistence', () => {
     expect(finalTheme).toBe('dark');
 
     // Navigate back to dashboard
-    await page.click('.breadcrumb-item.clickable');
+    await page.click('.app-nav a[href="/"]');
     await page.waitForURL('/');
 
     // Verify theme still dark on dashboard
@@ -97,7 +161,7 @@ test.describe('E2E Flow: Theme Toggle & Persistence', () => {
   });
 
   test('theme toggle works independently on dashboard and detail pages', async ({ page }) => {
-    await page.route('/api/projects', (route) => {
+    await page.route('**/api/projects', (route) => {
       route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -115,6 +179,70 @@ test.describe('E2E Flow: Theme Toggle & Persistence', () => {
       });
     });
 
+    await page.route('**/api/user/agents', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, agents: [] })
+      });
+    });
+
+    await page.route('**/api/user/commands', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, commands: [] })
+      });
+    });
+
+    await page.route('**/api/user/hooks', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, hooks: [] })
+      });
+    });
+
+    await page.route('**/api/user/mcp', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, mcpServers: [] })
+      });
+    });
+
+    await page.route('**/api/projects/testproject/agents', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, agents: [] })
+      });
+    });
+
+    await page.route('**/api/projects/testproject/commands', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, commands: [] })
+      });
+    });
+
+    await page.route('**/api/projects/testproject/hooks', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, hooks: [] })
+      });
+    });
+
+    await page.route('**/api/projects/testproject/mcp', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, mcpServers: [] })
+      });
+    });
+
     const html = page.locator('html');
 
     // Start on dashboard
@@ -128,7 +256,7 @@ test.describe('E2E Flow: Theme Toggle & Persistence', () => {
 
     // Navigate to detail page (nth(1) skips User card)
     await page.locator('.project-card').nth(1).click();
-    await page.waitForURL(/project-detail\.html/);
+    await page.waitForURL(/\/project\/[^/]+$/);
     await page.waitForSelector('.project-content', { timeout: 10000 });
 
     // Verify light mode persisted
@@ -140,7 +268,7 @@ test.describe('E2E Flow: Theme Toggle & Persistence', () => {
     expect(await html.getAttribute('data-theme')).toBe('dark');
 
     // Return to dashboard
-    await page.click('.breadcrumb-item.clickable');
+    await page.click('.app-nav a[href="/"]');
     await page.waitForURL('/');
 
     // Verify dark mode persisted
@@ -148,7 +276,7 @@ test.describe('E2E Flow: Theme Toggle & Persistence', () => {
   });
 
   test('theme preference loads from localStorage on first visit', async ({ page }) => {
-    await page.route('/api/projects', (route) => {
+    await page.route('**/api/projects', (route) => {
       route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -159,9 +287,41 @@ test.describe('E2E Flow: Theme Toggle & Persistence', () => {
       });
     });
 
+    await page.route('**/api/user/agents', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, agents: [] })
+      });
+    });
+
+    await page.route('**/api/user/commands', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, commands: [] })
+      });
+    });
+
+    await page.route('**/api/user/hooks', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, hooks: [] })
+      });
+    });
+
+    await page.route('**/api/user/mcp', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, mcpServers: [] })
+      });
+    });
+
     // Pre-set theme in localStorage before page load
     await page.goto('/');
-    await page.evaluate(() => localStorage.setItem('theme', 'light'));
+    await page.evaluate(() => localStorage.setItem('claude-code-manager-theme', 'light'));
 
     // Navigate to a new page (simulating fresh visit)
     await page.goto('/');
@@ -172,12 +332,12 @@ test.describe('E2E Flow: Theme Toggle & Persistence', () => {
     const theme = await html.getAttribute('data-theme');
     expect(theme).toBe('light');
 
-    const themeToggle = page.locator('.theme-toggle i');
-    await expect(themeToggle).toHaveClass(/fa-moon/);
+    const themeToggle = page.locator('.theme-toggle span.theme-icon');
+    await expect(themeToggle).toHaveText('🌙');
   });
 
   test('multiple theme toggles work correctly', async ({ page }) => {
-    await page.route('/api/projects', (route) => {
+    await page.route('**/api/projects', (route) => {
       route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -185,6 +345,38 @@ test.describe('E2E Flow: Theme Toggle & Persistence', () => {
           success: true,
           projects: []
         })
+      });
+    });
+
+    await page.route('**/api/user/agents', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, agents: [] })
+      });
+    });
+
+    await page.route('**/api/user/commands', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, commands: [] })
+      });
+    });
+
+    await page.route('**/api/user/hooks', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, hooks: [] })
+      });
+    });
+
+    await page.route('**/api/user/mcp', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, mcpServers: [] })
       });
     });
 
@@ -206,12 +398,12 @@ test.describe('E2E Flow: Theme Toggle & Persistence', () => {
     expect(themes).toEqual(['dark', 'light', 'dark', 'light', 'dark', 'light']);
 
     // Verify localStorage matches final state
-    const storedTheme = await page.evaluate(() => localStorage.getItem('theme'));
+    const storedTheme = await page.evaluate(() => localStorage.getItem('claude-code-manager-theme'));
     expect(storedTheme).toBe('light');
   });
 
   test('theme toggle has smooth visual transition', async ({ page }) => {
-    await page.route('/api/projects', (route) => {
+    await page.route('**/api/projects', (route) => {
       route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -219,6 +411,38 @@ test.describe('E2E Flow: Theme Toggle & Persistence', () => {
           success: true,
           projects: []
         })
+      });
+    });
+
+    await page.route('**/api/user/agents', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, agents: [] })
+      });
+    });
+
+    await page.route('**/api/user/commands', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, commands: [] })
+      });
+    });
+
+    await page.route('**/api/user/hooks', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, hooks: [] })
+      });
+    });
+
+    await page.route('**/api/user/mcp', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, mcpServers: [] })
       });
     });
 
@@ -248,7 +472,7 @@ test.describe('E2E Flow: Theme Toggle & Persistence', () => {
   });
 
   test('theme toggle button has accessible title attribute', async ({ page }) => {
-    await page.route('/api/projects', (route) => {
+    await page.route('**/api/projects', (route) => {
       route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -256,6 +480,38 @@ test.describe('E2E Flow: Theme Toggle & Persistence', () => {
           success: true,
           projects: []
         })
+      });
+    });
+
+    await page.route('**/api/user/agents', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, agents: [] })
+      });
+    });
+
+    await page.route('**/api/user/commands', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, commands: [] })
+      });
+    });
+
+    await page.route('**/api/user/hooks', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, hooks: [] })
+      });
+    });
+
+    await page.route('**/api/user/mcp', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, mcpServers: [] })
       });
     });
 
@@ -281,7 +537,7 @@ test.describe('E2E Flow: Theme Toggle & Persistence', () => {
   });
 
   test('theme works correctly in different viewports', async ({ page }) => {
-    await page.route('/api/projects', (route) => {
+    await page.route('**/api/projects', (route) => {
       route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -289,6 +545,38 @@ test.describe('E2E Flow: Theme Toggle & Persistence', () => {
           success: true,
           projects: []
         })
+      });
+    });
+
+    await page.route('**/api/user/agents', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, agents: [] })
+      });
+    });
+
+    await page.route('**/api/user/commands', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, commands: [] })
+      });
+    });
+
+    await page.route('**/api/user/hooks', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, hooks: [] })
+      });
+    });
+
+    await page.route('**/api/user/mcp', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, mcpServers: [] })
       });
     });
 
@@ -314,7 +602,7 @@ test.describe('E2E Flow: Theme Toggle & Persistence', () => {
     expect(await html.getAttribute('data-theme')).toBe('light');
 
     // Verify localStorage reflects latest state
-    const storedTheme = await page.evaluate(() => localStorage.getItem('theme'));
+    const storedTheme = await page.evaluate(() => localStorage.getItem('claude-code-manager-theme'));
     expect(storedTheme).toBe('light');
   });
 
@@ -327,7 +615,7 @@ test.describe('E2E Flow: Theme Toggle & Persistence', () => {
       }
     });
 
-    await page.route('/api/projects', (route) => {
+    await page.route('**/api/projects', (route) => {
       route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -335,6 +623,38 @@ test.describe('E2E Flow: Theme Toggle & Persistence', () => {
           success: true,
           projects: []
         })
+      });
+    });
+
+    await page.route('**/api/user/agents', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, agents: [] })
+      });
+    });
+
+    await page.route('**/api/user/commands', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, commands: [] })
+      });
+    });
+
+    await page.route('**/api/user/hooks', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, hooks: [] })
+      });
+    });
+
+    await page.route('**/api/user/mcp', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, mcpServers: [] })
       });
     });
 

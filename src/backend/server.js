@@ -26,8 +26,9 @@ const userRouter = require('./routes/user');
 app.use('/api/projects', projectsRouter);
 app.use('/api/user', userRouter);
 
-// Serve static frontend files
-const frontendPath = path.join(__dirname, '../frontend');
+// Serve static frontend files from built SPA (dist)
+// Fall back to frontend for development if dist is not available
+const frontendPath = path.join(__dirname, '../../dist');
 app.use(express.static(frontendPath));
 
 // Health check endpoint
@@ -45,7 +46,15 @@ app.get('/api/health', (req, res) => {
 app.get('*', (req, res) => {
   // Only serve index.html for non-API routes
   if (!req.url.startsWith('/api/')) {
-    res.sendFile(path.join(frontendPath, 'index.html'));
+    const indexPath = path.join(frontendPath, 'index.html');
+    res.sendFile(indexPath, (err) => {
+      if (err) {
+        res.status(404).json({
+          success: false,
+          error: 'Frontend not found. Run "npm run build" to build the SPA.'
+        });
+      }
+    });
   } else {
     res.status(404).json({
       success: false,

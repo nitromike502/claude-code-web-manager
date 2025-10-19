@@ -57,14 +57,18 @@ describe('BUG-001: Malformed YAML Frontmatter Regression', () => {
     const malformedFilePath = path.join(samplesAgentsDir, 'invalid-yaml.md');
 
     // Before the fix, this would throw an exception and crash
-    // After the fix, it should return null gracefully
+    // After the fix, it should return partial object gracefully instead of crashing
     const result = await parseSubagent(malformedFilePath, 'project');
 
-    // Verify no crash occurred (we got a result, even if null)
+    // Verify no crash occurred (we got a result)
     expect(result).toBeDefined();
 
-    // Verify parser returns null for malformed YAML
-    expect(result).toBeNull();
+    // Verify parser returns object with error flag for malformed YAML
+    // (improved error handling: returns partial object instead of null for better UX)
+    expect(result).not.toBeNull();
+    expect(result.hasError).toBe(true);
+    expect(result.parseError).toBeDefined();
+    expect(result.name).toBeDefined(); // Fallback to filename still works
   });
 
   /**

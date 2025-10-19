@@ -1,11 +1,13 @@
-# Product Requirements Document: Phase 2 - MCP Server Management
+# Product Requirements Document: Phase 6 - MCP Server Management
 
-**Version:** 1.0
-**Phase:** 2 - Edit/Create/Delete MCP Servers
-**Last Updated:** 2025-10-06
+**Version:** 1.1
+**Phase:** 6 - Edit/Create/Delete MCP Servers
+**Last Updated:** 2025-10-18
 **Status:** Future - Not Yet Started
 
 ⚠️ **This document has not been fully reviewed and will require detailed review before implementation.**
+
+**Prerequisites:** Phase 1-5 must be complete.
 
 ---
 
@@ -13,7 +15,7 @@
 
 **Goal:** Add full CRUD capabilities for managing MCP server configurations at project and user levels.
 
-**Prerequisites:** Phase 1 MVP must be complete.
+**Prerequisites:** Phase 1 MVP + Phase 2 + Phase 3 + Phase 4 + Phase 5 must be complete.
 
 ---
 
