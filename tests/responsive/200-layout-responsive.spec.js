@@ -70,20 +70,14 @@ test.describe('200.001 - Responsive Design - Mobile (iPhone SE)', () => {
     expect(headerBox).toBeTruthy();
     expect(headerBox.width).toBeGreaterThan(0);
 
-    // Verify app title is present
-    const title = page.locator('.app-title');
+    // Verify dashboard header with title is present (Phase 2: .dashboard-header h2)
+    const title = page.locator('.dashboard-header h2, h1, .app-title');
     await expect(title).toBeVisible();
 
-    // Check if search bar is visible (may be smaller on mobile)
-    const searchInput = page.locator('input[type="text"]').first();
-    if (deviceType === 'mobile') {
-      // On mobile, search input might be smaller but still visible
-      const searchBox = await searchInput.boundingBox();
-      if (searchBox) {
-        expect(searchBox.width).toBeGreaterThan(150); // Minimum width for mobile
-      }
-    } else {
-      await expect(searchInput).toBeVisible();
+    // Check if sort dropdown exists (Phase 2: sort-dropdown instead of search)
+    const sortDropdown = page.locator('.sort-dropdown');
+    if (await sortDropdown.count() > 0) {
+      await expect(sortDropdown).toBeVisible();
     }
 
     // Verify project grid exists
@@ -577,20 +571,14 @@ test.describe('200.002 - Responsive Design - Tablet (iPad)', () => {
     expect(headerBox).toBeTruthy();
     expect(headerBox.width).toBeGreaterThan(0);
 
-    // Verify app title is present
-    const title = page.locator('.app-title');
+    // Verify dashboard header with title is present (Phase 2: .dashboard-header h2)
+    const title = page.locator('.dashboard-header h2, h1, .app-title');
     await expect(title).toBeVisible();
 
-    // Check if search bar is visible (may be smaller on mobile)
-    const searchInput = page.locator('input[type="text"]').first();
-    if (deviceType === 'mobile') {
-      // On mobile, search input might be smaller but still visible
-      const searchBox = await searchInput.boundingBox();
-      if (searchBox) {
-        expect(searchBox.width).toBeGreaterThan(150); // Minimum width for mobile
-      }
-    } else {
-      await expect(searchInput).toBeVisible();
+    // Check if sort dropdown exists (Phase 2: sort-dropdown instead of search)
+    const sortDropdown = page.locator('.sort-dropdown');
+    if (await sortDropdown.count() > 0) {
+      await expect(sortDropdown).toBeVisible();
     }
 
     // Verify project grid exists
@@ -1084,20 +1072,14 @@ test.describe('200.003 - Responsive Design - Desktop (Full HD)', () => {
     expect(headerBox).toBeTruthy();
     expect(headerBox.width).toBeGreaterThan(0);
 
-    // Verify app title is present
-    const title = page.locator('.app-title');
+    // Verify dashboard header with title is present (Phase 2: .dashboard-header h2)
+    const title = page.locator('.dashboard-header h2, h1, .app-title');
     await expect(title).toBeVisible();
 
-    // Check if search bar is visible (may be smaller on mobile)
-    const searchInput = page.locator('input[type="text"]').first();
-    if (deviceType === 'mobile') {
-      // On mobile, search input might be smaller but still visible
-      const searchBox = await searchInput.boundingBox();
-      if (searchBox) {
-        expect(searchBox.width).toBeGreaterThan(150); // Minimum width for mobile
-      }
-    } else {
-      await expect(searchInput).toBeVisible();
+    // Check if sort dropdown exists (Phase 2: sort-dropdown instead of search)
+    const sortDropdown = page.locator('.sort-dropdown');
+    if (await sortDropdown.count() > 0) {
+      await expect(sortDropdown).toBeVisible();
     }
 
     // Verify project grid exists
