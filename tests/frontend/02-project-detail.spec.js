@@ -366,53 +366,38 @@ test.describe('02.004: Theme Toggle', () => {
 
 test.describe('02.005: Error Handling', () => {
   test('02.005.001: shows error when project ID is empty string', async ({ page }) => {
-    // Mock config endpoints to fail for empty project ID
-    // Setup centralized mocks BEFORE navigation
+    // Mock config endpoints to fail for empty project ID BEFORE setupMocks
+    // Use wildcard to catch any request with empty project ID
+    await page.route('**/api/projects/*/agents', (route) => {
+      const url = route.request().url();
+      // Only intercept if the project ID is empty (consecutive slashes or just whitespace)
+      if (url.includes('/projects//') || url.match(/\/projects\/\s*\//)) {
+        route.fulfill({
+          status: 404,
+          contentType: 'application/json',
+          body: JSON.stringify({
+            success: false,
+            error: 'Project not found'
+          })
+        });
+      } else {
+        route.continue();
+      }
+    });
+
+    // Setup centralized mocks
     await setupMocks(page);
 
-
-    await page.route('**/api/projects//commands', (route) => {
-      route.fulfill({
-        status: 404,
-        contentType: 'application/json',
-        body: JSON.stringify({
-          success: false,
-          error: 'Project not found'
-        })
-      });
-    });
-
-    await page.route('**/api/projects//hooks', (route) => {
-      route.fulfill({
-        status: 404,
-        contentType: 'application/json',
-        body: JSON.stringify({
-          success: false,
-          error: 'Project not found'
-        })
-      });
-    });
-
-    await page.route('**/api/projects//mcp', (route) => {
-      route.fulfill({
-        status: 404,
-        contentType: 'application/json',
-        body: JSON.stringify({
-          success: false,
-          error: 'Project not found'
-        })
-      });
-    });
-
     // Navigate with empty string as ID (Vue Router will still match)
-    await page.goto('/project/ ');
+    // The space will be URL-encoded to %20
+    await page.goto('/project/%20');
 
     // Wait for Vue app to mount
     await page.waitForSelector('.app-container');
 
     // Verify error state is displayed
     const errorState = page.locator('.error-state');
-    await expect(errorState).toBeVisible({ timeout: 10000 });
+    await expect(errorState).toBeVisible({ timeout: 5000 });
     await expect(errorState).toContainText('Project not found');
   });
 
@@ -468,43 +453,56 @@ test.describe('02.005: Error Handling', () => {
   });
 
   test('02.005.003: shows error when API returns HTTP error status', async ({ page }) => {
+    // Setup centralized mocks BEFORE navigation
+    await setupMocks(page);
+
     // Mock all config endpoints to return 500 error
     const errorRoutes = ['agents', 'commands', 'hooks', 'mcp'];
     for (const endpoint of errorRoutes) {
-      // Setup centralized mocks BEFORE navigation
-      await setupMocks(page);
-
+      await page.route(`**/api/projects/anyproject/${endpoint}`, (route) => {
+        route.fulfill({
+          status: 500,
+          contentType: 'application/json',
+          body: JSON.stringify({
+            success: false,
+            error: 'Internal Server Error'
+          })
+        });
+      });
     }
 
     await page.goto('/project/anyproject');
 
-
     // Wait for Vue app to mount
     await page.waitForSelector('.app-container');
- // Verify error state is displayed
+
+    // Verify error state is displayed
     // Note: HTTP errors (500) are caught as network errors, not parsed as JSON
     const errorState = page.locator('.error-state');
-    await expect(errorState).toBeVisible({ timeout: 10000 });
+    await expect(errorState).toBeVisible({ timeout: 5000 });
     await expect(errorState).toContainText('Failed to connect to server');
   });
 
   test('02.005.004: shows error when network request fails', async ({ page }) => {
+    // Setup centralized mocks BEFORE navigation
+    await setupMocks(page);
+
     // Mock all config endpoints to fail
     const errorRoutes = ['agents', 'commands', 'hooks', 'mcp'];
     for (const endpoint of errorRoutes) {
-      // Setup centralized mocks BEFORE navigation
-      await setupMocks(page);
-
+      await page.route(`**/api/projects/anyproject/${endpoint}`, (route) => {
+        route.abort('failed');
+      });
     }
 
     await page.goto('/project/anyproject');
 
-
     // Wait for Vue app to mount
     await page.waitForSelector('.app-container');
- // Verify error state is displayed
+
+    // Verify error state is displayed
     const errorState = page.locator('.error-state');
-    await expect(errorState).toBeVisible({ timeout: 10000 });
+    await expect(errorState).toBeVisible({ timeout: 5000 });
     await expect(errorState).toContainText('Failed to connect to server');
   });
 
@@ -565,16 +563,30 @@ test.describe('02.005: Error Handling', () => {
   });
 
   test('02.005.006: displays warnings when present in API response', async ({ page }) => {
-    // Mock config endpoints with warnings
     // Setup centralized mocks BEFORE navigation
     await setupMocks(page);
 
+    // Mock config endpoints with warnings
+    await page.route('**/api/projects/warningproject/agents', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          success: true,
+          agents: [
+            { id: 'agent1', name: 'Warning Agent', description: 'Agent with warnings' }
+          ],
+          warnings: ['Warning 1: Could not parse agent file']
+        })
+      });
+    });
 
     await page.route('**/api/projects/warningproject/commands', (route) => {
       route.fulfill({
         status: 200,
         contentType: 'application/json',
         body: JSON.stringify({
+          success: true,
           commands: [],
           warnings: ['Warning 2: Missing settings.json']
         })
@@ -586,6 +598,7 @@ test.describe('02.005: Error Handling', () => {
         status: 200,
         contentType: 'application/json',
         body: JSON.stringify({
+          success: true,
           hooks: [],
           warnings: []
         })
@@ -597,7 +610,8 @@ test.describe('02.005: Error Handling', () => {
         status: 200,
         contentType: 'application/json',
         body: JSON.stringify({
-          mcpServers: [],
+          success: true,
+          mcp: [],
           warnings: []
         })
       });
@@ -605,12 +619,12 @@ test.describe('02.005: Error Handling', () => {
 
     await page.goto('/project/warningproject');
 
-
     // Wait for Vue app to mount
     await page.waitForSelector('.app-container');
- // Wait for warnings to appear
+
+    // Wait for warnings to appear
     const warningBanner = page.locator('.warning-banner');
-    await expect(warningBanner).toBeVisible({ timeout: 10000 });
+    await expect(warningBanner).toBeVisible({ timeout: 5000 });
 
     // Verify warning count
     const warningHeader = page.locator('.warning-header');

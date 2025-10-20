@@ -96,6 +96,114 @@ const mockProjects = [
     path: '/copy/project',
     stats: { agents: 2, commands: 3, hooks: 1, mcp: 0 }
   },
+  {
+    id: 'retryproject',
+    name: 'Retry Project',
+    path: '/retry/project',
+    stats: { agents: 0, commands: 0, hooks: 0, mcp: 0 }
+  },
+  {
+    id: 'mobileproject',
+    name: 'Mobile Project',
+    path: '/mobile/project',
+    stats: { agents: 2, commands: 3, hooks: 1, mcp: 1 }
+  },
+  {
+    id: 'tabletproject',
+    name: 'Tablet Project',
+    path: '/tablet/project',
+    stats: { agents: 3, commands: 5, hooks: 2, mcp: 1 }
+  },
+  {
+    id: 'desktopproject',
+    name: 'Desktop Project',
+    path: '/desktop/project',
+    stats: { agents: 4, commands: 6, hooks: 2, mcp: 2 }
+  },
+  {
+    id: 'statsproject',
+    name: 'Stats Project',
+    path: '/stats/project',
+    stats: { agents: 2, commands: 3, hooks: 1, mcp: 1 }
+  },
+  {
+    id: 'consoletestproject',
+    name: 'Console Test Project',
+    path: '/console/test/project',
+    stats: { agents: 2, commands: 3, hooks: 1, mcp: 1 }
+  },
+  {
+    id: 'warningproject',
+    name: 'Warning Project',
+    path: '/warning/project',
+    stats: { agents: 1, commands: 0, hooks: 0, mcp: 0 }
+  },
+  {
+    id: 'extractedid',
+    name: 'Extracted Project',
+    path: '/extracted/id',
+    stats: { agents: 0, commands: 0, hooks: 0, mcp: 0 }
+  },
+  {
+    id: 'homeusermyprojectswithdashnumber123',
+    name: 'Dash Project 123',
+    path: '/home/user/my-projects-with-dash-number-123',
+    stats: { agents: 1, commands: 2, hooks: 0, mcp: 0 }
+  },
+  {
+    id: 'navtest',
+    name: 'Nav Test Project',
+    path: '/nav/test',
+    stats: { agents: 1, commands: 1, hooks: 0, mcp: 0 }
+  },
+  {
+    id: 'navtest2',
+    name: 'Nav Test 2 Project',
+    path: '/nav/test2',
+    stats: { agents: 0, commands: 0, hooks: 0, mcp: 0 }
+  },
+  {
+    id: 'themetest',
+    name: 'Theme Test Project',
+    path: '/theme/test',
+    stats: { agents: 1, commands: 0, hooks: 0, mcp: 0 }
+  },
+  {
+    id: '%2Fpersist%2Ftest',
+    name: 'Persist Test',
+    path: '/persist/test',
+    stats: { agents: 0, commands: 0, hooks: 0, mcp: 0 }
+  },
+  {
+    id: '%2Fload%2Ftest',
+    name: 'Load Test',
+    path: '/load/test',
+    stats: { agents: 0, commands: 0, hooks: 0, mcp: 0 }
+  },
+  {
+    id: '%2Ffull%2Fpath%2Fto%2Fproject',
+    name: 'Full Path Project',
+    path: '/full/path/to/project',
+    stats: { agents: 2, commands: 4, hooks: 1, mcp: 0 }
+  },
+  {
+    id: 'loadingproject',
+    name: 'Loading Project',
+    path: '/loading/project',
+    stats: { agents: 0, commands: 0, hooks: 0, mcp: 0 }
+  },
+  {
+    id: 'spinnerproject',
+    name: 'Spinner Project',
+    path: '/spinner/project',
+    stats: { agents: 0, commands: 0, hooks: 0, mcp: 0 }
+  },
+  {
+    id: 'anyproject',
+    name: 'Any Project',
+    path: '/any/project',
+    stats: { agents: 1, commands: 1, hooks: 0, mcp: 0 }
+  },
 ];
 
 const mockProjectDetails = {
@@ -156,6 +264,164 @@ const mockProjectDetails = {
   emptyproject: {
     agents: [],
     commands: [],
+    hooks: [],
+    mcp: []
+  },
+  retryproject: {
+    agents: [],
+    commands: [],
+    hooks: [],
+    mcp: []
+  },
+  statsproject: {
+    agents: [
+      { id: 'agent1', name: 'Stats Agent 1' },
+      { id: 'agent2', name: 'Stats Agent 2' }
+    ],
+    commands: [
+      { id: 'cmd1', name: 'stats-command-1' },
+      { id: 'cmd2', name: 'stats-command-2' },
+      { id: 'cmd3', name: 'stats-command-3' }
+    ],
+    hooks: [
+      { id: 'hook1', name: 'stats-hook' }
+    ],
+    mcp: [
+      { id: 'mcp1', name: 'stats-mcp-server' }
+    ]
+  },
+  mobileproject: {
+    agents: [
+      { id: 'agent1', name: 'Mobile Agent 1' },
+      { id: 'agent2', name: 'Mobile Agent 2' }
+    ],
+    commands: [
+      { id: 'cmd1', name: 'mobile-cmd-1' },
+      { id: 'cmd2', name: 'mobile-cmd-2' },
+      { id: 'cmd3', name: 'mobile-cmd-3' }
+    ],
+    hooks: [
+      { id: 'hook1', name: 'mobile-hook' }
+    ],
+    mcp: [
+      { id: 'mcp1', name: 'mobile-mcp' }
+    ]
+  },
+  tabletproject: {
+    agents: [
+      { id: 'agent1', name: 'Tablet Agent 1' },
+      { id: 'agent2', name: 'Tablet Agent 2' },
+      { id: 'agent3', name: 'Tablet Agent 3' }
+    ],
+    commands: [
+      { id: 'cmd1', name: 'tablet-cmd-1' },
+      { id: 'cmd2', name: 'tablet-cmd-2' },
+      { id: 'cmd3', name: 'tablet-cmd-3' },
+      { id: 'cmd4', name: 'tablet-cmd-4' },
+      { id: 'cmd5', name: 'tablet-cmd-5' }
+    ],
+    hooks: [
+      { id: 'hook1', name: 'tablet-hook-1' },
+      { id: 'hook2', name: 'tablet-hook-2' }
+    ],
+    mcp: [
+      { id: 'mcp1', name: 'tablet-mcp' }
+    ]
+  },
+  desktopproject: {
+    agents: [
+      { id: 'agent1', name: 'Desktop Agent 1' },
+      { id: 'agent2', name: 'Desktop Agent 2' },
+      { id: 'agent3', name: 'Desktop Agent 3' },
+      { id: 'agent4', name: 'Desktop Agent 4' }
+    ],
+    commands: [
+      { id: 'cmd1', name: 'desktop-cmd-1' },
+      { id: 'cmd2', name: 'desktop-cmd-2' },
+      { id: 'cmd3', name: 'desktop-cmd-3' },
+      { id: 'cmd4', name: 'desktop-cmd-4' },
+      { id: 'cmd5', name: 'desktop-cmd-5' },
+      { id: 'cmd6', name: 'desktop-cmd-6' }
+    ],
+    hooks: [
+      { id: 'hook1', name: 'desktop-hook-1' },
+      { id: 'hook2', name: 'desktop-hook-2' }
+    ],
+    mcp: [
+      { id: 'mcp1', name: 'desktop-mcp-1' },
+      { id: 'mcp2', name: 'desktop-mcp-2' }
+    ]
+  },
+  consoletestproject: {
+    agents: [
+      { id: 'agent1', name: 'Console Agent 1' },
+      { id: 'agent2', name: 'Console Agent 2' }
+    ],
+    commands: [
+      { id: 'cmd1', name: 'console-cmd-1' },
+      { id: 'cmd2', name: 'console-cmd-2' },
+      { id: 'cmd3', name: 'console-cmd-3' }
+    ],
+    hooks: [
+      { id: 'hook1', name: 'console-hook' }
+    ],
+    mcp: [
+      { id: 'mcp1', name: 'console-mcp-server' }
+    ]
+  },
+  warningproject: {
+    agents: [
+      { id: 'agent1', name: 'Warning Agent', description: 'Agent with warnings', warnings: ['Warning 1: Could not parse agent file'] }
+    ],
+    commands: [],
+    hooks: [],
+    mcp: []
+  },
+  navtest: {
+    agents: [
+      { id: 'agent1', name: 'Nav Agent 1' },
+      { id: 'agent2', name: 'Nav Agent 2' }
+    ],
+    commands: [
+      { id: 'cmd1', name: 'nav-cmd-1' },
+      { id: 'cmd2', name: 'nav-cmd-2' },
+      { id: 'cmd3', name: 'nav-cmd-3' }
+    ],
+    hooks: [
+      { id: 'hook1', name: 'nav-hook' }
+    ],
+    mcp: [
+      { id: 'mcp1', name: 'nav-mcp' }
+    ]
+  },
+  navtest2: {
+    agents: [
+      { id: 'agent1', name: 'Nav2 Agent 1' }
+    ],
+    commands: [
+      { id: 'cmd1', name: 'nav2-cmd-1' },
+      { id: 'cmd2', name: 'nav2-cmd-2' }
+    ],
+    hooks: [],
+    mcp: []
+  },
+  themetest: {
+    agents: [
+      { id: 'agent1', name: 'Theme Agent' }
+    ],
+    commands: [
+      { id: 'cmd1', name: 'theme-cmd' }
+    ],
+    hooks: [],
+    mcp: []
+  },
+  anyproject: {
+    agents: [
+      { id: 'agent1', name: 'Any Agent' }
+    ],
+    commands: [
+      { id: 'cmd1', name: 'any-cmd' }
+    ],
     hooks: [],
     mcp: []
   },
