@@ -1,7 +1,17 @@
 const { test, expect } = require('@playwright/test');
 
 /**
- * Visual Regression Tests - Comprehensive UI Screenshot Comparison
+ * Frontend Visual Tests: 300-Visual Regression Testing
+ *
+ * Test Suites:
+ *   300.001 - Dashboard visual regression
+ *   300.002 - Dashboard dark/light mode
+ *   300.003 - Project detail view visual regression
+ *   300.004 - Dashboard components
+ *   300.005 - Responsive design
+ *   300.006 - Interactive states
+ *
+ * Numbering Format: 300.SUITE.TEST
  *
  * PHASE 2 NOTE: These tests are skipped because Phase 2 has a completely different UI
  * (Vue 3 SPA vs Phase 1 static HTML). Visual regression tests need to be recreated
@@ -14,8 +24,9 @@ const { test, expect } = require('@playwright/test');
  *   npx playwright test --update-snapshots visual-regression.spec.js
  */
 
-test.describe.skip('Visual Regression - Dashboard', () => {
-  test('dashboard renders correctly with projects', async ({ page }) => {
+// Test Suite 300.001: Dashboard Visual Regression
+test.describe.skip('300.001: Visual Regression - Dashboard', () => {
+  test('300.001.001: dashboard renders correctly with projects', async ({ page }) => {
     // Mock API response with project data
     await page.route('/api/projects', (route) => {
       route.fulfill({
@@ -63,7 +74,7 @@ test.describe.skip('Visual Regression - Dashboard', () => {
     });
   });
 
-  test('dashboard loading state', async ({ page }) => {
+  test('300.001.002: dashboard loading state', async ({ page }) => {
     // Delay API response to capture loading state
     await page.route('/api/projects', async (route) => {
       await new Promise(resolve => setTimeout(resolve, 5000));
@@ -92,7 +103,7 @@ test.describe.skip('Visual Regression - Dashboard', () => {
     await page.unrouteAll({ behavior: 'ignoreErrors' });
   });
 
-  test('dashboard error state', async ({ page }) => {
+  test('300.001.003: dashboard error state', async ({ page }) => {
     // Mock API error
     await page.route('/api/projects', (route) => {
       route.fulfill({
@@ -117,7 +128,7 @@ test.describe.skip('Visual Regression - Dashboard', () => {
     });
   });
 
-  test('dashboard empty state', async ({ page }) => {
+  test('300.001.004: dashboard empty state', async ({ page }) => {
     // Mock empty projects response
     await page.route('/api/projects', (route) => {
       route.fulfill({
@@ -143,8 +154,9 @@ test.describe.skip('Visual Regression - Dashboard', () => {
   });
 });
 
-test.describe.skip('Visual Regression - Dashboard Dark/Light Mode', () => {
-  test('dashboard in dark mode', async ({ page }) => {
+// Test Suite 300.002: Dashboard Dark/Light Mode
+test.describe.skip('300.002: Visual Regression - Dashboard Dark/Light Mode', () => {
+  test('300.002.001: dashboard in dark mode', async ({ page }) => {
     await page.route('/api/projects', (route) => {
       route.fulfill({
         status: 200,
@@ -181,7 +193,7 @@ test.describe.skip('Visual Regression - Dashboard Dark/Light Mode', () => {
     });
   });
 
-  test('dashboard in light mode', async ({ page }) => {
+  test('300.002.002: dashboard in light mode', async ({ page }) => {
     await page.route('/api/projects', (route) => {
       route.fulfill({
         status: 200,
@@ -219,8 +231,9 @@ test.describe.skip('Visual Regression - Dashboard Dark/Light Mode', () => {
   });
 });
 
-test.describe.skip('Visual Regression - Project Detail View', () => {
-  test('project detail view renders correctly', async ({ page }) => {
+// Test Suite 300.003: Project Detail View Visual Regression
+test.describe.skip('300.003: Visual Regression - Project Detail View', () => {
+  test('300.003.001: project detail view renders correctly', async ({ page }) => {
     await page.route('/api/projects', (route) => {
       route.fulfill({
         status: 200,
@@ -254,7 +267,7 @@ test.describe.skip('Visual Regression - Project Detail View', () => {
     });
   });
 
-  test('project detail view with warnings', async ({ page }) => {
+  test('300.003.002: project detail view with warnings', async ({ page }) => {
     await page.route('/api/projects', (route) => {
       route.fulfill({
         status: 200,
@@ -288,7 +301,7 @@ test.describe.skip('Visual Regression - Project Detail View', () => {
     });
   });
 
-  test('project detail loading state', async ({ page }) => {
+  test('300.003.003: project detail loading state', async ({ page }) => {
     await page.route('/api/projects', async (route) => {
       await new Promise(resolve => setTimeout(resolve, 5000));
       await route.fulfill({
@@ -320,7 +333,7 @@ test.describe.skip('Visual Regression - Project Detail View', () => {
     await page.unrouteAll({ behavior: 'ignoreErrors' });
   });
 
-  test('project detail error state', async ({ page }) => {
+  test('300.003.004: project detail error state', async ({ page }) => {
     await page.route('/api/projects', (route) => {
       route.fulfill({
         status: 200,
@@ -351,8 +364,9 @@ test.describe.skip('Visual Regression - Project Detail View', () => {
   });
 });
 
-test.describe.skip('Visual Regression - Dashboard Components', () => {
-  test('project card component', async ({ page }) => {
+// Test Suite 300.004: Dashboard Components
+test.describe.skip('300.004: Visual Regression - Dashboard Components', () => {
+  test('300.004.001: project card component', async ({ page }) => {
     await page.route('/api/projects', (route) => {
       route.fulfill({
         status: 200,
@@ -386,7 +400,7 @@ test.describe.skip('Visual Regression - Dashboard Components', () => {
     });
   });
 
-  test('header component', async ({ page }) => {
+  test('300.004.002: header component', async ({ page }) => {
     await page.route('/api/projects', (route) => {
       route.fulfill({
         status: 200,
@@ -408,7 +422,7 @@ test.describe.skip('Visual Regression - Dashboard Components', () => {
     });
   });
 
-  test('breadcrumb component on detail page', async ({ page }) => {
+  test('300.004.003: breadcrumb component on detail page', async ({ page }) => {
     await page.route('/api/projects', (route) => {
       route.fulfill({
         status: 200,
@@ -438,8 +452,9 @@ test.describe.skip('Visual Regression - Dashboard Components', () => {
   });
 });
 
-test.describe.skip('Visual Regression - Responsive Design', () => {
-  test('dashboard mobile viewport', async ({ page }) => {
+// Test Suite 300.005: Responsive Design
+test.describe.skip('300.005: Visual Regression - Responsive Design', () => {
+  test('300.005.001: dashboard mobile viewport', async ({ page }) => {
     await page.route('/api/projects', (route) => {
       route.fulfill({
         status: 200,
@@ -470,7 +485,7 @@ test.describe.skip('Visual Regression - Responsive Design', () => {
     });
   });
 
-  test('dashboard tablet viewport', async ({ page }) => {
+  test('300.005.002: dashboard tablet viewport', async ({ page }) => {
     await page.route('/api/projects', (route) => {
       route.fulfill({
         status: 200,
@@ -501,7 +516,7 @@ test.describe.skip('Visual Regression - Responsive Design', () => {
     });
   });
 
-  test('project detail mobile viewport', async ({ page }) => {
+  test('300.005.003: project detail mobile viewport', async ({ page }) => {
     await page.route('/api/projects', (route) => {
       route.fulfill({
         status: 200,
@@ -533,8 +548,9 @@ test.describe.skip('Visual Regression - Responsive Design', () => {
   });
 });
 
-test.describe.skip('Visual Regression - Interactive States', () => {
-  test('project card hover state', async ({ page }) => {
+// Test Suite 300.006: Interactive States
+test.describe.skip('300.006: Visual Regression - Interactive States', () => {
+  test('300.006.001: project card hover state', async ({ page }) => {
     await page.route('/api/projects', (route) => {
       route.fulfill({
         status: 200,
@@ -567,7 +583,7 @@ test.describe.skip('Visual Regression - Interactive States', () => {
     });
   });
 
-  test('theme toggle button states', async ({ page }) => {
+  test('300.006.002: theme toggle button states', async ({ page }) => {
     await page.route('/api/projects', (route) => {
       route.fulfill({
         status: 200,
@@ -593,7 +609,7 @@ test.describe.skip('Visual Regression - Interactive States', () => {
     });
   });
 
-  test('breadcrumb hover state', async ({ page }) => {
+  test('300.006.003: breadcrumb hover state', async ({ page }) => {
     await page.route('/api/projects', (route) => {
       route.fulfill({
         status: 200,

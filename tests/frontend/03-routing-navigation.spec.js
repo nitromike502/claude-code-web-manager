@@ -1,18 +1,27 @@
 const { test, expect } = require('@playwright/test');
 
-test.describe('Vue Router Navigation Tests', () => {
+/**
+ * Frontend Component Tests: 03-Router Navigation
+ *
+ * Test Suite: 03.001 - Router navigation and SPA functionality
+ *
+ * Numbering Format: 03.GROUP.TEST
+ */
+
+// Test Suite 03.001: Router Navigation and SPA Functionality
+test.describe('03.001: Router Navigation and SPA Functionality', () => {
   test.beforeEach(async ({ page }) => {
     // Start dev server if not running, then navigate to app
     await page.goto('http://localhost:5173', { waitUntil: 'networkidle' });
   });
 
-  test('should load Dashboard on root path', async ({ page }) => {
+  test('03.001.001: should load Dashboard on root path', async ({ page }) => {
     await expect(page).toHaveTitle(/Claude|Dashboard/);
     // Phase 2: Dashboard uses h2 "Projects", not h1 "Dashboard"
     await expect(page.locator('h2:has-text("Projects")')).toBeVisible();
   });
 
-  test('should navigate to Dashboard without full page reload', async ({ page }) => {
+  test('03.001.002: should navigate to Dashboard without full page reload', async ({ page }) => {
     // Check initial load - Phase 2: Dashboard uses h2 "Projects"
     await expect(page.locator('h2:has-text("Projects")')).toBeVisible();
 
@@ -33,14 +42,14 @@ test.describe('Vue Router Navigation Tests', () => {
     expect(pageLoadCount).toBe(initialPageLoads);
   });
 
-  test('should navigate to UserGlobal view', async ({ page }) => {
+  test('03.001.003: should navigate to UserGlobal view', async ({ page }) => {
     await page.click('a[href="/user"]');
     // Phase 2: User page uses span "User Configurations", not h1
     await page.waitForSelector('.user-info-title:has-text("User Configurations")');
     await expect(page).toHaveURL(/\/user/);
   });
 
-  test('should navigate to ProjectDetail with route params', async ({ page }) => {
+  test('03.001.004: should navigate to ProjectDetail with route params', async ({ page }) => {
     // Navigate directly to project detail
     await page.goto('http://localhost:5173/project/test-project-123');
     // Phase 2: Project detail uses .project-info-bar, not h1
@@ -49,7 +58,7 @@ test.describe('Vue Router Navigation Tests', () => {
     await expect(page.locator('.project-info-title')).toContainText('test-project-123');
   });
 
-  test('should update URL when navigating via router-link', async ({ page }) => {
+  test('03.001.005: should update URL when navigating via router-link', async ({ page }) => {
     // Start at dashboard
     expect(page.url()).toContain('/');
 
@@ -66,7 +75,7 @@ test.describe('Vue Router Navigation Tests', () => {
     expect(page.url()).not.toContain('/user');
   });
 
-  test('should support browser back button', async ({ page }) => {
+  test('03.001.006: should support browser back button', async ({ page }) => {
     // Navigate through multiple routes
     await page.click('a[href="/user"]');
     // Phase 2: User page uses span "User Configurations"
@@ -81,7 +90,7 @@ test.describe('Vue Router Navigation Tests', () => {
     expect(page.url()).not.toContain('/user');
   });
 
-  test('should not have console errors during navigation', async ({ page }) => {
+  test('03.001.007: should not have console errors during navigation', async ({ page }) => {
     const consoleErrors = [];
     page.on('console', msg => {
       if (msg.type() === 'error') {

@@ -1,18 +1,25 @@
 const { test, expect } = require('@playwright/test');
 
 /**
- * Test 06 - Styling & Theme Tests
+ * Frontend Component Tests: 06-Styling and Theme
  *
- * Comprehensive tests for:
- * - Theme toggle functionality
- * - Dark/light mode styling
- * - CSS variables application
- * - Responsive design
- * - Visual regression prevention
+ * Test Suites:
+ * - 06.001: Theme Toggle Functionality
+ * - 06.002: Dark Mode Styling
+ * - 06.003: Light Mode Styling
+ * - 06.004: Responsive Design
+ * - 06.005: Visual Regression Prevention
+ * - 06.006: Transition Smoothness
+ * - 06.007: Console Errors
+ *
+ * Numbering Format: 06.GROUP.TEST
+ * - GROUP: Test suite number (001-007)
+ * - TEST: Individual test number within suite (001-NNN)
  */
 
-test.describe('Theme Toggle Functionality', () => {
-  test('theme toggle button changes data-theme attribute', async ({ page }) => {
+// Test Suite 06.001: Theme Toggle Functionality
+test.describe('06.001: Theme Toggle Functionality', () => {
+  test('06.001.001: theme toggle button changes data-theme attribute', async ({ page }) => {
     await page.goto('/');
     await page.waitForLoadState('networkidle');
     await page.waitForTimeout(500); // Wait for Vue to mount
@@ -37,7 +44,7 @@ test.describe('Theme Toggle Functionality', () => {
     expect(['light', 'dark']).toContain(newTheme);
   });
 
-  test('theme persists after page reload', async ({ page }) => {
+  test('06.001.002: theme persists after page reload', async ({ page }) => {
     await page.goto('/');
     await page.waitForLoadState('networkidle');
     await page.waitForTimeout(500);
@@ -64,7 +71,7 @@ test.describe('Theme Toggle Functionality', () => {
     expect(reloadedTheme).toBe('light');
   });
 
-  test('theme toggle works from any route', async ({ page }) => {
+  test('06.001.003: theme toggle works from any route', async ({ page }) => {
     // Test from dashboard - Phase 2: Uses .app-container instead of html
     await page.goto('/');
     const appContainer = page.locator('.app-container');
@@ -87,8 +94,9 @@ test.describe('Theme Toggle Functionality', () => {
   });
 });
 
-test.describe('Dark Mode Styling', () => {
-  test('dark mode colors applied correctly', async ({ page }) => {
+// Test Suite 06.002: Dark Mode Styling
+test.describe('06.002: Dark Mode Styling', () => {
+  test('06.002.001: dark mode colors applied correctly', async ({ page }) => {
     await page.goto('/');
 
     // Ensure dark mode - Phase 2: Uses .app-container instead of html
@@ -117,7 +125,7 @@ test.describe('Dark Mode Styling', () => {
     expect(isDark).toBe(true);
   });
 
-  test('dark mode affects all components', async ({ page }) => {
+  test('06.002.002: dark mode affects all components', async ({ page }) => {
     await page.goto('/');
 
     // Set to dark mode - Phase 2: Uses .app-container instead of html
@@ -142,8 +150,9 @@ test.describe('Dark Mode Styling', () => {
   });
 });
 
-test.describe('Light Mode Styling', () => {
-  test.skip('light mode colors applied correctly', async ({ page }) => {
+// Test Suite 06.003: Light Mode Styling
+test.describe('06.003: Light Mode Styling', () => {
+  test.skip('06.003.001: light mode colors applied correctly', async ({ page }) => {
     // Phase 2 NOTE: Computed styles may differ due to Vue component implementation
     await page.goto('/');
 
@@ -173,7 +182,7 @@ test.describe('Light Mode Styling', () => {
     expect(isLight).toBe(true);
   });
 
-  test('light mode affects all components', async ({ page }) => {
+  test('06.003.002: light mode affects all components', async ({ page }) => {
     await page.goto('/');
 
     // Set to light mode
@@ -198,8 +207,9 @@ test.describe('Light Mode Styling', () => {
   });
 });
 
-test.describe('Responsive Design', () => {
-  test('responsive layout on mobile (375px)', async ({ page }) => {
+// Test Suite 06.004: Responsive Design
+test.describe('06.004: Responsive Design', () => {
+  test('06.004.001: responsive layout on mobile (375px)', async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 667 });
     await page.goto('/');
 
@@ -216,7 +226,7 @@ test.describe('Responsive Design', () => {
     await expect(main).toBeVisible();
   });
 
-  test('responsive layout on tablet (768px)', async ({ page }) => {
+  test('06.004.002: responsive layout on tablet (768px)', async ({ page }) => {
     await page.setViewportSize({ width: 768, height: 1024 });
     await page.goto('/');
 
@@ -229,7 +239,7 @@ test.describe('Responsive Design', () => {
     await expect(dashboard).toBeVisible();
   });
 
-  test('responsive layout on desktop (1920px)', async ({ page }) => {
+  test('06.004.003: responsive layout on desktop (1920px)', async ({ page }) => {
     await page.setViewportSize({ width: 1920, height: 1080 });
     await page.goto('/');
 
@@ -245,7 +255,7 @@ test.describe('Responsive Design', () => {
     expect(width).toBeGreaterThan(1000);
   });
 
-  test('typography scales appropriately on mobile', async ({ page }) => {
+  test('06.004.004: typography scales appropriately on mobile', async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 667 });
     await page.goto('/');
 
@@ -262,8 +272,9 @@ test.describe('Responsive Design', () => {
   });
 });
 
-test.describe('Visual Regression Prevention', () => {
-  test('no layout shift on theme change', async ({ page }) => {
+// Test Suite 06.005: Visual Regression Prevention
+test.describe('06.005: Visual Regression Prevention', () => {
+  test('06.005.001: no layout shift on theme change', async ({ page }) => {
     await page.goto('/');
     await page.waitForLoadState('networkidle');
 
@@ -284,7 +295,7 @@ test.describe('Visual Regression Prevention', () => {
     expect(newPos.width).toBe(initialPos.width);
   });
 
-  test('all text readable in both themes', async ({ page }) => {
+  test('06.005.002: all text readable in both themes', async ({ page }) => {
     await page.goto('/');
 
     // Test dark mode
@@ -308,7 +319,7 @@ test.describe('Visual Regression Prevention', () => {
     await expect(h1).toBeVisible();
   });
 
-  test.skip('CSS variables are defined', async ({ page }) => {
+  test.skip('06.005.003: CSS variables are defined', async ({ page }) => {
     // Phase 2 NOTE: CSS variables are defined on :root, not html element
     await page.goto('/');
     await page.waitForLoadState('networkidle');
@@ -351,8 +362,9 @@ test.describe('Visual Regression Prevention', () => {
   });
 });
 
-test.describe('Transition Smoothness', () => {
-  test('theme transition applies smoothly', async ({ page }) => {
+// Test Suite 06.006: Transition Smoothness
+test.describe('06.006: Transition Smoothness', () => {
+  test('06.006.001: theme transition applies smoothly', async ({ page }) => {
     await page.goto('/');
 
     // Get initial background color
@@ -377,8 +389,9 @@ test.describe('Transition Smoothness', () => {
   });
 });
 
-test.describe('Console Errors', () => {
-  test('no console errors during theme toggle', async ({ page }) => {
+// Test Suite 06.007: Console Errors
+test.describe('06.007: Console Errors', () => {
+  test('06.007.001: no console errors during theme toggle', async ({ page }) => {
     const consoleErrors = [];
 
     page.on('console', (msg) => {

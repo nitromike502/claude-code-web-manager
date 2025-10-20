@@ -1,25 +1,29 @@
 /**
- * Pinia Store Integration Tests
- * Verifies that all Pinia stores are properly configured and working
+ * Frontend Component Tests: 23-Pinia Store Management
+ *
+ * Test Suite: 23.001 - Pinia store initialization and state management
+ *
+ * Numbering Format: 23.GROUP.TEST
  */
 
 const { test, expect } = require('@playwright/test')
 
-test.describe('Pinia Store Integration', () => {
+// Test Suite 23.001: Pinia Store Integration
+test.describe('23.001: Pinia Store Integration', () => {
   test.beforeEach(async ({ page }) => {
     // Navigate to the app
     await page.goto('http://localhost:5173')
     await page.waitForLoadState('networkidle')
   })
 
-  test('should have all stores registered', async ({ page }) => {
+  test('23.001.001: should have all stores registered', async ({ page }) => {
     // At minimum, the app should load without errors
     // Use .app-container which is the Vue-rendered app
     const appElement = page.locator('.app-container')
     await expect(appElement).toBeVisible()
   })
 
-  test('theme store - should toggle theme', async ({ page }) => {
+  test('23.001.002: theme store - should toggle theme', async ({ page }) => {
     // Find and click the theme toggle button
     const themeToggle = page.locator('button.theme-toggle')
     await expect(themeToggle).toBeVisible()
@@ -41,7 +45,7 @@ test.describe('Pinia Store Integration', () => {
     expect(['light', 'dark']).toContain(newTheme)
   })
 
-  test('theme store - should persist to localStorage', async ({ page }) => {
+  test('23.001.003: theme store - should persist to localStorage', async ({ page }) => {
     // Toggle theme
     const themeToggle = page.locator('button.theme-toggle')
     await themeToggle.click()
@@ -65,7 +69,7 @@ test.describe('Pinia Store Integration', () => {
     expect(persistedTheme).toBe(currentTheme)
   })
 
-  test('notifications store - should display and auto-dismiss notifications', async ({ page }) => {
+  test('23.001.004: notifications store - should display and auto-dismiss notifications', async ({ page }) => {
     // Trigger a notification by evaluating code that uses the store
     await page.evaluate(() => {
       // Access the Pinia store through the Vue app instance
@@ -95,7 +99,7 @@ test.describe('Pinia Store Integration', () => {
     await expect(notification).not.toBeVisible({ timeout: 6000 })
   })
 
-  test('projects store - should be accessible from components', async ({ page }) => {
+  test('23.001.005: projects store - should be accessible from components', async ({ page }) => {
     // Verify the app renders without errors, which means stores are initialized
     const header = page.locator('.app-header')
     await expect(header).toBeVisible()
@@ -108,7 +112,7 @@ test.describe('Pinia Store Integration', () => {
     await expect(userLink).toBeVisible()
   })
 
-  test('App.vue integration - should render all store-dependent elements', async ({ page }) => {
+  test('23.001.006: App.vue integration - should render all store-dependent elements', async ({ page }) => {
     // Check theme toggle (uses theme store)
     const themeToggle = page.locator('button.theme-toggle')
     await expect(themeToggle).toBeVisible()

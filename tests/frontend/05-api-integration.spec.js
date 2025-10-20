@@ -1,12 +1,25 @@
 /**
- * Test 05: API Integration Tests
- * Verifies all API endpoints work correctly and handle errors properly
+ * Frontend Component Tests: 05-API Integration
+ *
+ * Test Suites:
+ *   05.001 - Health Check
+ *   05.002 - Projects Endpoint
+ *   05.003 - Project Detail Endpoints
+ *   05.004 - User Endpoints
+ *   05.005 - Error Handling
+ *   05.006 - Components Use API Client
+ *   05.007 - Timeout Handling
+ *   05.008 - Cross-Browser Compatibility
+ *   05.009 - No Console Errors
+ *
+ * Numbering Format: 05.GROUP.TEST
  */
 
 import { test, expect } from '@playwright/test';
 
-test.describe('API Integration: Health Check', () => {
-  test('health check endpoint responds correctly', async ({ request }) => {
+// Test Suite 05.001: Health Check
+test.describe('05.001: API Integration - Health Check', () => {
+  test('05.001.001: health check endpoint responds correctly', async ({ request }) => {
     const response = await request.get('http://localhost:8420/api/health');
     expect(response.ok()).toBe(true);
 
@@ -15,8 +28,9 @@ test.describe('API Integration: Health Check', () => {
   });
 });
 
-test.describe('API Integration: Projects Endpoint', () => {
-  test('getProjects returns valid project data', async ({ request }) => {
+// Test Suite 05.002: Projects Endpoint
+test.describe('05.002: API Integration - Projects Endpoint', () => {
+  test('05.002.001: getProjects returns valid project data', async ({ request }) => {
     const response = await request.get('http://localhost:8420/api/projects');
     expect(response.ok()).toBe(true);
 
@@ -26,7 +40,7 @@ test.describe('API Integration: Projects Endpoint', () => {
     expect(data.projects.length).toBeGreaterThanOrEqual(0);
   });
 
-  test('scanProjects completes successfully', async ({ request }) => {
+  test('05.002.002: scanProjects completes successfully', async ({ request }) => {
     const response = await request.post('http://localhost:8420/api/projects/scan');
     expect(response.ok()).toBe(true);
 
@@ -35,7 +49,8 @@ test.describe('API Integration: Projects Endpoint', () => {
   });
 });
 
-test.describe('API Integration: Project Detail Endpoints', () => {
+// Test Suite 05.003: Project Detail Endpoints
+test.describe('05.003: API Integration - Project Detail Endpoints', () => {
   let projectId;
 
   test.beforeAll(async ({ request }) => {
@@ -45,7 +60,7 @@ test.describe('API Integration: Project Detail Endpoints', () => {
     projectId = data.projects[0]?.id;
   });
 
-  test('getProjectAgents returns valid data', async ({ request }) => {
+  test('05.003.001: getProjectAgents returns valid data', async ({ request }) => {
     test.skip(!projectId, 'No projects available');
 
     const response = await request.get(`http://localhost:8420/api/projects/${projectId}/agents`);
@@ -56,7 +71,7 @@ test.describe('API Integration: Project Detail Endpoints', () => {
     expect(Array.isArray(data.agents)).toBe(true);
   });
 
-  test('getProjectCommands returns valid data', async ({ request }) => {
+  test('05.003.002: getProjectCommands returns valid data', async ({ request }) => {
     test.skip(!projectId, 'No projects available');
 
     const response = await request.get(`http://localhost:8420/api/projects/${projectId}/commands`);
@@ -67,7 +82,7 @@ test.describe('API Integration: Project Detail Endpoints', () => {
     expect(Array.isArray(data.commands)).toBe(true);
   });
 
-  test('getProjectHooks returns valid data', async ({ request }) => {
+  test('05.003.003: getProjectHooks returns valid data', async ({ request }) => {
     test.skip(!projectId, 'No projects available');
 
     const response = await request.get(`http://localhost:8420/api/projects/${projectId}/hooks`);
@@ -78,7 +93,7 @@ test.describe('API Integration: Project Detail Endpoints', () => {
     expect(Array.isArray(data.hooks)).toBe(true);
   });
 
-  test('getProjectMcp returns valid data', async ({ request }) => {
+  test('05.003.004: getProjectMcp returns valid data', async ({ request }) => {
     test.skip(!projectId, 'No projects available');
 
     const response = await request.get(`http://localhost:8420/api/projects/${projectId}/mcp`);
@@ -90,8 +105,9 @@ test.describe('API Integration: Project Detail Endpoints', () => {
   });
 });
 
-test.describe('API Integration: User Endpoints', () => {
-  test('getUserAgents returns valid data', async ({ request }) => {
+// Test Suite 05.004: User Endpoints
+test.describe('05.004: API Integration - User Endpoints', () => {
+  test('05.004.001: getUserAgents returns valid data', async ({ request }) => {
     const response = await request.get('http://localhost:8420/api/user/agents');
     expect(response.ok()).toBe(true);
 
@@ -100,7 +116,7 @@ test.describe('API Integration: User Endpoints', () => {
     expect(Array.isArray(data.agents)).toBe(true);
   });
 
-  test('getUserCommands returns valid data', async ({ request }) => {
+  test('05.004.002: getUserCommands returns valid data', async ({ request }) => {
     const response = await request.get('http://localhost:8420/api/user/commands');
     expect(response.ok()).toBe(true);
 
@@ -109,7 +125,7 @@ test.describe('API Integration: User Endpoints', () => {
     expect(Array.isArray(data.commands)).toBe(true);
   });
 
-  test('getUserHooks returns valid data', async ({ request }) => {
+  test('05.004.003: getUserHooks returns valid data', async ({ request }) => {
     const response = await request.get('http://localhost:8420/api/user/hooks');
     expect(response.ok()).toBe(true);
 
@@ -118,7 +134,7 @@ test.describe('API Integration: User Endpoints', () => {
     expect(Array.isArray(data.hooks)).toBe(true);
   });
 
-  test('getUserMcp returns valid data', async ({ request }) => {
+  test('05.004.004: getUserMcp returns valid data', async ({ request }) => {
     const response = await request.get('http://localhost:8420/api/user/mcp');
     expect(response.ok()).toBe(true);
 
@@ -128,8 +144,9 @@ test.describe('API Integration: User Endpoints', () => {
   });
 });
 
-test.describe('API Integration: Error Handling', () => {
-  test('API handles 404 errors gracefully', async ({ request }) => {
+// Test Suite 05.005: Error Handling
+test.describe('05.005: API Integration - Error Handling', () => {
+  test('05.005.001: API handles 404 errors gracefully', async ({ request }) => {
     const response = await request.get('http://localhost:8420/api/projects/nonexistent-project-id/agents');
     expect(response.status()).toBe(404);
 
@@ -138,15 +155,16 @@ test.describe('API Integration: Error Handling', () => {
     expect(data.error).toBeTruthy();
   });
 
-  test('API returns appropriate status for missing resources', async ({ request }) => {
+  test('05.005.002: API returns appropriate status for missing resources', async ({ request }) => {
     const response = await request.get('http://localhost:8420/api/projects/invalid123/commands');
     // Should return 404 or 200 with empty array
     expect([200, 404].includes(response.status())).toBe(true);
   });
 });
 
-test.describe('API Integration: Components Use API Client', () => {
-  test('Dashboard loads projects via API client', async ({ page }) => {
+// Test Suite 05.006: Components Use API Client
+test.describe('05.006: API Integration - Components Use API Client', () => {
+  test('05.006.001: Dashboard loads projects via API client', async ({ page }) => {
     await page.goto('http://localhost:5173');
 
     // Wait for projects to load
@@ -174,7 +192,7 @@ test.describe('API Integration: Components Use API Client', () => {
     expect(criticalErrors).toHaveLength(0);
   });
 
-  test('ProjectDetail loads configurations via API client', async ({ page }) => {
+  test('05.006.002: ProjectDetail loads configurations via API client', async ({ page }) => {
     await page.goto('http://localhost:5173');
 
     // Wait for dashboard
@@ -207,7 +225,7 @@ test.describe('API Integration: Components Use API Client', () => {
     }
   });
 
-  test('UserGlobal loads user configurations via API client', async ({ page }) => {
+  test('05.006.003: UserGlobal loads user configurations via API client', async ({ page }) => {
     await page.goto('http://localhost:5173/user');
 
     // Wait for user page to load
@@ -219,8 +237,9 @@ test.describe('API Integration: Components Use API Client', () => {
   });
 });
 
-test.describe('API Integration: Timeout Handling', () => {
-  test('API client has timeout protection in place', async ({ page }) => {
+// Test Suite 05.007: Timeout Handling
+test.describe('05.007: API Integration - Timeout Handling', () => {
+  test('05.007.001: API client has timeout protection in place', async ({ page }) => {
     await page.goto('http://localhost:5173');
 
     // Verify the app loads without hanging
@@ -229,8 +248,9 @@ test.describe('API Integration: Timeout Handling', () => {
   });
 });
 
-test.describe('API Integration: Cross-Browser Compatibility', () => {
-  test('API calls work correctly in all browsers', async ({ page, browserName }) => {
+// Test Suite 05.008: Cross-Browser Compatibility
+test.describe('05.008: API Integration - Cross-Browser Compatibility', () => {
+  test('05.008.001: API calls work correctly in all browsers', async ({ page, browserName }) => {
     await page.goto('http://localhost:5173');
 
     // Wait for initial load
@@ -246,8 +266,9 @@ test.describe('API Integration: Cross-Browser Compatibility', () => {
   });
 });
 
-test.describe('API Integration: No Console Errors', () => {
-  test('no API-related console errors during normal operations', async ({ page }) => {
+// Test Suite 05.009: No Console Errors
+test.describe('05.009: API Integration - No Console Errors', () => {
+  test('05.009.001: no API-related console errors during normal operations', async ({ page }) => {
     const consoleErrors = [];
     page.on('console', msg => {
       if (msg.type() === 'error') {

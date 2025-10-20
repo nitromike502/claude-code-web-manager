@@ -1,15 +1,26 @@
 const { test, expect } = require('@playwright/test');
 
 /**
- * Frontend Smoke Tests - Phase 1
+ * Frontend Component Tests: 01-App Smoke Tests
  *
- * Basic tests to verify the frontend application loads and core functionality works.
- * These tests validate that the Vue 3 application initializes correctly and the
+ * Test Suite: 01.001 - Basic app initialization and core functionality
+ * Test Suite: 01.002 - Theme toggle functionality
+ * Test Suite: 01.003 - Loading state and async behavior
+ * Test Suite: 01.004 - API integration and error handling
+ *
+ * Numbering Format: 01.GROUP.TEST
+ * - 01: File number (app-smoke tests)
+ * - GROUP: Test suite group (001-004)
+ * - TEST: Individual test case (001, 002, 003...)
+ *
+ * These tests verify the frontend application loads and core functionality works.
+ * Tests validate that the Vue 3 application initializes correctly and the
  * Express server serves the frontend properly.
  */
 
-test.describe('App Smoke Tests', () => {
-  test('homepage loads successfully', async ({ page }) => {
+// Test Suite 01.001: Basic App Initialization
+test.describe('01.001: Basic App Initialization', () => {
+  test('01.001.001: homepage loads successfully', async ({ page }) => {
     // Navigate to the homepage
     await page.goto('/');
 
@@ -17,7 +28,7 @@ test.describe('App Smoke Tests', () => {
     await expect(page).toHaveTitle(/Claude Code Manager/i);
   });
 
-  test('page contains main app structure', async ({ page }) => {
+  test('01.001.002: page contains main app structure', async ({ page }) => {
     await page.goto('/');
 
     // Wait for Vue app to mount
@@ -34,7 +45,7 @@ test.describe('App Smoke Tests', () => {
   });
 
   // Search feature removed in Phase 2 - planned for Phase 3
-  test.skip('search input is present and functional', async ({ page }) => {
+  test.skip('01.001.003: search input is present and functional', async ({ page }) => {
     await page.goto('/');
 
     // Verify search input exists
@@ -49,7 +60,7 @@ test.describe('App Smoke Tests', () => {
     await expect(searchInput).toHaveValue('test');
   });
 
-  test('theme toggle button is present', async ({ page }) => {
+  test('01.001.004: theme toggle button is present', async ({ page }) => {
     await page.goto('/');
 
     // Wait for Vue app to mount
@@ -60,7 +71,7 @@ test.describe('App Smoke Tests', () => {
     await expect(themeToggle).toBeVisible();
   });
 
-  test('refresh button is present', async ({ page }) => {
+  test('01.001.005: refresh button is present', async ({ page }) => {
     await page.goto('/');
 
     // Wait for Vue app to mount
@@ -72,7 +83,7 @@ test.describe('App Smoke Tests', () => {
     await expect(refreshButton).toContainText('Rescan');
   });
 
-  test('Vue app mounts successfully', async ({ page }) => {
+  test('01.001.006: Vue app mounts successfully', async ({ page }) => {
     await page.goto('/');
 
     // Verify Vue app container is present (use .app-container to avoid duplicate #app)
@@ -85,8 +96,9 @@ test.describe('App Smoke Tests', () => {
   });
 });
 
-test.describe('Theme Toggle Functionality', () => {
-  test('theme toggle changes between dark and light modes', async ({ page }) => {
+// Test Suite 01.002: Theme Toggle Functionality
+test.describe('01.002: Theme Toggle Functionality', () => {
+  test('01.002.001: theme toggle changes between dark and light modes', async ({ page }) => {
     await page.goto('/');
 
     // Wait for Vue app to mount
@@ -116,8 +128,9 @@ test.describe('Theme Toggle Functionality', () => {
   });
 });
 
-test.describe('Loading State', () => {
-  test('shows loading state when fetching projects', async ({ page }) => {
+// Test Suite 01.003: Loading State and Async Behavior
+test.describe('01.003: Loading State and Async Behavior', () => {
+  test('01.003.001: shows loading state when fetching projects', async ({ page }) => {
     let routeHandled = false;
 
     // Intercept API call to delay response and observe loading state
@@ -149,8 +162,9 @@ test.describe('Loading State', () => {
   });
 });
 
-test.describe('API Integration', () => {
-  test('successfully fetches projects from API', async ({ page }) => {
+// Test Suite 01.004: API Integration and Error Handling
+test.describe('01.004: API Integration and Error Handling', () => {
+  test('01.004.001: successfully fetches projects from API', async ({ page }) => {
     // Wait for API response (accept any URL with /api/projects)
     const responsePromise = page.waitForResponse(response =>
       response.url().includes('/api/projects')
@@ -165,7 +179,7 @@ test.describe('API Integration', () => {
     expect(json).toHaveProperty('success');
   });
 
-  test('handles API errors gracefully', async ({ page }) => {
+  test('01.004.002: handles API errors gracefully', async ({ page }) => {
     // Intercept all API calls and return error
     await page.route('**/api/projects*', (route) => {
       route.fulfill({

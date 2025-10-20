@@ -1,7 +1,16 @@
 const { test, expect } = require('@playwright/test');
 
 /**
- * Test 04: Component Rendering Tests (Phase 2)
+ * Frontend Component Tests: 04-Component Rendering
+ *
+ * Test Suites:
+ * - 04.001: Dashboard Component
+ * - 04.002: ProjectDetail Component
+ * - 04.003: UserGlobal Component
+ * - 04.004: Navigation and Back Button
+ * - 04.005: Console Errors
+ *
+ * Numbering Format: 04.GROUP.TEST
  *
  * Comprehensive tests for all Vue SFC components:
  * - Dashboard.vue
@@ -15,8 +24,9 @@ const { test, expect } = require('@playwright/test');
  * - No console errors
  */
 
-test.describe('Dashboard Component', () => {
-  test('dashboard page loads and displays projects', async ({ page }) => {
+// Test Suite 04.001: Dashboard Component
+test.describe('04.001: Dashboard Component', () => {
+  test('04.001.001: dashboard page loads and displays projects', async ({ page }) => {
     await page.goto('/');
 
     // Wait for projects to load
@@ -53,7 +63,7 @@ test.describe('Dashboard Component', () => {
     expect(hasProjects || hasEmpty).toBeTruthy();
   });
 
-  test('can click on a project and navigate to ProjectDetail', async ({ page }) => {
+  test('04.001.002: can click on a project and navigate to ProjectDetail', async ({ page }) => {
     await page.goto('/');
 
     // Wait for projects to load
@@ -88,7 +98,7 @@ test.describe('Dashboard Component', () => {
     }
   });
 
-  test('user card navigates to UserGlobal view', async ({ page }) => {
+  test('04.001.003: user card navigates to UserGlobal view', async ({ page }) => {
     await page.goto('/');
 
     // Wait for projects to load
@@ -125,8 +135,9 @@ test.describe('Dashboard Component', () => {
   });
 });
 
-test.describe('ProjectDetail Component', () => {
-  test('ProjectDetail loads all configuration cards', async ({ page }) => {
+// Test Suite 04.002: ProjectDetail Component
+test.describe('04.002: ProjectDetail Component', () => {
+  test('04.002.001: ProjectDetail loads all configuration cards', async ({ page }) => {
     // Navigate to a project detail page
     await page.goto('/');
     await page.waitForSelector('.dashboard', { timeout: 10000 });
@@ -168,7 +179,7 @@ test.describe('ProjectDetail Component', () => {
     }
   });
 
-  test('can select items and view in sidebar', async ({ page }) => {
+  test('04.002.002: can select items and view in sidebar', async ({ page }) => {
     await page.goto('/');
     await page.waitForSelector('.dashboard', { timeout: 10000 });
 
@@ -220,7 +231,7 @@ test.describe('ProjectDetail Component', () => {
     }
   });
 
-  test('copy to clipboard functionality works', async ({ page, browserName }) => {
+  test('04.002.003: copy to clipboard functionality works', async ({ page, browserName }) => {
     // Grant clipboard permissions (Chromium only - Firefox/WebKit don't support clipboard permissions)
     if (browserName === 'chromium') {
       await page.context().grantPermissions(['clipboard-read', 'clipboard-write']);
@@ -272,7 +283,7 @@ test.describe('ProjectDetail Component', () => {
     }
   });
 
-  test('show more/less functionality works', async ({ page }) => {
+  test('04.002.004: show more/less functionality works', async ({ page }) => {
     await page.goto('/');
     await page.waitForSelector('.dashboard', { timeout: 10000 });
 
@@ -327,8 +338,9 @@ test.describe('ProjectDetail Component', () => {
   });
 });
 
-test.describe('UserGlobal Component', () => {
-  test('UserGlobal page loads user-level configurations', async ({ page }) => {
+// Test Suite 04.003: UserGlobal Component
+test.describe('04.003: UserGlobal Component', () => {
+  test('04.003.001: UserGlobal page loads user-level configurations', async ({ page }) => {
     await page.goto('/user');
 
     // Wait for user global container
@@ -357,7 +369,7 @@ test.describe('UserGlobal Component', () => {
     await expect(mcpCard).toBeVisible();
   });
 
-  test('UserGlobal sidebar functionality works', async ({ page }) => {
+  test('04.003.002: UserGlobal sidebar functionality works', async ({ page }) => {
     await page.goto('/user');
     await page.waitForSelector('.user-global', { timeout: 10000 });
 
@@ -387,8 +399,9 @@ test.describe('UserGlobal Component', () => {
   });
 });
 
-test.describe('Navigation and Back Button', () => {
-  test('navigation between Dashboard, ProjectDetail, and UserGlobal works', async ({ page }) => {
+// Test Suite 04.004: Navigation and Back Button
+test.describe('04.004: Navigation and Back Button', () => {
+  test('04.004.001: navigation between Dashboard, ProjectDetail, and UserGlobal works', async ({ page }) => {
     // Start at dashboard
     await page.goto('/');
     await page.waitForSelector('.dashboard', { timeout: 10000 });
@@ -432,7 +445,7 @@ test.describe('Navigation and Back Button', () => {
     }
   });
 
-  test('back button navigation works correctly', async ({ page }) => {
+  test('04.004.002: back button navigation works correctly', async ({ page }) => {
     await page.goto('/');
     await page.waitForSelector('.dashboard', { timeout: 10000 });
 
@@ -464,8 +477,9 @@ test.describe('Navigation and Back Button', () => {
   });
 });
 
-test.describe('Console Errors', () => {
-  test('no console errors during dashboard load', async ({ page }) => {
+// Test Suite 04.005: Console Errors
+test.describe('04.005: Console Errors', () => {
+  test('04.005.001: no console errors during dashboard load', async ({ page }) => {
     const consoleErrors = [];
 
     page.on('console', (msg) => {
@@ -494,7 +508,7 @@ test.describe('Console Errors', () => {
     expect(realErrors).toHaveLength(0);
   });
 
-  test('no console errors during project navigation', async ({ page }) => {
+  test('04.005.002: no console errors during project navigation', async ({ page }) => {
     const consoleErrors = [];
 
     page.on('console', (msg) => {
@@ -532,7 +546,7 @@ test.describe('Console Errors', () => {
     }
   });
 
-  test('no console errors during user view load', async ({ page }) => {
+  test('04.005.003: no console errors during user view load', async ({ page }) => {
     const consoleErrors = [];
 
     page.on('console', (msg) => {

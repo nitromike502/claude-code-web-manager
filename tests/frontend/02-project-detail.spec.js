@@ -1,14 +1,39 @@
 const { test, expect } = require('@playwright/test');
 
 /**
- * Project Detail Page Component Tests - TASK-3.1.1
+ * Frontend Component Tests: 02-Project Detail Page
  *
- * Comprehensive tests to verify the project detail page component structure,
- * functionality, navigation, theme toggling, error handling, and responsive design.
+ * Test Suite: 02.001 - Page load and structure
+ * Test Suite: 02.002 - URL parameter handling
+ * Test Suite: 02.003 - Navigation
+ * Test Suite: 02.004 - Theme toggle
+ * Test Suite: 02.005 - Error handling
+ * Test Suite: 02.006 - Loading state
+ * Test Suite: 02.007 - Responsive design
+ * Test Suite: 02.008 - Console error detection
+ *
+ * Numbering Format: 02.GROUP.TEST
  */
 
-test.describe('Project Detail Page - Page Load & Structure', () => {
-  test('page loads successfully with valid project ID', async ({ page }) => {
+// Test Suite 02.001: Page Load and Structure
+
+/**
+ * Frontend Component Tests: 02
+ *
+ * Test Suite: 02.001 - Page load and structure
+ * Test Suite: 02.002 - URL parameter handling
+ * Test Suite: 02.003 - Navigation
+ * Test Suite: 02.004 - Theme toggle
+ * Test Suite: 02.005 - Error handling
+ * Test Suite: 02.006 - Loading state
+ * Test Suite: 02.007 - Responsive design
+ * Test Suite: 02.008 - Console error detection
+ *
+ * Numbering Format: {file_num:02d}.GROUP.TEST
+ */
+
+test.describe('02.001: Page Load and Structure', () => {
+  test('02.001.001: page loads successfully with valid project ID', async ({ page }) => {
     // Mock API response with project data
     await page.route('**/api/projects*', (route) => {
       route.fulfill({
@@ -42,7 +67,7 @@ test.describe('Project Detail Page - Page Load & Structure', () => {
     await expect(page).toHaveTitle(/Claude Code Manager/i);
   });
 
-  test('page contains header with correct structure', async ({ page }) => {
+  test('02.001.002: page contains header with correct structure', async ({ page }) => {
     await page.route('**/api/projects*', (route) => {
       route.fulfill({
         status: 200,
@@ -83,7 +108,7 @@ test.describe('Project Detail Page - Page Load & Structure', () => {
   });
 
   // Phase 2: Breadcrumbs removed - navigation now via header nav links
-  test('navigation links render correctly', async ({ page }) => {
+  test('02.001.003: navigation links render correctly', async ({ page }) => {
     await page.route('**/api/projects*', (route) => {
       route.fulfill({
         status: 200,
@@ -125,7 +150,7 @@ test.describe('Project Detail Page - Page Load & Structure', () => {
     await expect(userConfigLink).toContainText('User Config');
   });
 
-  test('project info bar displays correctly', async ({ page }) => {
+  test('02.001.004: project info bar displays correctly', async ({ page }) => {
     await page.route('**/api/projects*', (route) => {
       route.fulfill({
         status: 200,
@@ -165,7 +190,7 @@ test.describe('Project Detail Page - Page Load & Structure', () => {
     await expect(projectPath).toContainText('/full/path/to/project');
   });
 
-  test('configuration cards display correctly', async ({ page }) => {
+  test('02.001.005: configuration cards display correctly', async ({ page }) => {
     await page.route('**/api/projects*', (route) => {
       route.fulfill({
         status: 200,
@@ -215,8 +240,8 @@ test.describe('Project Detail Page - Page Load & Structure', () => {
   });
 });
 
-test.describe('Project Detail Page - URL Parameter Handling', () => {
-  test('extracts project ID from URL query parameter', async ({ page }) => {
+test.describe('02.002: URL Parameter Handling', () => {
+  test('02.002.001: extracts project ID from URL query parameter', async ({ page }) => {
     let requestedProjectId = null;
 
     await page.route('**/api/projects*', (route) => {
@@ -251,7 +276,7 @@ test.describe('Project Detail Page - URL Parameter Handling', () => {
     await expect(projectTitle).toContainText('extractedid');
   });
 
-  test('finds correct project from API response by ID', async ({ page }) => {
+  test('02.002.002: finds correct project from API response by ID', async ({ page }) => {
     await page.route('**/api/projects*', (route) => {
       route.fulfill({
         status: 200,
@@ -304,7 +329,7 @@ test.describe('Project Detail Page - URL Parameter Handling', () => {
     // This test focuses on project identification
   });
 
-  test('handles project ID with special characters', async ({ page }) => {
+  test('02.002.003: handles project ID with special characters', async ({ page }) => {
     await page.route('**/api/projects*', (route) => {
       route.fulfill({
         status: 200,
@@ -338,8 +363,8 @@ test.describe('Project Detail Page - URL Parameter Handling', () => {
   });
 });
 
-test.describe('Project Detail Page - Navigation', () => {
-  test('dashboard link navigates to dashboard', async ({ page }) => {
+test.describe('02.003: Navigation', () => {
+  test('02.003.001: dashboard link navigates to dashboard', async ({ page }) => {
     await page.route('**/api/projects*', (route) => {
       route.fulfill({
         status: 200,
@@ -375,7 +400,7 @@ test.describe('Project Detail Page - Navigation', () => {
     expect(page.url()).not.toContain('project/');
   });
 
-  test('user config link navigates to user page', async ({ page }) => {
+  test('02.003.002: user config link navigates to user page', async ({ page }) => {
     // Phase 2: Mock only /api/projects, let config endpoints fail gracefully
     await page.route('**/api/projects', (route) => {
       route.fulfill({
@@ -417,8 +442,8 @@ test.describe('Project Detail Page - Navigation', () => {
   });
 });
 
-test.describe('Project Detail Page - Theme Toggle', () => {
-  test('theme toggle switches between dark and light modes', async ({ page }) => {
+test.describe('02.004: Theme Toggle', () => {
+  test('02.004.001: theme toggle switches between dark and light modes', async ({ page }) => {
     await page.route('**/api/projects*', (route) => {
       route.fulfill({
         status: 200,
@@ -465,7 +490,7 @@ test.describe('Project Detail Page - Theme Toggle', () => {
     expect(revertedTheme).toBe(initialTheme);
   });
 
-  test('theme preference persists in localStorage', async ({ page }) => {
+  test('02.004.002: theme preference persists in localStorage', async ({ page }) => {
     await page.route('**/api/projects*', (route) => {
       route.fulfill({
         status: 200,
@@ -506,7 +531,7 @@ test.describe('Project Detail Page - Theme Toggle', () => {
     expect(storedTheme).not.toBe(initialTheme);
   });
 
-  test('theme loads from localStorage on page load', async ({ page }) => {
+  test('02.004.003: theme loads from localStorage on page load', async ({ page }) => {
     await page.route('**/api/projects*', (route) => {
       route.fulfill({
         status: 200,
@@ -544,8 +569,8 @@ test.describe('Project Detail Page - Theme Toggle', () => {
   });
 });
 
-test.describe('Project Detail Page - Error Handling', () => {
-  test('shows error when project ID is empty string', async ({ page }) => {
+test.describe('02.005: Error Handling', () => {
+  test('02.005.001: shows error when project ID is empty string', async ({ page }) => {
     // Mock config endpoints to fail for empty project ID
     await page.route('**/api/projects//agents', (route) => {
       route.fulfill({
@@ -603,7 +628,7 @@ test.describe('Project Detail Page - Error Handling', () => {
     await expect(errorState).toContainText('Project not found');
   });
 
-  test('shows error when project ID is not found', async ({ page }) => {
+  test('02.005.002: shows error when project ID is not found', async ({ page }) => {
     // Mock config endpoints to return 404 error
     await page.route('**/api/projects/nonexistent/agents', (route) => {
       route.fulfill({
@@ -661,7 +686,7 @@ test.describe('Project Detail Page - Error Handling', () => {
     await expect(errorState).toContainText('Project not found');
   });
 
-  test('shows error when API returns HTTP error status', async ({ page }) => {
+  test('02.005.003: shows error when API returns HTTP error status', async ({ page }) => {
     // Mock all config endpoints to return 500 error
     const errorRoutes = ['agents', 'commands', 'hooks', 'mcp'];
     for (const endpoint of errorRoutes) {
@@ -689,7 +714,7 @@ test.describe('Project Detail Page - Error Handling', () => {
     await expect(errorState).toContainText('Failed to connect to server');
   });
 
-  test('shows error when network request fails', async ({ page }) => {
+  test('02.005.004: shows error when network request fails', async ({ page }) => {
     // Mock all config endpoints to fail
     const errorRoutes = ['agents', 'commands', 'hooks', 'mcp'];
     for (const endpoint of errorRoutes) {
@@ -709,7 +734,7 @@ test.describe('Project Detail Page - Error Handling', () => {
     await expect(errorState).toContainText('Failed to connect to server');
   });
 
-  test('retry button reloads project data', async ({ page }) => {
+  test('02.005.005: retry button reloads project data', async ({ page }) => {
     const requestCounts = { agents: 0, commands: 0, hooks: 0, mcp: 0 };
 
     // Mock each config endpoint to fail once, then succeed
@@ -765,7 +790,7 @@ test.describe('Project Detail Page - Error Handling', () => {
     await expect(projectTitle).toContainText('retryproject');
   });
 
-  test('displays warnings when present in API response', async ({ page }) => {
+  test('02.005.006: displays warnings when present in API response', async ({ page }) => {
     // Mock config endpoints with warnings
     await page.route('**/api/projects/warningproject/agents', (route) => {
       route.fulfill({
@@ -832,8 +857,8 @@ test.describe('Project Detail Page - Error Handling', () => {
   });
 });
 
-test.describe('Project Detail Page - Loading State', () => {
-  test('shows loading state while fetching project', async ({ page }) => {
+test.describe('02.006: Loading State', () => {
+  test('02.006.001: shows loading state while fetching project', async ({ page }) => {
     let routeHandled = { agents: false, commands: false, hooks: false, mcp: false };
 
     // Mock config endpoints with delays
@@ -877,7 +902,7 @@ test.describe('Project Detail Page - Loading State', () => {
     await page.unrouteAll({ behavior: 'ignoreErrors' });
   });
 
-  test('loading state shows spinner and text', async ({ page }) => {
+  test('02.006.002: loading state shows spinner and text', async ({ page }) => {
     // Create a slow response to keep loading state visible
     const mockWithSlowDelay = (endpoint) => {
       page.route(`**/api/projects/spinnerproject/${endpoint}`, async (route) => {
@@ -919,8 +944,8 @@ test.describe('Project Detail Page - Loading State', () => {
   });
 });
 
-test.describe('Project Detail Page - Responsive Design', () => {
-  test('layout adapts to mobile viewport', async ({ page }) => {
+test.describe('02.007: Responsive Design', () => {
+  test('02.007.001: layout adapts to mobile viewport', async ({ page }) => {
     await page.route('**/api/projects*', (route) => {
       route.fulfill({
         status: 200,
@@ -963,7 +988,7 @@ test.describe('Project Detail Page - Responsive Design', () => {
     expect(await cards.count()).toBe(4);
   });
 
-  test('layout adapts to tablet viewport', async ({ page }) => {
+  test('02.007.002: layout adapts to tablet viewport', async ({ page }) => {
     await page.route('**/api/projects*', (route) => {
       route.fulfill({
         status: 200,
@@ -1000,7 +1025,7 @@ test.describe('Project Detail Page - Responsive Design', () => {
     expect(await cards.count()).toBe(4);
   });
 
-  test('layout works on desktop viewport', async ({ page }) => {
+  test('02.007.003: layout works on desktop viewport', async ({ page }) => {
     await page.route('**/api/projects*', (route) => {
       route.fulfill({
         status: 200,
@@ -1041,8 +1066,8 @@ test.describe('Project Detail Page - Responsive Design', () => {
   });
 });
 
-test.describe('Project Detail Page - Console Error Detection', () => {
-  test('page loads without console errors', async ({ page }) => {
+test.describe('02.008: Console Error Detection', () => {
+  test('02.008.001: page loads without console errors', async ({ page }) => {
     const consoleErrors = [];
 
     // Listen for console errors
