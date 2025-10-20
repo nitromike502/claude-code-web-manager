@@ -138,7 +138,7 @@ test.describe('E2E Flow: Theme Toggle & Persistence', () => {
 
     // STEP 4: Reload page
     await page.reload();
-    await page.waitForSelector('.project-content', { timeout: 10000 });
+    await page.waitForSelector('.project-detail', { timeout: 10000 });
 
     // Verify theme persisted after reload
     const reloadedTheme = await html.getAttribute('data-theme');
@@ -257,7 +257,7 @@ test.describe('E2E Flow: Theme Toggle & Persistence', () => {
     // Navigate to detail page (nth(1) skips User card)
     await page.locator('.project-card').nth(1).click();
     await page.waitForURL(/\/project\/[^/]+$/);
-    await page.waitForSelector('.project-content', { timeout: 10000 });
+    await page.waitForSelector('.project-detail', { timeout: 10000 });
 
     // Verify light mode persisted
     expect(await html.getAttribute('data-theme')).toBe('light');

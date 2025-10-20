@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
 export const useThemeStore = defineStore('theme', () => {
-  const currentTheme = ref('light')
+  const currentTheme = ref('dark')
 
   // Load theme from localStorage on init
   function loadTheme() {
@@ -10,6 +10,9 @@ export const useThemeStore = defineStore('theme', () => {
     if (saved) {
       currentTheme.value = saved
       applyTheme(saved)
+    } else {
+      // Apply default theme if no saved preference
+      applyTheme(currentTheme.value)
     }
   }
 
