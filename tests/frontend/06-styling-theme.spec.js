@@ -152,7 +152,7 @@ test.describe('06.002: Dark Mode Styling', () => {
 
 // Test Suite 06.003: Light Mode Styling
 test.describe('06.003: Light Mode Styling', () => {
-  test.skip('06.003.001: light mode colors applied correctly', async ({ page }) => {
+  test('06.003.001: light mode colors applied correctly', async ({ page }) => {
     // Phase 2 NOTE: Computed styles may differ due to Vue component implementation
     await page.goto('/');
 
@@ -319,7 +319,7 @@ test.describe('06.005: Visual Regression Prevention', () => {
     await expect(h1).toBeVisible();
   });
 
-  test.skip('06.005.003: CSS variables are defined', async ({ page }) => {
+  test('06.005.003: CSS variables are defined', async ({ page }) => {
     // Phase 2 NOTE: CSS variables are defined on :root, not html element
     await page.goto('/');
     await page.waitForLoadState('networkidle');
