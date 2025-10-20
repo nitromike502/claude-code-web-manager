@@ -71,7 +71,7 @@ test.describe('200.001 - Responsive Design - Mobile (iPhone SE)', () => {
     expect(headerBox.width).toBeGreaterThan(0);
 
     // Verify dashboard header with title is present (Phase 2: .dashboard-header h2)
-    const title = page.locator('.dashboard-header h2, h1, .app-title');
+    const title = page.locator('.dashboard-header h2');
     await expect(title).toBeVisible();
 
     // Check if sort dropdown exists (Phase 2: sort-dropdown instead of search)
@@ -572,7 +572,7 @@ test.describe('200.002 - Responsive Design - Tablet (iPad)', () => {
     expect(headerBox.width).toBeGreaterThan(0);
 
     // Verify dashboard header with title is present (Phase 2: .dashboard-header h2)
-    const title = page.locator('.dashboard-header h2, h1, .app-title');
+    const title = page.locator('.dashboard-header h2');
     await expect(title).toBeVisible();
 
     // Check if sort dropdown exists (Phase 2: sort-dropdown instead of search)
@@ -1073,7 +1073,7 @@ test.describe('200.003 - Responsive Design - Desktop (Full HD)', () => {
     expect(headerBox.width).toBeGreaterThan(0);
 
     // Verify dashboard header with title is present (Phase 2: .dashboard-header h2)
-    const title = page.locator('.dashboard-header h2, h1, .app-title');
+    const title = page.locator('.dashboard-header h2');
     await expect(title).toBeVisible();
 
     // Check if sort dropdown exists (Phase 2: sort-dropdown instead of search)
