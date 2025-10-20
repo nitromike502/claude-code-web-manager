@@ -1,4 +1,5 @@
 const { test, expect } = require('@playwright/test');
+const { setupMocks } = require('../fixtures/mock-data');
 
 /**
  * Frontend Component Tests: 02-Project Detail Page
@@ -34,29 +35,8 @@ const { test, expect } = require('@playwright/test');
 
 test.describe('02.001: Page Load and Structure', () => {
   test('02.001.001: page loads successfully with valid project ID', async ({ page }) => {
-    // Mock API response with project data
-    await page.route('**/api/projects*', (route) => {
-      route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify({
-          success: true,
-          projects: [
-            {
-              id: 'homeusertestproject',
-              name: 'Test Project',
-              path: '/home/user/test-project',
-              stats: {
-                agents: 3,
-                commands: 5,
-                hooks: 2,
-                mcp: 1
-              }
-            }
-          ]
-        })
-      });
-    });
+    // Setup centralized mocks BEFORE navigation
+    await setupMocks(page);
 
     await page.goto('/project/homeusertestproject');
 
@@ -68,23 +48,9 @@ test.describe('02.001: Page Load and Structure', () => {
   });
 
   test('02.001.002: page contains header with correct structure', async ({ page }) => {
-    await page.route('**/api/projects*', (route) => {
-      route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify({
-          success: true,
-          projects: [
-            {
-              id: 'testproject',
-              name: 'Test Project',
-              path: '/test/project',
-              stats: { agents: 0, commands: 0, hooks: 0, mcp: 0 }
-            }
-          ]
-        })
-      });
-    });
+    // Setup centralized mocks BEFORE navigation
+    await setupMocks(page);
+
 
     await page.goto('/project/testproject');
 
@@ -109,23 +75,9 @@ test.describe('02.001: Page Load and Structure', () => {
 
   // Phase 2: Breadcrumbs removed - navigation now via header nav links
   test('02.001.003: navigation links render correctly', async ({ page }) => {
-    await page.route('**/api/projects*', (route) => {
-      route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify({
-          success: true,
-          projects: [
-            {
-              id: 'myproject',
-              name: 'My Awesome Project',
-              path: '/home/user/projects/awesome',
-              stats: { agents: 2, commands: 3, hooks: 1, mcp: 0 }
-            }
-          ]
-        })
-      });
-    });
+    // Setup centralized mocks BEFORE navigation
+    await setupMocks(page);
+
 
     await page.goto('/project/myproject');
 
@@ -151,23 +103,9 @@ test.describe('02.001: Page Load and Structure', () => {
   });
 
   test('02.001.004: project info bar displays correctly', async ({ page }) => {
-    await page.route('**/api/projects*', (route) => {
-      route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify({
-          success: true,
-          projects: [
-            {
-              id: '%2Ffull%2Fpath%2Fto%2Fproject',
-              name: 'project',
-              path: '/full/path/to/project',
-              stats: { agents: 0, commands: 0, hooks: 0, mcp: 0 }
-            }
-          ]
-        })
-      });
-    });
+    // Setup centralized mocks BEFORE navigation
+    await setupMocks(page);
+
 
     await page.goto('/project/%2Ffull%2Fpath%2Fto%2Fproject');
 
@@ -191,28 +129,9 @@ test.describe('02.001: Page Load and Structure', () => {
   });
 
   test('02.001.005: configuration cards display correctly', async ({ page }) => {
-    await page.route('**/api/projects*', (route) => {
-      route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify({
-          success: true,
-          projects: [
-            {
-              id: 'statsproject',
-              name: 'Stats Project',
-              path: '/stats/project',
-              stats: {
-                agents: 7,
-                commands: 12,
-                hooks: 4,
-                mcp: 3
-              }
-            }
-          ]
-        })
-      });
-    });
+    // Setup centralized mocks BEFORE navigation
+    await setupMocks(page);
+
 
     await page.goto('/project/statsproject');
 
@@ -244,23 +163,9 @@ test.describe('02.002: URL Parameter Handling', () => {
   test('02.002.001: extracts project ID from URL query parameter', async ({ page }) => {
     let requestedProjectId = null;
 
-    await page.route('**/api/projects*', (route) => {
-      route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify({
-          success: true,
-          projects: [
-            {
-              id: 'extractedid',
-              name: 'Test',
-              path: '/test',
-              stats: { agents: 0, commands: 0, hooks: 0, mcp: 0 }
-            }
-          ]
-        })
-      });
-    });
+    // Setup centralized mocks BEFORE navigation
+    await setupMocks(page);
+
 
     await page.goto('/project/extractedid');
 
@@ -277,35 +182,9 @@ test.describe('02.002: URL Parameter Handling', () => {
   });
 
   test('02.002.002: finds correct project from API response by ID', async ({ page }) => {
-    await page.route('**/api/projects*', (route) => {
-      route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify({
-          success: true,
-          projects: [
-            {
-              id: 'project1',
-              name: 'Project One',
-              path: '/path/one',
-              stats: { agents: 1, commands: 1, hooks: 1, mcp: 1 }
-            },
-            {
-              id: 'project2',
-              name: 'Project Two',
-              path: '/path/two',
-              stats: { agents: 2, commands: 2, hooks: 2, mcp: 2 }
-            },
-            {
-              id: 'project3',
-              name: 'Project Three',
-              path: '/path/three',
-              stats: { agents: 3, commands: 3, hooks: 3, mcp: 3 }
-            }
-          ]
-        })
-      });
-    });
+    // Setup centralized mocks BEFORE navigation
+    await setupMocks(page);
+
 
     // Navigate to second project
     await page.goto('/project/project2');
@@ -330,23 +209,9 @@ test.describe('02.002: URL Parameter Handling', () => {
   });
 
   test('02.002.003: handles project ID with special characters', async ({ page }) => {
-    await page.route('**/api/projects*', (route) => {
-      route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify({
-          success: true,
-          projects: [
-            {
-              id: 'homeusermyprojectswithdashnumber123',
-              name: 'Project With-Dash-123',
-              path: '/home/user/my-projects-with-dash-number-123',
-              stats: { agents: 0, commands: 0, hooks: 0, mcp: 0 }
-            }
-          ]
-        })
-      });
-    });
+    // Setup centralized mocks BEFORE navigation
+    await setupMocks(page);
+
 
     await page.goto('/project/homeusermyprojectswithdashnumber123');
 
@@ -365,23 +230,9 @@ test.describe('02.002: URL Parameter Handling', () => {
 
 test.describe('02.003: Navigation', () => {
   test('02.003.001: dashboard link navigates to dashboard', async ({ page }) => {
-    await page.route('**/api/projects*', (route) => {
-      route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify({
-          success: true,
-          projects: [
-            {
-              id: 'navtest',
-              name: 'Nav Test',
-              path: '/nav/test',
-              stats: { agents: 0, commands: 0, hooks: 0, mcp: 0 }
-            }
-          ]
-        })
-      });
-    });
+    // Setup centralized mocks BEFORE navigation
+    await setupMocks(page);
+
 
     await page.goto('/project/navtest');
 
@@ -402,23 +253,9 @@ test.describe('02.003: Navigation', () => {
 
   test('02.003.002: user config link navigates to user page', async ({ page }) => {
     // Phase 2: Mock only /api/projects, let config endpoints fail gracefully
-    await page.route('**/api/projects', (route) => {
-      route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify({
-          success: true,
-          projects: [
-            {
-              id: 'navtest2',
-              name: 'Nav Test 2',
-              path: '/nav/test2',
-              stats: { agents: 0, commands: 0, hooks: 0, mcp: 0 }
-            }
-          ]
-        })
-      });
-    });
+    // Setup centralized mocks BEFORE navigation
+    await setupMocks(page);
+
 
     await page.goto('/project/navtest2');
 
@@ -444,23 +281,9 @@ test.describe('02.003: Navigation', () => {
 
 test.describe('02.004: Theme Toggle', () => {
   test('02.004.001: theme toggle switches between dark and light modes', async ({ page }) => {
-    await page.route('**/api/projects*', (route) => {
-      route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify({
-          success: true,
-          projects: [
-            {
-              id: 'themetest',
-              name: 'Theme Test',
-              path: '/theme/test',
-              stats: { agents: 0, commands: 0, hooks: 0, mcp: 0 }
-            }
-          ]
-        })
-      });
-    });
+    // Setup centralized mocks BEFORE navigation
+    await setupMocks(page);
+
 
     await page.goto('/project/themetest');
 
@@ -491,23 +314,9 @@ test.describe('02.004: Theme Toggle', () => {
   });
 
   test('02.004.002: theme preference persists in localStorage', async ({ page }) => {
-    await page.route('**/api/projects*', (route) => {
-      route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify({
-          success: true,
-          projects: [
-            {
-              id: '%2Fpersist%2Ftest',
-              name: 'test',
-              path: '/persist/test',
-              stats: { agents: 0, commands: 0, hooks: 0, mcp: 0 }
-            }
-          ]
-        })
-      });
-    });
+    // Setup centralized mocks BEFORE navigation
+    await setupMocks(page);
+
 
     await page.goto('/project/%2Fpersist%2Ftest');
 
@@ -532,23 +341,9 @@ test.describe('02.004: Theme Toggle', () => {
   });
 
   test('02.004.003: theme loads from localStorage on page load', async ({ page }) => {
-    await page.route('**/api/projects*', (route) => {
-      route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify({
-          success: true,
-          projects: [
-            {
-              id: '%2Fload%2Ftest',
-              name: 'test',
-              path: '/load/test',
-              stats: { agents: 0, commands: 0, hooks: 0, mcp: 0 }
-            }
-          ]
-        })
-      });
-    });
+    // Setup centralized mocks BEFORE navigation
+    await setupMocks(page);
+
 
     // Set localStorage before navigation (Phase 2 uses 'claude-code-manager-theme' key)
     await page.goto('/project/%2Fload%2Ftest');
@@ -572,16 +367,9 @@ test.describe('02.004: Theme Toggle', () => {
 test.describe('02.005: Error Handling', () => {
   test('02.005.001: shows error when project ID is empty string', async ({ page }) => {
     // Mock config endpoints to fail for empty project ID
-    await page.route('**/api/projects//agents', (route) => {
-      route.fulfill({
-        status: 404,
-        contentType: 'application/json',
-        body: JSON.stringify({
-          success: false,
-          error: 'Project not found'
-        })
-      });
-    });
+    // Setup centralized mocks BEFORE navigation
+    await setupMocks(page);
+
 
     await page.route('**/api/projects//commands', (route) => {
       route.fulfill({
@@ -630,16 +418,9 @@ test.describe('02.005: Error Handling', () => {
 
   test('02.005.002: shows error when project ID is not found', async ({ page }) => {
     // Mock config endpoints to return 404 error
-    await page.route('**/api/projects/nonexistent/agents', (route) => {
-      route.fulfill({
-        status: 404,
-        contentType: 'application/json',
-        body: JSON.stringify({
-          success: false,
-          error: 'Project not found'
-        })
-      });
-    });
+    // Setup centralized mocks BEFORE navigation
+    await setupMocks(page);
+
 
     await page.route('**/api/projects/nonexistent/commands', (route) => {
       route.fulfill({
@@ -690,16 +471,9 @@ test.describe('02.005: Error Handling', () => {
     // Mock all config endpoints to return 500 error
     const errorRoutes = ['agents', 'commands', 'hooks', 'mcp'];
     for (const endpoint of errorRoutes) {
-      await page.route(`**/api/projects/anyproject/${endpoint}`, (route) => {
-        route.fulfill({
-          status: 500,
-          contentType: 'application/json',
-          body: JSON.stringify({
-            success: false,
-            error: 'Internal Server Error'
-          })
-        });
-      });
+      // Setup centralized mocks BEFORE navigation
+      await setupMocks(page);
+
     }
 
     await page.goto('/project/anyproject');
@@ -718,9 +492,9 @@ test.describe('02.005: Error Handling', () => {
     // Mock all config endpoints to fail
     const errorRoutes = ['agents', 'commands', 'hooks', 'mcp'];
     for (const endpoint of errorRoutes) {
-      await page.route(`**/api/projects/anyproject/${endpoint}`, (route) => {
-        route.abort('failed');
-      });
+      // Setup centralized mocks BEFORE navigation
+      await setupMocks(page);
+
     }
 
     await page.goto('/project/anyproject');
@@ -792,16 +566,9 @@ test.describe('02.005: Error Handling', () => {
 
   test('02.005.006: displays warnings when present in API response', async ({ page }) => {
     // Mock config endpoints with warnings
-    await page.route('**/api/projects/warningproject/agents', (route) => {
-      route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify({
-          agents: [],
-          warnings: ['Warning 1: Could not parse agent file']
-        })
-      });
-    });
+    // Setup centralized mocks BEFORE navigation
+    await setupMocks(page);
+
 
     await page.route('**/api/projects/warningproject/commands', (route) => {
       route.fulfill({
@@ -946,23 +713,9 @@ test.describe('02.006: Loading State', () => {
 
 test.describe('02.007: Responsive Design', () => {
   test('02.007.001: layout adapts to mobile viewport', async ({ page }) => {
-    await page.route('**/api/projects*', (route) => {
-      route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify({
-          success: true,
-          projects: [
-            {
-              id: 'mobileproject',
-              name: 'Mobile Project',
-              path: '/mobile/project',
-              stats: { agents: 2, commands: 3, hooks: 1, mcp: 0 }
-            }
-          ]
-        })
-      });
-    });
+    // Setup centralized mocks BEFORE navigation
+    await setupMocks(page);
+
 
     // Set mobile viewport
     await page.setViewportSize({ width: 375, height: 667 });
@@ -989,23 +742,9 @@ test.describe('02.007: Responsive Design', () => {
   });
 
   test('02.007.002: layout adapts to tablet viewport', async ({ page }) => {
-    await page.route('**/api/projects*', (route) => {
-      route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify({
-          success: true,
-          projects: [
-            {
-              id: 'tabletproject',
-              name: 'Tablet Project',
-              path: '/tablet/project',
-              stats: { agents: 1, commands: 2, hooks: 3, mcp: 4 }
-            }
-          ]
-        })
-      });
-    });
+    // Setup centralized mocks BEFORE navigation
+    await setupMocks(page);
+
 
     // Set tablet viewport
     await page.setViewportSize({ width: 768, height: 1024 });
@@ -1026,23 +765,9 @@ test.describe('02.007: Responsive Design', () => {
   });
 
   test('02.007.003: layout works on desktop viewport', async ({ page }) => {
-    await page.route('**/api/projects*', (route) => {
-      route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify({
-          success: true,
-          projects: [
-            {
-              id: 'desktopproject',
-              name: 'Desktop Project',
-              path: '/desktop/project',
-              stats: { agents: 5, commands: 10, hooks: 3, mcp: 2 }
-            }
-          ]
-        })
-      });
-    });
+    // Setup centralized mocks BEFORE navigation
+    await setupMocks(page);
+
 
     // Set desktop viewport
     await page.setViewportSize({ width: 1920, height: 1080 });
@@ -1093,23 +818,9 @@ test.describe('02.008: Console Error Detection', () => {
       consoleErrors.push(error.message);
     });
 
-    await page.route('**/api/projects*', (route) => {
-      route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify({
-          success: true,
-          projects: [
-            {
-              id: 'consoletestproject',
-              name: 'Console Test Project',
-              path: '/console/test',
-              stats: { agents: 1, commands: 1, hooks: 1, mcp: 1 }
-            }
-          ]
-        })
-      });
-    });
+    // Setup centralized mocks BEFORE navigation
+    await setupMocks(page);
+
 
     await page.goto('/project/consoletestproject');
     await page.waitForSelector('.config-cards-container', { timeout: 10000 });
