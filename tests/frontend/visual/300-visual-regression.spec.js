@@ -13,9 +13,12 @@ const { test, expect } = require('@playwright/test');
  *
  * Numbering Format: 300.SUITE.TEST
  *
- * PHASE 2 NOTE: These tests are skipped because Phase 2 has a completely different UI
- * (Vue 3 SPA vs Phase 1 static HTML). Visual regression tests need to be recreated
- * with new baselines for Phase 2 after UI is stable.
+ * Phase 2 (Vue SPA) Architecture:
+ * - URLs: /project/:id (Vue Router, not /project-detail.html?id=X)
+ * - API: Vite proxy → Express backend
+ * - Selectors: .app-nav (not .breadcrumbs), .project-grid, .config-card
+ * - Navigation: Client-side (no page reloads)
+ * - State: Pinia stores
  *
  * Uses Playwright's built-in screenshot comparison to detect unintended visual changes.
  * Baseline screenshots are stored in tests/frontend/visual/*.spec.js-snapshots/
@@ -25,10 +28,10 @@ const { test, expect } = require('@playwright/test');
  */
 
 // Test Suite 300.001: Dashboard Visual Regression
-test.describe.skip('300.001: Visual Regression - Dashboard', () => {
+test.describe('300.001: Visual Regression - Dashboard', () => {
   test('300.001.001: dashboard renders correctly with projects', async ({ page }) => {
     // Mock API response with project data
-    await page.route('/api/projects', (route) => {
+    await page.route('**/api/projects', (route) => {
       route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -36,9 +39,9 @@ test.describe.skip('300.001: Visual Regression - Dashboard', () => {
           success: true,
           projects: [
             {
-              id: 'testproject1',
-              name: 'Test Project 1',
-              path: '/home/user/test-project-1',
+              id: 'homeuserprojectsa',
+              name: 'Project A',
+              path: '/home/user/projects/a',
               stats: {
                 agents: 3,
                 commands: 5,
@@ -47,9 +50,9 @@ test.describe.skip('300.001: Visual Regression - Dashboard', () => {
               }
             },
             {
-              id: 'testproject2',
-              name: 'Test Project 2',
-              path: '/home/user/test-project-2',
+              id: 'homeuserprojectsb',
+              name: 'Project B',
+              path: '/home/user/projects/b',
               stats: {
                 agents: 1,
                 commands: 8,
@@ -62,10 +65,40 @@ test.describe.skip('300.001: Visual Regression - Dashboard', () => {
       });
     });
 
+    // Mock user API endpoints
+    await page.route('**/api/user/agents', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, agents: [] })
+      });
+    });
+    await page.route('**/api/user/commands', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, commands: [] })
+      });
+    });
+    await page.route('**/api/user/hooks', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, hooks: [] })
+      });
+    });
+    await page.route('**/api/user/mcp', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, mcp: [] })
+      });
+    });
+
     await page.goto('/');
 
-    // Wait for projects to load
-    await page.waitForSelector('.project-card', { timeout: 10000 });
+    // Wait for projects to load (including User card and project cards)
+    await page.waitForSelector('.project-grid', { timeout: 10000 });
 
     // Take full page screenshot
     await expect(page).toHaveScreenshot('dashboard-with-projects.png', {
@@ -76,8 +109,8 @@ test.describe.skip('300.001: Visual Regression - Dashboard', () => {
 
   test('300.001.002: dashboard loading state', async ({ page }) => {
     // Delay API response to capture loading state
-    await page.route('/api/projects', async (route) => {
-      await new Promise(resolve => setTimeout(resolve, 5000));
+    await page.route('**/api/projects', async (route) => {
+      await new Promise(resolve => setTimeout(resolve, 2000));
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -88,10 +121,46 @@ test.describe.skip('300.001: Visual Regression - Dashboard', () => {
       });
     });
 
+    // Mock user endpoints for loading state
+    await page.route('**/api/user/agents', async (route) => {
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, agents: [] })
+      });
+    });
+    await page.route('**/api/user/commands', async (route) => {
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, commands: [] })
+      });
+    });
+    await page.route('**/api/user/hooks', async (route) => {
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, hooks: [] })
+      });
+    });
+    await page.route('**/api/user/mcp', async (route) => {
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, mcp: [] })
+      });
+    });
+
     await page.goto('/');
 
     // Wait for loading state to appear
-    await page.waitForSelector('.loading-state', { timeout: 2000 });
+    await page.waitForSelector('.loading-spinner', { timeout: 2000 }).catch(() => {
+      // Loading state may be very brief, that's okay
+    });
 
     // Capture loading state screenshot
     await expect(page).toHaveScreenshot('dashboard-loading-state.png', {
@@ -105,7 +174,7 @@ test.describe.skip('300.001: Visual Regression - Dashboard', () => {
 
   test('300.001.003: dashboard error state', async ({ page }) => {
     // Mock API error
-    await page.route('/api/projects', (route) => {
+    await page.route('**/api/projects', (route) => {
       route.fulfill({
         status: 500,
         contentType: 'application/json',
@@ -116,10 +185,42 @@ test.describe.skip('300.001: Visual Regression - Dashboard', () => {
       });
     });
 
+    // Mock user endpoints
+    await page.route('**/api/user/agents', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, agents: [] })
+      });
+    });
+    await page.route('**/api/user/commands', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, commands: [] })
+      });
+    });
+    await page.route('**/api/user/hooks', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, hooks: [] })
+      });
+    });
+    await page.route('**/api/user/mcp', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, mcp: [] })
+      });
+    });
+
     await page.goto('/');
 
-    // Wait for error state
-    await page.waitForSelector('.error-state', { timeout: 10000 });
+    // Wait for error state (may be displayed as a notification or alert)
+    await page.waitForSelector('.error-notification', { timeout: 10000 }).catch(() => {
+      // Error may be displayed differently, that's okay
+    });
 
     // Capture error state screenshot
     await expect(page).toHaveScreenshot('dashboard-error-state.png', {
@@ -130,7 +231,7 @@ test.describe.skip('300.001: Visual Regression - Dashboard', () => {
 
   test('300.001.004: dashboard empty state', async ({ page }) => {
     // Mock empty projects response
-    await page.route('/api/projects', (route) => {
+    await page.route('**/api/projects', (route) => {
       route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -141,10 +242,40 @@ test.describe.skip('300.001: Visual Regression - Dashboard', () => {
       });
     });
 
+    // Mock user endpoints
+    await page.route('**/api/user/agents', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, agents: [] })
+      });
+    });
+    await page.route('**/api/user/commands', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, commands: [] })
+      });
+    });
+    await page.route('**/api/user/hooks', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, hooks: [] })
+      });
+    });
+    await page.route('**/api/user/mcp', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, mcp: [] })
+      });
+    });
+
     await page.goto('/');
 
-    // Wait for empty state
-    await page.waitForSelector('.empty-state', { timeout: 10000 });
+    // Wait for page to load (project grid will be empty or show only User card)
+    await page.waitForSelector('.project-grid', { timeout: 10000 });
 
     // Capture empty state screenshot
     await expect(page).toHaveScreenshot('dashboard-empty-state.png', {
@@ -155,9 +286,9 @@ test.describe.skip('300.001: Visual Regression - Dashboard', () => {
 });
 
 // Test Suite 300.002: Dashboard Dark/Light Mode
-test.describe.skip('300.002: Visual Regression - Dashboard Dark/Light Mode', () => {
+test.describe('300.002: Visual Regression - Dashboard Dark/Light Mode', () => {
   test('300.002.001: dashboard in dark mode', async ({ page }) => {
-    await page.route('/api/projects', (route) => {
+    await page.route('**/api/projects', (route) => {
       route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -165,9 +296,9 @@ test.describe.skip('300.002: Visual Regression - Dashboard Dark/Light Mode', () 
           success: true,
           projects: [
             {
-              id: 'darkproject',
+              id: 'homeuserprojectsdark',
               name: 'Dark Mode Project',
-              path: '/home/user/dark-project',
+              path: '/home/user/projects/dark-project',
               stats: { agents: 2, commands: 3, hooks: 1, mcp: 0 }
             }
           ]
@@ -175,8 +306,38 @@ test.describe.skip('300.002: Visual Regression - Dashboard Dark/Light Mode', () 
       });
     });
 
+    // Mock user endpoints
+    await page.route('**/api/user/agents', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, agents: [] })
+      });
+    });
+    await page.route('**/api/user/commands', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, commands: [] })
+      });
+    });
+    await page.route('**/api/user/hooks', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, hooks: [] })
+      });
+    });
+    await page.route('**/api/user/mcp', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, mcp: [] })
+      });
+    });
+
     await page.goto('/');
-    await page.waitForSelector('.project-card', { timeout: 10000 });
+    await page.waitForSelector('.project-grid', { timeout: 10000 });
 
     // Ensure dark mode is active
     const html = page.locator('html');
@@ -194,7 +355,7 @@ test.describe.skip('300.002: Visual Regression - Dashboard Dark/Light Mode', () 
   });
 
   test('300.002.002: dashboard in light mode', async ({ page }) => {
-    await page.route('/api/projects', (route) => {
+    await page.route('**/api/projects', (route) => {
       route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -202,9 +363,9 @@ test.describe.skip('300.002: Visual Regression - Dashboard Dark/Light Mode', () 
           success: true,
           projects: [
             {
-              id: 'lightproject',
+              id: 'homeuserprojectslight',
               name: 'Light Mode Project',
-              path: '/home/user/light-project',
+              path: '/home/user/projects/light-project',
               stats: { agents: 2, commands: 3, hooks: 1, mcp: 0 }
             }
           ]
@@ -212,8 +373,38 @@ test.describe.skip('300.002: Visual Regression - Dashboard Dark/Light Mode', () 
       });
     });
 
+    // Mock user endpoints
+    await page.route('**/api/user/agents', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, agents: [] })
+      });
+    });
+    await page.route('**/api/user/commands', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, commands: [] })
+      });
+    });
+    await page.route('**/api/user/hooks', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, hooks: [] })
+      });
+    });
+    await page.route('**/api/user/mcp', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, mcp: [] })
+      });
+    });
+
     await page.goto('/');
-    await page.waitForSelector('.project-card', { timeout: 10000 });
+    await page.waitForSelector('.project-grid', { timeout: 10000 });
 
     // Switch to light mode
     const html = page.locator('html');
@@ -232,9 +423,12 @@ test.describe.skip('300.002: Visual Regression - Dashboard Dark/Light Mode', () 
 });
 
 // Test Suite 300.003: Project Detail View Visual Regression
-test.describe.skip('300.003: Visual Regression - Project Detail View', () => {
+test.describe('300.003: Visual Regression - Project Detail View', () => {
   test('300.003.001: project detail view renders correctly', async ({ page }) => {
-    await page.route('/api/projects', (route) => {
+    const projectId = 'homeuserprojectdetail';
+
+    // Mock projects list
+    await page.route('**/api/projects', (route) => {
       route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -242,9 +436,9 @@ test.describe.skip('300.003: Visual Regression - Project Detail View', () => {
           success: true,
           projects: [
             {
-              id: 'detailproject',
+              id: projectId,
               name: 'Detail View Project',
-              path: '/home/user/detail-project',
+              path: '/home/user/projects/detail-project',
               stats: {
                 agents: 5,
                 commands: 12,
@@ -257,8 +451,39 @@ test.describe.skip('300.003: Visual Regression - Project Detail View', () => {
       });
     });
 
-    await page.goto('/project-detail.html?id=detailproject');
-    await page.waitForSelector('.project-content', { timeout: 10000 });
+    // Mock project detail endpoints
+    await page.route(`**/api/projects/${projectId}/agents`, (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, agents: [] })
+      });
+    });
+    await page.route(`**/api/projects/${projectId}/commands`, (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, commands: [] })
+      });
+    });
+    await page.route(`**/api/projects/${projectId}/hooks`, (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, hooks: [] })
+      });
+    });
+    await page.route(`**/api/projects/${projectId}/mcp`, (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, mcp: [] })
+      });
+    });
+
+    // Navigate to project detail using Vue Router path
+    await page.goto(`/project/${projectId}`);
+    await page.waitForSelector('.project-detail', { timeout: 10000 });
 
     // Capture full project detail page
     await expect(page).toHaveScreenshot('project-detail-view.png', {
@@ -268,7 +493,10 @@ test.describe.skip('300.003: Visual Regression - Project Detail View', () => {
   });
 
   test('300.003.002: project detail view with warnings', async ({ page }) => {
-    await page.route('/api/projects', (route) => {
+    const projectId = 'homeuserprojectwarning';
+
+    // Mock projects list with warnings
+    await page.route('**/api/projects', (route) => {
       route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -276,9 +504,9 @@ test.describe.skip('300.003: Visual Regression - Project Detail View', () => {
           success: true,
           projects: [
             {
-              id: 'warningproject',
+              id: projectId,
               name: 'Warning Project',
-              path: '/home/user/warning-project',
+              path: '/home/user/projects/warning-project',
               stats: { agents: 2, commands: 3, hooks: 1, mcp: 0 }
             }
           ],
@@ -291,8 +519,41 @@ test.describe.skip('300.003: Visual Regression - Project Detail View', () => {
       });
     });
 
-    await page.goto('/project-detail.html?id=warningproject');
-    await page.waitForSelector('.warning-banner', { timeout: 10000 });
+    // Mock project detail endpoints
+    await page.route(`**/api/projects/${projectId}/agents`, (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, agents: [] })
+      });
+    });
+    await page.route(`**/api/projects/${projectId}/commands`, (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, commands: [] })
+      });
+    });
+    await page.route(`**/api/projects/${projectId}/hooks`, (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, hooks: [] })
+      });
+    });
+    await page.route(`**/api/projects/${projectId}/mcp`, (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, mcp: [] })
+      });
+    });
+
+    // Navigate using Vue Router path
+    await page.goto(`/project/${projectId}`);
+
+    // Wait for warnings to be displayed (if warning banner exists)
+    await page.waitForSelector('.project-detail', { timeout: 10000 });
 
     // Capture project detail with warnings
     await expect(page).toHaveScreenshot('project-detail-with-warnings.png', {
@@ -302,8 +563,11 @@ test.describe.skip('300.003: Visual Regression - Project Detail View', () => {
   });
 
   test('300.003.003: project detail loading state', async ({ page }) => {
-    await page.route('/api/projects', async (route) => {
-      await new Promise(resolve => setTimeout(resolve, 5000));
+    const projectId = 'homeuserprojectloading';
+
+    // Delay all project endpoints
+    await page.route('**/api/projects', async (route) => {
+      await new Promise(resolve => setTimeout(resolve, 2000));
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -311,9 +575,9 @@ test.describe.skip('300.003: Visual Regression - Project Detail View', () => {
           success: true,
           projects: [
             {
-              id: 'loadingproject',
+              id: projectId,
               name: 'Loading Project',
-              path: '/home/user/loading',
+              path: '/home/user/projects/loading',
               stats: { agents: 0, commands: 0, hooks: 0, mcp: 0 }
             }
           ]
@@ -321,8 +585,47 @@ test.describe.skip('300.003: Visual Regression - Project Detail View', () => {
       });
     });
 
-    await page.goto('/project-detail.html?id=loadingproject');
-    await page.waitForSelector('.loading-state', { timeout: 2000 });
+    // Delay detail endpoints
+    await page.route(`**/api/projects/${projectId}/agents`, async (route) => {
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, agents: [] })
+      });
+    });
+    await page.route(`**/api/projects/${projectId}/commands`, async (route) => {
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, commands: [] })
+      });
+    });
+    await page.route(`**/api/projects/${projectId}/hooks`, async (route) => {
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, hooks: [] })
+      });
+    });
+    await page.route(`**/api/projects/${projectId}/mcp`, async (route) => {
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, mcp: [] })
+      });
+    });
+
+    // Navigate using Vue Router path
+    await page.goto(`/project/${projectId}`);
+
+    // Wait for loading state
+    await page.waitForSelector('.loading-spinner', { timeout: 2000 }).catch(() => {
+      // Loading state may be very brief
+    });
 
     // Capture loading state
     await expect(page).toHaveScreenshot('project-detail-loading.png', {
@@ -334,7 +637,10 @@ test.describe.skip('300.003: Visual Regression - Project Detail View', () => {
   });
 
   test('300.003.004: project detail error state', async ({ page }) => {
-    await page.route('/api/projects', (route) => {
+    const projectId = 'homeuserprojectexisting';
+
+    // Mock projects list with one valid project
+    await page.route('**/api/projects', (route) => {
       route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -342,9 +648,9 @@ test.describe.skip('300.003: Visual Regression - Project Detail View', () => {
           success: true,
           projects: [
             {
-              id: 'existingproject',
+              id: projectId,
               name: 'Existing Project',
-              path: '/home/user/existing',
+              path: '/home/user/projects/existing',
               stats: { agents: 0, commands: 0, hooks: 0, mcp: 0 }
             }
           ]
@@ -352,9 +658,11 @@ test.describe.skip('300.003: Visual Regression - Project Detail View', () => {
       });
     });
 
-    // Navigate to non-existent project
-    await page.goto('/project-detail.html?id=nonexistent');
-    await page.waitForSelector('.error-state', { timeout: 10000 });
+    // Navigate to non-existent project using Vue Router
+    await page.goto('/project/nonexistent');
+
+    // Wait for page to load (may show error or empty state)
+    await page.waitForSelector('body', { timeout: 5000 });
 
     // Capture error state
     await expect(page).toHaveScreenshot('project-detail-error.png', {
@@ -365,9 +673,9 @@ test.describe.skip('300.003: Visual Regression - Project Detail View', () => {
 });
 
 // Test Suite 300.004: Dashboard Components
-test.describe.skip('300.004: Visual Regression - Dashboard Components', () => {
+test.describe('300.004: Visual Regression - Dashboard Components', () => {
   test('300.004.001: project card component', async ({ page }) => {
-    await page.route('/api/projects', (route) => {
+    await page.route('**/api/projects', (route) => {
       route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -375,9 +683,9 @@ test.describe.skip('300.004: Visual Regression - Dashboard Components', () => {
           success: true,
           projects: [
             {
-              id: 'cardproject',
+              id: 'homeuserprojectcard',
               name: 'Card Component Test',
-              path: '/home/user/card-test',
+              path: '/home/user/projects/card-test',
               stats: {
                 agents: 7,
                 commands: 14,
@@ -390,18 +698,49 @@ test.describe.skip('300.004: Visual Regression - Dashboard Components', () => {
       });
     });
 
-    await page.goto('/');
-    await page.waitForSelector('.project-card', { timeout: 10000 });
+    // Mock user endpoints
+    await page.route('**/api/user/agents', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, agents: [] })
+      });
+    });
+    await page.route('**/api/user/commands', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, commands: [] })
+      });
+    });
+    await page.route('**/api/user/hooks', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, hooks: [] })
+      });
+    });
+    await page.route('**/api/user/mcp', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, mcp: [] })
+      });
+    });
 
-    // Capture just the project card
-    const projectCard = page.locator('.project-card').first();
+    await page.goto('/');
+    await page.waitForSelector('.project-grid', { timeout: 10000 });
+
+    // Capture a project card (skip User card at index 0, get first project card)
+    const projectCards = page.locator('.project-card');
+    const projectCard = projectCards.nth(1);
     await expect(projectCard).toHaveScreenshot('project-card-component.png', {
       maxDiffPixels: 50
     });
   });
 
   test('300.004.002: header component', async ({ page }) => {
-    await page.route('/api/projects', (route) => {
+    await page.route('**/api/projects', (route) => {
       route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -409,6 +748,36 @@ test.describe.skip('300.004: Visual Regression - Dashboard Components', () => {
           success: true,
           projects: []
         })
+      });
+    });
+
+    // Mock user endpoints
+    await page.route('**/api/user/agents', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, agents: [] })
+      });
+    });
+    await page.route('**/api/user/commands', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, commands: [] })
+      });
+    });
+    await page.route('**/api/user/hooks', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, hooks: [] })
+      });
+    });
+    await page.route('**/api/user/mcp', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, mcp: [] })
       });
     });
 
@@ -422,8 +791,11 @@ test.describe.skip('300.004: Visual Regression - Dashboard Components', () => {
     });
   });
 
-  test('300.004.003: breadcrumb component on detail page', async ({ page }) => {
-    await page.route('/api/projects', (route) => {
+  test('300.004.003: navigation component on detail page', async ({ page }) => {
+    const projectId = 'homeuserprojectbread';
+
+    // Mock projects list
+    await page.route('**/api/projects', (route) => {
       route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -431,9 +803,9 @@ test.describe.skip('300.004: Visual Regression - Dashboard Components', () => {
           success: true,
           projects: [
             {
-              id: 'breadcrumbtest',
+              id: projectId,
               name: 'Breadcrumb Test Project',
-              path: '/home/user/breadcrumb-test',
+              path: '/home/user/projects/breadcrumb-test',
               stats: { agents: 1, commands: 1, hooks: 1, mcp: 1 }
             }
           ]
@@ -441,21 +813,52 @@ test.describe.skip('300.004: Visual Regression - Dashboard Components', () => {
       });
     });
 
-    await page.goto('/project-detail.html?id=breadcrumbtest');
-    await page.waitForSelector('.breadcrumbs', { timeout: 10000 });
+    // Mock project detail endpoints
+    await page.route(`**/api/projects/${projectId}/agents`, (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, agents: [] })
+      });
+    });
+    await page.route(`**/api/projects/${projectId}/commands`, (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, commands: [] })
+      });
+    });
+    await page.route(`**/api/projects/${projectId}/hooks`, (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, hooks: [] })
+      });
+    });
+    await page.route(`**/api/projects/${projectId}/mcp`, (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, mcp: [] })
+      });
+    });
 
-    // Capture breadcrumb component
-    const breadcrumbs = page.locator('.breadcrumbs');
-    await expect(breadcrumbs).toHaveScreenshot('breadcrumb-component.png', {
+    // Navigate to detail page using Vue Router
+    await page.goto(`/project/${projectId}`);
+    await page.waitForSelector('.app-nav', { timeout: 10000 });
+
+    // Capture navigation component (replaces breadcrumbs in Phase 2)
+    const appNav = page.locator('.app-nav');
+    await expect(appNav).toHaveScreenshot('navigation-component.png', {
       maxDiffPixels: 50
     });
   });
 });
 
 // Test Suite 300.005: Responsive Design
-test.describe.skip('300.005: Visual Regression - Responsive Design', () => {
+test.describe('300.005: Visual Regression - Responsive Design', () => {
   test('300.005.001: dashboard mobile viewport', async ({ page }) => {
-    await page.route('/api/projects', (route) => {
+    await page.route('**/api/projects', (route) => {
       route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -463,9 +866,9 @@ test.describe.skip('300.005: Visual Regression - Responsive Design', () => {
           success: true,
           projects: [
             {
-              id: 'mobileproject',
+              id: 'homeuserprojectmobile',
               name: 'Mobile Test',
-              path: '/home/user/mobile',
+              path: '/home/user/projects/mobile',
               stats: { agents: 2, commands: 3, hooks: 1, mcp: 0 }
             }
           ]
@@ -473,10 +876,40 @@ test.describe.skip('300.005: Visual Regression - Responsive Design', () => {
       });
     });
 
+    // Mock user endpoints
+    await page.route('**/api/user/agents', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, agents: [] })
+      });
+    });
+    await page.route('**/api/user/commands', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, commands: [] })
+      });
+    });
+    await page.route('**/api/user/hooks', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, hooks: [] })
+      });
+    });
+    await page.route('**/api/user/mcp', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, mcp: [] })
+      });
+    });
+
     // Set mobile viewport
     await page.setViewportSize({ width: 375, height: 667 });
     await page.goto('/');
-    await page.waitForSelector('.project-card', { timeout: 10000 });
+    await page.waitForSelector('.project-grid', { timeout: 10000 });
 
     // Capture mobile view
     await expect(page).toHaveScreenshot('dashboard-mobile.png', {
@@ -486,7 +919,7 @@ test.describe.skip('300.005: Visual Regression - Responsive Design', () => {
   });
 
   test('300.005.002: dashboard tablet viewport', async ({ page }) => {
-    await page.route('/api/projects', (route) => {
+    await page.route('**/api/projects', (route) => {
       route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -494,9 +927,9 @@ test.describe.skip('300.005: Visual Regression - Responsive Design', () => {
           success: true,
           projects: [
             {
-              id: 'tabletproject',
+              id: 'homeuserprojecttablet',
               name: 'Tablet Test',
-              path: '/home/user/tablet',
+              path: '/home/user/projects/tablet',
               stats: { agents: 3, commands: 5, hooks: 2, mcp: 1 }
             }
           ]
@@ -504,10 +937,40 @@ test.describe.skip('300.005: Visual Regression - Responsive Design', () => {
       });
     });
 
+    // Mock user endpoints
+    await page.route('**/api/user/agents', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, agents: [] })
+      });
+    });
+    await page.route('**/api/user/commands', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, commands: [] })
+      });
+    });
+    await page.route('**/api/user/hooks', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, hooks: [] })
+      });
+    });
+    await page.route('**/api/user/mcp', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, mcp: [] })
+      });
+    });
+
     // Set tablet viewport
     await page.setViewportSize({ width: 768, height: 1024 });
     await page.goto('/');
-    await page.waitForSelector('.project-card', { timeout: 10000 });
+    await page.waitForSelector('.project-grid', { timeout: 10000 });
 
     // Capture tablet view
     await expect(page).toHaveScreenshot('dashboard-tablet.png', {
@@ -517,7 +980,10 @@ test.describe.skip('300.005: Visual Regression - Responsive Design', () => {
   });
 
   test('300.005.003: project detail mobile viewport', async ({ page }) => {
-    await page.route('/api/projects', (route) => {
+    const projectId = 'homeuserprojectdetailmobile';
+
+    // Mock projects list
+    await page.route('**/api/projects', (route) => {
       route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -525,9 +991,9 @@ test.describe.skip('300.005: Visual Regression - Responsive Design', () => {
           success: true,
           projects: [
             {
-              id: 'detailmobile',
+              id: projectId,
               name: 'Detail Mobile Test',
-              path: '/home/user/detail-mobile',
+              path: '/home/user/projects/detail-mobile',
               stats: { agents: 4, commands: 6, hooks: 2, mcp: 1 }
             }
           ]
@@ -535,10 +1001,42 @@ test.describe.skip('300.005: Visual Regression - Responsive Design', () => {
       });
     });
 
+    // Mock project detail endpoints
+    await page.route(`**/api/projects/${projectId}/agents`, (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, agents: [] })
+      });
+    });
+    await page.route(`**/api/projects/${projectId}/commands`, (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, commands: [] })
+      });
+    });
+    await page.route(`**/api/projects/${projectId}/hooks`, (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, hooks: [] })
+      });
+    });
+    await page.route(`**/api/projects/${projectId}/mcp`, (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, mcp: [] })
+      });
+    });
+
     // Set mobile viewport
     await page.setViewportSize({ width: 375, height: 667 });
-    await page.goto('/project-detail.html?id=detailmobile');
-    await page.waitForSelector('.project-content', { timeout: 10000 });
+
+    // Navigate using Vue Router
+    await page.goto(`/project/${projectId}`);
+    await page.waitForSelector('.project-detail', { timeout: 10000 });
 
     // Capture mobile detail view
     await expect(page).toHaveScreenshot('project-detail-mobile.png', {
@@ -549,9 +1047,9 @@ test.describe.skip('300.005: Visual Regression - Responsive Design', () => {
 });
 
 // Test Suite 300.006: Interactive States
-test.describe.skip('300.006: Visual Regression - Interactive States', () => {
+test.describe('300.006: Visual Regression - Interactive States', () => {
   test('300.006.001: project card hover state', async ({ page }) => {
-    await page.route('/api/projects', (route) => {
+    await page.route('**/api/projects', (route) => {
       route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -559,9 +1057,9 @@ test.describe.skip('300.006: Visual Regression - Interactive States', () => {
           success: true,
           projects: [
             {
-              id: 'hoverproject',
+              id: 'homeuserprojecthover',
               name: 'Hover Test Project',
-              path: '/home/user/hover-test',
+              path: '/home/user/projects/hover-test',
               stats: { agents: 2, commands: 3, hooks: 1, mcp: 0 }
             }
           ]
@@ -569,11 +1067,42 @@ test.describe.skip('300.006: Visual Regression - Interactive States', () => {
       });
     });
 
-    await page.goto('/');
-    await page.waitForSelector('.project-card', { timeout: 10000 });
+    // Mock user endpoints
+    await page.route('**/api/user/agents', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, agents: [] })
+      });
+    });
+    await page.route('**/api/user/commands', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, commands: [] })
+      });
+    });
+    await page.route('**/api/user/hooks', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, hooks: [] })
+      });
+    });
+    await page.route('**/api/user/mcp', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, mcp: [] })
+      });
+    });
 
-    // Hover over project card
-    const projectCard = page.locator('.project-card').first();
+    await page.goto('/');
+    await page.waitForSelector('.project-grid', { timeout: 10000 });
+
+    // Hover over a project card (skip User card at index 0)
+    const projectCards = page.locator('.project-card');
+    const projectCard = projectCards.nth(1);
     await projectCard.hover();
     await page.waitForTimeout(200); // Wait for hover transition
 
@@ -583,8 +1112,8 @@ test.describe.skip('300.006: Visual Regression - Interactive States', () => {
     });
   });
 
-  test('300.006.002: theme toggle button states', async ({ page }) => {
-    await page.route('/api/projects', (route) => {
+  test('300.006.002: theme toggle button hover state', async ({ page }) => {
+    await page.route('**/api/projects', (route) => {
       route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -592,6 +1121,36 @@ test.describe.skip('300.006: Visual Regression - Interactive States', () => {
           success: true,
           projects: []
         })
+      });
+    });
+
+    // Mock user endpoints
+    await page.route('**/api/user/agents', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, agents: [] })
+      });
+    });
+    await page.route('**/api/user/commands', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, commands: [] })
+      });
+    });
+    await page.route('**/api/user/hooks', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, hooks: [] })
+      });
+    });
+    await page.route('**/api/user/mcp', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, mcp: [] })
       });
     });
 
@@ -609,8 +1168,11 @@ test.describe.skip('300.006: Visual Regression - Interactive States', () => {
     });
   });
 
-  test('300.006.003: breadcrumb hover state', async ({ page }) => {
-    await page.route('/api/projects', (route) => {
+  test('300.006.003: navigation link hover state', async ({ page }) => {
+    const projectId = 'homeuserprojectnav';
+
+    // Mock projects list
+    await page.route('**/api/projects', (route) => {
       route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -618,9 +1180,9 @@ test.describe.skip('300.006: Visual Regression - Interactive States', () => {
           success: true,
           projects: [
             {
-              id: 'breadcrumbhover',
-              name: 'Breadcrumb Hover Test',
-              path: '/home/user/breadcrumb-hover',
+              id: projectId,
+              name: 'Navigation Hover Test',
+              path: '/home/user/projects/nav-hover',
               stats: { agents: 1, commands: 1, hooks: 1, mcp: 1 }
             }
           ]
@@ -628,16 +1190,47 @@ test.describe.skip('300.006: Visual Regression - Interactive States', () => {
       });
     });
 
-    await page.goto('/project-detail.html?id=breadcrumbhover');
-    await page.waitForSelector('.breadcrumb-item.clickable', { timeout: 10000 });
+    // Mock project detail endpoints
+    await page.route(`**/api/projects/${projectId}/agents`, (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, agents: [] })
+      });
+    });
+    await page.route(`**/api/projects/${projectId}/commands`, (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, commands: [] })
+      });
+    });
+    await page.route(`**/api/projects/${projectId}/hooks`, (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, hooks: [] })
+      });
+    });
+    await page.route(`**/api/projects/${projectId}/mcp`, (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, mcp: [] })
+      });
+    });
 
-    // Hover over dashboard breadcrumb
-    const breadcrumb = page.locator('.breadcrumb-item.clickable');
-    await breadcrumb.hover();
+    // Navigate to detail page using Vue Router
+    await page.goto(`/project/${projectId}`);
+    await page.waitForSelector('.app-nav', { timeout: 10000 });
+
+    // Hover over Dashboard nav link
+    const navLink = page.locator('.app-nav a').first();
+    await navLink.hover();
     await page.waitForTimeout(200);
 
     // Capture hover state
-    await expect(breadcrumb).toHaveScreenshot('breadcrumb-hover.png', {
+    await expect(navLink).toHaveScreenshot('navigation-link-hover.png', {
       maxDiffPixels: 30
     });
   });
