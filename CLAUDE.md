@@ -48,7 +48,11 @@ manager/
 │   └── utils/                       # Utility functions
 ├── tests/
 │   ├── backend/                     # Jest backend tests (270 tests)
-│   └── frontend/                    # Playwright frontend tests (86 tests)
+│   ├── frontend/                    # Playwright component tests (120 tests)
+│   │   └── visual/                  # Visual regression tests (57 tests)
+│   ├── e2e/                         # Playwright E2E integration tests (90 tests)
+│   ├── responsive/                  # Playwright responsive design tests (44 tests)
+│   └── fixtures/                    # Centralized mock data and test helpers
 ├── index.html                        # SPA entry point
 ├── vite.config.js                   # Vite configuration
 └── CLAUDE.md                         # This file
@@ -96,8 +100,13 @@ manager/
 
 ### Testing
 - **Backend Tests:** 270 Jest tests (100% pass rate)
-- **Frontend Tests:** 86 Playwright tests (100% pass rate)
-- **Total Test Coverage:** 356 tests passing
+- **Frontend Tests:** 311 Playwright tests (100% pass rate)
+  - 90 E2E integration tests (Tests 100, 101, 102, 105)
+  - 120 Component tests (Tests 01-06, 23)
+  - 44 Responsive design tests (Test 200)
+  - 57 Visual regression tests (Test 300)
+  - Cross-browser: Chromium, Firefox, WebKit
+- **Total Test Coverage:** 581 tests (100% pass rate)
 
 ## Data Sources
 
@@ -243,7 +252,7 @@ See `/home/claude/manager/.claude/templates/test-template.md` for detailed guide
 - [x] Card color scheme (green/blue/orange/purple)
 - [x] "Show more" functionality for configuration lists
 - [x] API integration with all configuration endpoints
-- [x] Automated test suite passing (Playwright - 92/100 tests, 92% pass rate)
+- [x] Automated test suite passing (Playwright - 311/311 tests, 100% pass rate)
 - [x] Detail sidebar for viewing full content
 - [x] Sidebar content rendering (markdown parsing, syntax highlighting)
 - [x] Sidebar navigation (copy to clipboard, keyboard shortcuts)

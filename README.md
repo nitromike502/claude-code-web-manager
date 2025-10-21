@@ -20,8 +20,8 @@ Claude Code Manager provides a centralized dashboard to browse all your Claude C
 - **Gray Matter** - YAML frontmatter parser for agents and commands
 
 ### Testing
-- **Jest 30.2.0** - Backend API and parser testing (270 tests)
-- **Playwright 1.56.0** - Frontend end-to-end testing (86 tests)
+- **Jest 30.2.0** - Backend API and parser testing (270 tests, 100% pass rate)
+- **Playwright 1.56.0** - Frontend E2E and component testing (311 tests, 100% pass rate)
 
 ### Development
 - **Vite Dev Server** - < 1 second startup, instant HMR
@@ -53,9 +53,11 @@ Claude Code Manager provides a centralized dashboard to browse all your Claude C
 - **Instant Navigation** - No page reloads between views
 
 ### Testing
-- **356 Tests** - 100% pass rate across backend and frontend
-- **Cross-Browser** - Verified on Chrome, Firefox, and Safari
-- **Automated Quality** - Jest and Playwright test suites
+- **581 Tests** - 100% pass rate across all test suites
+  - 270 Backend tests (Jest) - 100% passing
+  - 311 Frontend tests (Playwright: E2E, component, responsive, visual) - 100% passing
+- **Cross-Browser** - Verified on Chromium, Firefox, and WebKit
+- **Automated Quality** - Comprehensive test coverage with continuous validation
 
 ## Prerequisites
 
@@ -145,16 +147,24 @@ Claude Code Manager works on:
 
 ## Future Plans
 
-**Phase 2 - CRUD Operations** (Planned)
-- Create, edit, and delete subagents, commands, hooks, and MCP servers
-- Configuration validation and testing
-- Real-time file watching for automatic updates
+**Phase 3 - Subagent CRUD** (Planned)
+- Create, edit, and delete subagent definitions
+- YAML frontmatter validation
+- Live preview of subagent content
+- Template system for common subagent types
 
-**Phase 3 - Advanced Features** (Future)
-- Configuration templates
-- Import/export functionality
+**Phase 4 - Command Management** (Planned)
+- Create, edit, and delete slash commands
+- Command testing and validation
+- Nested directory support
+- Import/export command libraries
+
+**Phase 5+ - Advanced Features** (Future)
+- Hooks configuration editor
+- MCP server management
+- Real-time file watching for automatic updates
+- Configuration version history and rollback
 - Bulk operations and batch editing
-- Version history and rollback
 
 ## License
 

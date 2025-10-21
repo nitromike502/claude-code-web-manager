@@ -2,7 +2,7 @@
 
 ## Overview
 
-The frontend test suite consists of 164 tests across 10 files, now with:
+The frontend test suite consists of 311 tests across 13 files, now with:
 - ✅ **Hierarchical numbering system** (100% coverage)
 - ✅ **Centralized mock fixtures** (proper route ordering)
 - ✅ **Two-server architecture** (Vite frontend + Express backend)
@@ -64,7 +64,7 @@ npm run test:frontend -- tests/frontend/02-project-detail.spec.js
 # ... etc
 ```
 
-### 2. E2E Tests (93 tests, 4 files)
+### 2. E2E Tests (90 tests, 4 files)
 
 **Range: 100-105**
 
@@ -102,7 +102,7 @@ Multi-viewport testing:
 npm run test:frontend -- tests/responsive/200-layout-responsive.spec.js
 ```
 
-### 4. Visual Regression Tests (19 tests, 1 file)
+### 4. Visual Regression Tests (57 tests, 1 file)
 
 **Range: 300.xxx.xxx**
 
