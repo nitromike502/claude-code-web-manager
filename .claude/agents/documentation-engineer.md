@@ -1,7 +1,7 @@
 ---
 name: documentation-engineer
 description: Use proactively for creating, organizing, and maintaining project documentation including README files, API references, architecture docs, user guides, changelogs, and ADRs. Specialist for ensuring documentation clarity, consistency, and completeness across the project.
-tools: Read, Write, Edit, Glob, Grep, WebFetch
+tools: Read, Write, Edit, Glob, Grep, WebFetch, Bash
 model: sonnet
 color: blue
 ---
