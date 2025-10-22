@@ -10,6 +10,16 @@
         <div class="user-info-subtitle">~/.claude</div>
       </div>
 
+      <!-- Breadcrumbs -->
+      <div class="breadcrumbs">
+        <router-link to="/" class="breadcrumb-link">
+          <i class="pi pi-home"></i>
+          Dashboard
+        </router-link>
+        <i class="pi pi-chevron-right breadcrumb-separator"></i>
+        <span class="breadcrumb-current">User Configurations</span>
+      </div>
+
       <!-- Loading State -->
       <div v-if="loading" class="loading-container">
         <div class="spinner"></div>
@@ -212,8 +222,11 @@
       </div>
     </div>
 
+    <!-- Sidebar Overlay -->
+    <div v-if="sidebarVisible" class="sidebar-overlay" @click="sidebarVisible = false"></div>
+
     <!-- Detail Sidebar -->
-    <div v-if="sidebarVisible" class="sidebar">
+    <div v-if="sidebarVisible" class="sidebar" @click.stop>
       <div class="sidebar-header">
         <div class="sidebar-header-title">
           <i :class="typeIcon" :style="{ color: typeColor }"></i>
@@ -535,6 +548,48 @@ export default {
   margin-left: 2.5rem;
 }
 
+/* Breadcrumbs */
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  padding: 0.75rem 1rem;
+  background: var(--surface-ground);
+  border: 1px solid var(--surface-border);
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+
+.breadcrumb-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--primary-color);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.breadcrumb-link:hover {
+  color: var(--primary-color-dark);
+  text-decoration: underline;
+}
+
+.breadcrumb-link i {
+  font-size: 0.85rem;
+}
+
+.breadcrumb-separator {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.breadcrumb-current {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
 /* Loading State */
 .loading-container {
   text-align: center;
@@ -720,6 +775,27 @@ export default {
 .view-details-btn:hover {
   background: var(--primary-color);
   color: white;
+}
+
+/* Sidebar Overlay */
+.sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 /* Sidebar */

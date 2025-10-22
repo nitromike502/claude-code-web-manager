@@ -8,11 +8,6 @@
           <span class="theme-text">{{ themeStore.currentTheme === 'light' ? 'Dark' : 'Light' }}</span>
         </button>
       </div>
-
-      <nav class="app-nav">
-        <router-link to="/">Dashboard</router-link>
-        <router-link to="/user">User Config</router-link>
-      </nav>
     </header>
 
     <main class="app-main">
@@ -101,21 +96,6 @@ export default {
 .theme-text {
   font-weight: 500;
   color: var(--text-primary);
-}
-
-.app-nav {
-  display: flex;
-  gap: 1rem;
-}
-
-.app-nav a {
-  color: var(--color-link);
-  text-decoration: none;
-  font-weight: 500;
-}
-
-.app-nav a:hover {
-  text-decoration: underline;
 }
 
 .app-main {
