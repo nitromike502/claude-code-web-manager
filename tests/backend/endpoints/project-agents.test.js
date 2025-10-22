@@ -201,11 +201,15 @@ describe('GET /api/projects/:id/agents', () => {
       expect(response.status).toBe(200);
       expect(response.body.success).toBe(true);
 
-      // Should have empty agents array (all skipped)
-      expect(response.body.agents).toEqual([]);
+      // BUG-011 fix: Malformed agents should be included with partial data (not skipped)
+      expect(response.body.agents.length).toBeGreaterThan(0);
+      expect(response.body.agents[0]).toHaveProperty('hasParseError', true);
+      expect(response.body.agents[0]).toHaveProperty('content'); // Content still available
+      expect(response.body.agents[0]).toHaveProperty('frontmatter'); // Empty frontmatter
 
       // Should have warnings for all malformed files
       expect(response.body.warnings.length).toBeGreaterThan(0);
+      expect(response.body.warnings[0]).toHaveProperty('skipped', false); // Not skipped
     });
   });
 

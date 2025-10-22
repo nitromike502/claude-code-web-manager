@@ -70,13 +70,24 @@ async function getProjectAgents(projectPath) {
         const parsed = await readMarkdownWithFrontmatter(filePath);
 
         if (parsed) {
+          // Check if there was a YAML parse error
+          if (parsed.hasError) {
+            // Add warning but include the agent with partial data
+            warnings.push({
+              file: filePath,
+              error: parsed.parseError,
+              skipped: false // Not skipped, included with partial data
+            });
+          }
+
           agents.push({
             name: file.replace('.md', ''),
             file: file,
             path: filePath,
             frontmatter: parsed.frontmatter,
             content: parsed.content,
-            description: parsed.frontmatter.description || ''
+            description: parsed.frontmatter.description || '',
+            hasParseError: parsed.hasError || false
           });
         }
       } catch (parseError) {
@@ -121,6 +132,16 @@ async function getProjectCommands(projectPath) {
         const parsed = await readMarkdownWithFrontmatter(filePath);
 
         if (parsed) {
+          // Check if there was a YAML parse error
+          if (parsed.hasError) {
+            // Add warning but include the command with partial data
+            warnings.push({
+              file: filePath,
+              error: parsed.parseError,
+              skipped: false // Not skipped, included with partial data
+            });
+          }
+
           // Command name is derived from file path (e.g., "git/commit.md" -> "git/commit")
           const commandName = relFile.replace('.md', '');
 
@@ -130,7 +151,8 @@ async function getProjectCommands(projectPath) {
             path: filePath,
             frontmatter: parsed.frontmatter,
             content: parsed.content,
-            description: parsed.frontmatter.description || ''
+            description: parsed.frontmatter.description || '',
+            hasParseError: parsed.hasError || false
           });
         }
       } catch (parseError) {
@@ -265,16 +287,19 @@ async function getProjectHooks(projectPath) {
 }
 
 /**
- * Gets MCP servers for a specific project (from .mcp.json)
+ * Gets MCP servers for a specific project (from .mcp.json and settings files)
  * @param {string} projectPath - Absolute project path
  * @returns {Promise<Object>} Object with mcp array and warnings array
  */
 async function getProjectMCP(projectPath) {
   const mcpPath = path.join(projectPath, '.mcp.json');
+  const settingsPath = path.join(projectPath, '.claude', 'settings.json');
+  const localSettingsPath = path.join(projectPath, '.claude', 'settings.local.json');
 
   const mcp = [];
   const warnings = [];
 
+  // Try reading .mcp.json
   try {
     const config = await readJSON(mcpPath);
 
@@ -309,6 +334,76 @@ async function getProjectMCP(projectPath) {
     }
   }
 
+  // Try reading .claude/settings.json for MCP servers
+  try {
+    const settings = await readJSON(settingsPath);
+
+    if (settings && settings.mcpServers) {
+      // Type check before Object.entries()
+      if (typeof settings.mcpServers === 'object' && !Array.isArray(settings.mcpServers)) {
+        mcp.push(...Object.entries(settings.mcpServers).map(([name, serverConfig]) => ({
+          name,
+          ...serverConfig,
+          source: 'settings.json'
+        })));
+      } else {
+        // Unexpected type
+        const actualType = Array.isArray(settings.mcpServers) ? 'array' : typeof settings.mcpServers;
+        console.warn(`Unexpected mcpServers format in ${settingsPath}: ${actualType}`);
+        warnings.push({
+          file: settingsPath,
+          error: `mcpServers is ${actualType}, expected object`,
+          skipped: true
+        });
+      }
+    }
+  } catch (error) {
+    if (error.code !== 'ENOENT') {
+      // Log non-ENOENT errors (malformed JSON, etc.)
+      console.warn(`Failed to parse ${settingsPath}: ${error.message}`);
+      warnings.push({
+        file: settingsPath,
+        error: error.message,
+        skipped: true
+      });
+    }
+  }
+
+  // Try reading .claude/settings.local.json for MCP servers
+  try {
+    const localSettings = await readJSON(localSettingsPath);
+
+    if (localSettings && localSettings.mcpServers) {
+      // Type check before Object.entries()
+      if (typeof localSettings.mcpServers === 'object' && !Array.isArray(localSettings.mcpServers)) {
+        mcp.push(...Object.entries(localSettings.mcpServers).map(([name, serverConfig]) => ({
+          name,
+          ...serverConfig,
+          source: 'settings.local.json'
+        })));
+      } else {
+        // Unexpected type
+        const actualType = Array.isArray(localSettings.mcpServers) ? 'array' : typeof localSettings.mcpServers;
+        console.warn(`Unexpected mcpServers format in ${localSettingsPath}: ${actualType}`);
+        warnings.push({
+          file: localSettingsPath,
+          error: `mcpServers is ${actualType}, expected object`,
+          skipped: true
+        });
+      }
+    }
+  } catch (error) {
+    if (error.code !== 'ENOENT') {
+      // Log non-ENOENT errors (malformed JSON, etc.)
+      console.warn(`Failed to parse ${localSettingsPath}: ${error.message}`);
+      warnings.push({
+        file: localSettingsPath,
+        error: error.message,
+        skipped: true
+      });
+    }
+  }
+
   return { mcp, warnings };
 }
 
@@ -333,13 +428,24 @@ async function getUserAgents() {
         const parsed = await readMarkdownWithFrontmatter(filePath);
 
         if (parsed) {
+          // Check if there was a YAML parse error
+          if (parsed.hasError) {
+            // Add warning but include the agent with partial data
+            warnings.push({
+              file: filePath,
+              error: parsed.parseError,
+              skipped: false // Not skipped, included with partial data
+            });
+          }
+
           agents.push({
             name: file.replace('.md', ''),
             file: file,
             path: filePath,
             frontmatter: parsed.frontmatter,
             content: parsed.content,
-            description: parsed.frontmatter.description || ''
+            description: parsed.frontmatter.description || '',
+            hasParseError: parsed.hasError || false
           });
         }
       } catch (parseError) {
@@ -383,6 +489,16 @@ async function getUserCommands() {
         const parsed = await readMarkdownWithFrontmatter(filePath);
 
         if (parsed) {
+          // Check if there was a YAML parse error
+          if (parsed.hasError) {
+            // Add warning but include the command with partial data
+            warnings.push({
+              file: filePath,
+              error: parsed.parseError,
+              skipped: false // Not skipped, included with partial data
+            });
+          }
+
           const commandName = relFile.replace('.md', '');
 
           commands.push({
@@ -391,7 +507,8 @@ async function getUserCommands() {
             path: filePath,
             frontmatter: parsed.frontmatter,
             content: parsed.content,
-            description: parsed.frontmatter.description || ''
+            description: parsed.frontmatter.description || '',
+            hasParseError: parsed.hasError || false
           });
         }
       } catch (parseError) {

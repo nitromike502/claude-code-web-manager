@@ -41,7 +41,7 @@ async function readJSON(filePath) {
 /**
  * Reads a markdown file and extracts YAML frontmatter if present
  * @param {string} filePath - Absolute path to markdown file
- * @returns {Promise<Object|null>} Object with {frontmatter, content} or null
+ * @returns {Promise<Object|null>} Object with {frontmatter, content, hasError, parseError} or null
  */
 async function readMarkdownWithFrontmatter(filePath) {
   const content = await readFile(filePath);
@@ -53,10 +53,21 @@ async function readMarkdownWithFrontmatter(filePath) {
     return {
       frontmatter: parsed.data || {},
       content: parsed.content,
-      raw: content
+      raw: content,
+      hasError: false
     };
   } catch (error) {
-    throw new Error(`Invalid YAML frontmatter in ${filePath}: ${error.message}`);
+    // YAML parse failure - return partial data instead of throwing
+    // This allows callers to handle the error gracefully and continue processing
+    console.warn(`Warning: YAML parse error in ${filePath}: ${error.message}`);
+    return {
+      frontmatter: {},
+      content: content || '',
+      raw: content || '',
+      hasError: true,
+      parseError: error.message,
+      filePath: filePath
+    };
   }
 }
 
