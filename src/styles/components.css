@@ -373,7 +373,7 @@
 .btn-close-sidebar {
   background: none;
   border: none;
-  color: var(--text-secondary);
+  color: var(--text-primary);
   font-size: 1.5rem;
   cursor: pointer;
   padding: 0.25rem;

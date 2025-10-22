@@ -100,6 +100,7 @@ export default {
 
 .theme-text {
   font-weight: 500;
+  color: var(--text-primary);
 }
 
 .app-nav {

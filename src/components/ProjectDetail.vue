@@ -46,15 +46,6 @@
               <i class="pi pi-users" style="color: var(--color-agents)"></i>
               <span class="config-title">Subagents ({{ agents.length }})</span>
             </div>
-            <div class="config-header-right">
-              <button
-                v-if="agents.length > initialDisplayCount"
-                @click="showingAllAgents = !showingAllAgents"
-                class="expand-btn"
-              >
-                {{ showingAllAgents ? 'Show Less' : `Show ${agents.length - initialDisplayCount} more...` }}
-              </button>
-            </div>
           </div>
 
           <div v-if="loadingAgents" class="loading-state">
@@ -85,6 +76,14 @@
               </button>
             </div>
           </div>
+
+          <button
+            v-if="agents.length > initialDisplayCount"
+            @click="showingAllAgents = !showingAllAgents"
+            class="expand-btn"
+          >
+            {{ showingAllAgents ? 'Show Less' : `Show ${agents.length - initialDisplayCount} more...` }}
+          </button>
         </div>
 
         <!-- Commands Card -->
@@ -93,15 +92,6 @@
             <div class="config-header-left">
               <i class="pi pi-bolt" style="color: var(--color-commands)"></i>
               <span class="config-title">Slash Commands ({{ commands.length }})</span>
-            </div>
-            <div class="config-header-right">
-              <button
-                v-if="commands.length > initialDisplayCount"
-                @click="showingAllCommands = !showingAllCommands"
-                class="expand-btn"
-              >
-                {{ showingAllCommands ? 'Show Less' : `Show ${commands.length - initialDisplayCount} more...` }}
-              </button>
             </div>
           </div>
 
@@ -133,6 +123,14 @@
               </button>
             </div>
           </div>
+
+          <button
+            v-if="commands.length > initialDisplayCount"
+            @click="showingAllCommands = !showingAllCommands"
+            class="expand-btn"
+          >
+            {{ showingAllCommands ? 'Show Less' : `Show ${commands.length - initialDisplayCount} more...` }}
+          </button>
         </div>
 
         <!-- Hooks Card -->
@@ -141,15 +139,6 @@
             <div class="config-header-left">
               <i class="pi pi-link" style="color: var(--color-hooks)"></i>
               <span class="config-title">Hooks ({{ hooks.length }})</span>
-            </div>
-            <div class="config-header-right">
-              <button
-                v-if="hooks.length > initialDisplayCount"
-                @click="showingAllHooks = !showingAllHooks"
-                class="expand-btn"
-              >
-                {{ showingAllHooks ? 'Show Less' : `Show ${hooks.length - initialDisplayCount} more...` }}
-              </button>
             </div>
           </div>
 
@@ -181,6 +170,14 @@
               </button>
             </div>
           </div>
+
+          <button
+            v-if="hooks.length > initialDisplayCount"
+            @click="showingAllHooks = !showingAllHooks"
+            class="expand-btn"
+          >
+            {{ showingAllHooks ? 'Show Less' : `Show ${hooks.length - initialDisplayCount} more...` }}
+          </button>
         </div>
 
         <!-- MCP Servers Card -->
@@ -189,15 +186,6 @@
             <div class="config-header-left">
               <i class="pi pi-server" style="color: var(--color-mcp)"></i>
               <span class="config-title">MCP Servers ({{ mcpServers.length }})</span>
-            </div>
-            <div class="config-header-right">
-              <button
-                v-if="mcpServers.length > initialDisplayCount"
-                @click="showingAllMcp = !showingAllMcp"
-                class="expand-btn"
-              >
-                {{ showingAllMcp ? 'Show Less' : `Show ${mcpServers.length - initialDisplayCount} more...` }}
-              </button>
             </div>
           </div>
 
@@ -229,6 +217,14 @@
               </button>
             </div>
           </div>
+
+          <button
+            v-if="mcpServers.length > initialDisplayCount"
+            @click="showingAllMcp = !showingAllMcp"
+            class="expand-btn"
+          >
+            {{ showingAllMcp ? 'Show Less' : `Show ${mcpServers.length - initialDisplayCount} more...` }}
+          </button>
         </div>
       </div>
     </div>
@@ -759,7 +755,7 @@ export default {
   padding: 1.5rem;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0;
 }
 
 .config-header {
@@ -767,6 +763,7 @@ export default {
   justify-content: space-between;
   align-items: center;
   padding-bottom: 0.75rem;
+  margin-bottom: 1rem;
   border-bottom: 1px solid var(--surface-border);
 }
 
@@ -787,19 +784,22 @@ export default {
 }
 
 .expand-btn {
-  padding: 0.25rem 0.75rem;
+  width: 100%;
+  padding: 0.75rem 0;
   background: transparent;
   color: var(--primary-color);
-  border: 1px solid var(--primary-color);
-  border-radius: 4px;
+  border: none;
+  border-top: 1px solid var(--surface-border);
+  border-radius: 0;
   cursor: pointer;
   font-size: 0.85rem;
+  font-weight: 500;
   transition: all 0.2s;
+  text-align: center;
 }
 
 .expand-btn:hover {
-  background: var(--primary-color);
-  color: white;
+  background: var(--surface-ground);
 }
 
 /* Loading State */
@@ -845,6 +845,8 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
+  flex: 1;
+  margin-bottom: 1rem;
 }
 
 .config-item {
@@ -912,7 +914,9 @@ export default {
   position: fixed;
   right: 0;
   top: 0;
-  width: 500px;
+  width: 75vw;
+  min-width: 500px;
+  max-width: 75vw;
   height: 100vh;
   background: var(--surface-card);
   border-left: 1px solid var(--surface-border);
@@ -976,6 +980,12 @@ export default {
   align-items: center;
   justify-content: center;
   transition: all 0.2s;
+  color: var(--text-primary);
+}
+
+.nav-btn i,
+.close-btn i {
+  color: var(--text-primary);
 }
 
 .nav-btn:hover:not(:disabled),
