@@ -3,8 +3,9 @@ id: BUG-009
 title: Show More buttons should be centered at bottom of cards
 severity: medium
 category: ui/layout
-status: open
+status: completed
 created: 2025-10-21
+completed: 2025-10-21
 ---
 
 ## Problem Statement

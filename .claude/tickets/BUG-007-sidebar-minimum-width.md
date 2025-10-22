@@ -3,8 +3,9 @@ id: BUG-007
 title: Sidebar should be minimum 75% window width
 severity: medium
 category: ui/layout
-status: open
+status: completed
 created: 2025-10-21
+completed: 2025-10-21
 ---
 
 ## Problem Statement

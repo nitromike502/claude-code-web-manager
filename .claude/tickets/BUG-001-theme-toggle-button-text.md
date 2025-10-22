@@ -3,8 +3,9 @@ id: BUG-001
 title: Theme toggle button text remains dark in dark mode
 severity: high
 category: ui/styling
-status: open
+status: completed
 created: 2025-10-21
+completed: 2025-10-21
 ---
 
 ## Problem Statement
