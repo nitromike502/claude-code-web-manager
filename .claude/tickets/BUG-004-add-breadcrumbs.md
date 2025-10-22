@@ -3,8 +3,9 @@ id: BUG-004
 title: Add breadcrumbs below the header
 severity: medium
 category: ui/navigation
-status: open
+status: completed
 created: 2025-10-21
+completed: 2025-10-21
 ---
 
 ## Problem Statement

@@ -3,8 +3,9 @@ id: BUG-003
 title: Remove navigation that shouldn't exist
 severity: medium
 category: ui/structure
-status: open
+status: completed
 created: 2025-10-21
+completed: 2025-10-21
 ---
 
 ## Problem Statement

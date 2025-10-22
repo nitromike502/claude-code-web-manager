@@ -3,8 +3,9 @@ id: BUG-008
 title: Sidebar should close when clicking outside
 severity: medium
 category: ui/behavior
-status: open
+status: completed
 created: 2025-10-21
+completed: 2025-10-21
 ---
 
 ## Problem Statement

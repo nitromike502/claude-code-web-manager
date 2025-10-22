@@ -3,8 +3,9 @@ id: BUG-005
 title: User configurations should be a card, first in the grid, slightly highlighted
 severity: medium
 category: ui/structure
-status: open
+status: completed
 created: 2025-10-21
+completed: 2025-10-21
 ---
 
 ## Problem Statement
