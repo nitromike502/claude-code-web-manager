@@ -3,8 +3,9 @@ id: BUG-006
 title: Remove Copy button in sidebar
 severity: low
 category: ui/refinement
-status: open
+status: completed
 created: 2025-10-21
+completed: 2025-10-21
 ---
 
 ## Problem Statement

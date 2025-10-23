@@ -3,8 +3,9 @@ id: BUG-014
 title: Verify Allowed Tools shown in sidebar for Slash Commands
 severity: medium
 category: data-display
-status: open
+status: completed
 created: 2025-10-21
+completed: 2025-10-21
 ---
 
 ## Problem Statement

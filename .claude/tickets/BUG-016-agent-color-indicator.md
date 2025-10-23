@@ -3,8 +3,9 @@ id: BUG-016
 title: Defined color for agents not shown in sidebar
 severity: medium
 category: data-display
-status: open
+status: completed
 created: 2025-10-21
+completed: 2025-10-21
 ---
 
 ## Problem Statement

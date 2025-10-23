@@ -3,8 +3,9 @@ id: BUG-013
 title: Allowed Tools not shown in sidebar for Agents
 severity: medium
 category: data-display
-status: open
+status: completed
 created: 2025-10-21
+completed: 2025-10-21
 ---
 
 ## Problem Statement
