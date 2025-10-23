@@ -552,10 +552,9 @@ export default {
   align-items: center;
   gap: 0.5rem;
   padding: 0.75rem 0;
-  border-bottom: 1px solid var(--surface-border);
   font-size: 0.9rem;
   max-width: 960px;
-  margin: 0 auto 2rem auto;
+  margin: -2rem auto 2rem auto;
 }
 
 .breadcrumb-link {
