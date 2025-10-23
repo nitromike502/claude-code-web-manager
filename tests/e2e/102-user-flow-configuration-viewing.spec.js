@@ -155,9 +155,9 @@ test.describe('102.001: E2E Flow: Configuration Viewing Journey', () => {
     await expect(mcpCard).toBeVisible();
     await expect(mcpCard.locator('.config-title')).toContainText('MCP Servers');
 
-    // STEP 6: Verify navigation structure exists
-    const appNav = page.locator('.app-nav');
-    await expect(appNav).toBeVisible();
+    // STEP 6: Verify breadcrumbs navigation exists
+    const breadcrumbs = page.locator('.breadcrumbs');
+    await expect(breadcrumbs).toBeVisible();
 
     // STEP 7: Return to project list
     // Navigate back to dashboard using browser back button
@@ -496,9 +496,9 @@ test.describe('102.001: E2E Flow: Configuration Viewing Journey', () => {
     await page.locator('.project-card').nth(1).click();
     await page.waitForURL(/\/project\//, { timeout: 10000 });
 
-    // Verify navigation is visible (search may not be implemented yet)
-    const appNav = page.locator('.app-nav');
-    await expect(appNav).toBeVisible();
+    // Verify breadcrumbs navigation is visible (search may not be implemented yet)
+    const breadcrumbs = page.locator('.breadcrumbs');
+    await expect(breadcrumbs).toBeVisible();
 
     // Verify project content is accessible
     const projectContent = page.locator('.main-content');

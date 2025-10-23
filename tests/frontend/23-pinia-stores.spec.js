@@ -104,12 +104,13 @@ test.describe('23.001: Pinia Store Integration', () => {
     const header = page.locator('.app-header')
     await expect(header).toBeVisible()
 
-    // Verify nav links are present (they use router which depends on store setup)
-    const dashboardLink = page.locator('nav a:has-text("Dashboard")')
-    const userLink = page.locator('nav a:has-text("User Config")')
+    // Verify project grid is present (it uses projects store)
+    const projectGrid = page.locator('.project-grid')
+    await expect(projectGrid).toBeVisible()
 
-    await expect(dashboardLink).toBeVisible()
-    await expect(userLink).toBeVisible()
+    // Verify project cards render (they use data from projects store)
+    const projectCards = page.locator('.project-card')
+    expect(await projectCards.count()).toBeGreaterThanOrEqual(1)
   })
 
   test('23.001.006: App.vue integration - should render all store-dependent elements', async ({ page }) => {

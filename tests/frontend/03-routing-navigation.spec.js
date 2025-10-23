@@ -30,12 +30,12 @@ test.describe('03.001: Router Navigation and SPA Functionality', () => {
     page.on('load', () => pageLoadCount++);
 
     // Click User Config link first - Phase 2: Uses span "User Configurations"
-    await page.click('a[href="/user"]');
+    await page.click('.user-card');
     await page.waitForSelector('.user-info-title:has-text("User Configurations")');
 
-    // Click back to Dashboard - should NOT cause page reload
+    // Click back to Dashboard via breadcrumb - should NOT cause page reload
     const initialPageLoads = pageLoadCount;
-    await page.click('a[href="/"]');
+    await page.click('.breadcrumb-link');
     await page.waitForSelector('h2:has-text("Projects")');
 
     // Verify no additional page loads occurred
@@ -43,7 +43,7 @@ test.describe('03.001: Router Navigation and SPA Functionality', () => {
   });
 
   test('03.001.003: should navigate to UserGlobal view', async ({ page }) => {
-    await page.click('a[href="/user"]');
+    await page.click('.user-card');
     // Phase 2: User page uses span "User Configurations", not h1
     await page.waitForSelector('.user-info-title:has-text("User Configurations")');
     await expect(page).toHaveURL(/\/user/);
@@ -63,7 +63,7 @@ test.describe('03.001: Router Navigation and SPA Functionality', () => {
     expect(page.url()).toContain('/');
 
     // Click User Config link
-    await page.click('a[href="/user"]');
+    await page.click('.user-card');
     // Phase 2: User page uses span "User Configurations"
     await page.waitForSelector('.user-info-title:has-text("User Configurations")');
     expect(page.url()).toContain('/user');
@@ -77,7 +77,7 @@ test.describe('03.001: Router Navigation and SPA Functionality', () => {
 
   test('03.001.006: should support browser back button', async ({ page }) => {
     // Navigate through multiple routes
-    await page.click('a[href="/user"]');
+    await page.click('.user-card');
     // Phase 2: User page uses span "User Configurations"
     await page.waitForSelector('.user-info-title:has-text("User Configurations")');
 
@@ -99,7 +99,7 @@ test.describe('03.001: Router Navigation and SPA Functionality', () => {
     });
 
     // Navigate multiple times
-    await page.click('a[href="/user"]');
+    await page.click('.user-card');
     // Phase 2: User page uses span "User Configurations"
     await page.waitForSelector('.user-info-title:has-text("User Configurations")');
 

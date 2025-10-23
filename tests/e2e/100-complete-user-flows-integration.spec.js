@@ -137,9 +137,9 @@ test.describe('100.001: E2E Integration: Complete User Flows', () => {
     // STEP 3: Verify project detail page loads
     await page.waitForSelector('.project-detail', { timeout: 10000 });
 
-    // FIX 4: Update navigation from breadcrumbs to .app-nav
-    const appNav = page.locator('.app-nav');
-    await expect(appNav).toBeVisible();
+    // FIX 4: Update navigation from breadcrumbs to .breadcrumbs
+    const breadcrumbs = page.locator('.breadcrumbs');
+    await expect(breadcrumbs).toBeVisible();
 
     // Verify all configuration cards are visible
     const cards = page.locator('.config-card');
@@ -179,8 +179,8 @@ test.describe('100.001: E2E Integration: Complete User Flows', () => {
     // Verify sidebar closes
     await expect(sidebar).not.toBeVisible();
 
-    // STEP 7: Navigate back to dashboard via nav link
-    const dashboardLink = appNav.locator('a').first();
+    // STEP 7: Navigate back to dashboard via breadcrumb link
+    const dashboardLink = page.locator('.breadcrumb-link');
     await dashboardLink.click();
     await page.waitForURL('/');
 
@@ -265,9 +265,9 @@ test.describe('100.001: E2E Integration: Complete User Flows', () => {
     // UserGlobal component uses .user-global container (not .project-detail)
     await page.waitForSelector('.user-global', { timeout: 10000 });
 
-    // FIX 4: Update navigation from breadcrumbs to .app-nav
-    const appNav = page.locator('.app-nav');
-    await expect(appNav).toBeVisible();
+    // FIX 4: Update navigation from breadcrumbs to .breadcrumbs
+    const breadcrumbs = page.locator('.breadcrumbs');
+    await expect(breadcrumbs).toBeVisible();
 
     // Verify all configuration cards are present
     const cards = page.locator('.config-card');
@@ -298,8 +298,8 @@ test.describe('100.001: E2E Integration: Complete User Flows', () => {
     await page.waitForTimeout(300);
     await expect(sidebar).not.toBeVisible();
 
-    // Navigate back to dashboard via nav link
-    const dashboardLink = appNav.locator('a').first();
+    // Navigate back to dashboard via breadcrumb link
+    const dashboardLink = page.locator('.breadcrumb-link');
     await dashboardLink.click();
     await page.waitForURL('/');
   });
@@ -933,9 +933,9 @@ test.describe('100.004: E2E Integration: Error Handling & Recovery', () => {
     // ProjectDetail shows "Project not found" for 404 errors
     await expect(errorState).toContainText('Project not found');
 
-    // Verify user can navigate back to dashboard (FIX 4: .app-nav selector)
-    // Use :text("Dashboard") to specifically target the dashboard link
-    const dashboardBreadcrumb = page.locator('.app-nav a:has-text("Dashboard")');
+    // Verify user can navigate back to dashboard (FIX 4: .breadcrumb-link selector)
+    // Use .breadcrumb-link to target the dashboard link in breadcrumbs
+    const dashboardBreadcrumb = page.locator('.breadcrumb-link');
     await dashboardBreadcrumb.click();
     await page.waitForURL('/');
 

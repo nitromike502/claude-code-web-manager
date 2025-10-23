@@ -87,19 +87,14 @@ test.describe('02.001: Page Load and Structure', () => {
     // Wait for project to load
     await page.waitForSelector('.config-cards-container', { timeout: 10000 });
 
-    // Verify navigation links exist in header
-    const nav = page.locator('.app-nav');
-    await expect(nav).toBeVisible();
+    // Verify breadcrumbs navigation exists
+    const breadcrumbs = page.locator('.breadcrumbs');
+    await expect(breadcrumbs).toBeVisible();
 
-    // Verify Dashboard link
-    const dashboardLink = page.locator('.app-nav a[href="/"]');
+    // Verify Dashboard breadcrumb link
+    const dashboardLink = page.locator('.breadcrumb-link');
     await expect(dashboardLink).toBeVisible();
     await expect(dashboardLink).toContainText('Dashboard');
-
-    // Verify User Config link
-    const userConfigLink = page.locator('.app-nav a[href="/user"]');
-    await expect(userConfigLink).toBeVisible();
-    await expect(userConfigLink).toContainText('User Config');
   });
 
   test('02.001.004: project info bar displays correctly', async ({ page }) => {
@@ -242,8 +237,8 @@ test.describe('02.003: Navigation', () => {
     // Wait for page to load
     await page.waitForSelector('.config-cards-container', { timeout: 10000 });
 
-    // Click Dashboard nav link (Phase 2: header navigation instead of breadcrumbs)
-    await page.click('.app-nav a[href="/"]');
+    // Click Dashboard breadcrumb link (Phase 2: breadcrumbs navigation)
+    await page.click('.breadcrumb-link');
 
     // Verify navigation to homepage
     await page.waitForURL('/');
@@ -251,29 +246,28 @@ test.describe('02.003: Navigation', () => {
     expect(page.url()).not.toContain('project/');
   });
 
-  test('02.003.002: user config link navigates to user page', async ({ page }) => {
+  test('02.003.002: user card navigates to user page from dashboard', async ({ page }) => {
     // Phase 2: Mock only /api/projects, let config endpoints fail gracefully
     // Setup centralized mocks BEFORE navigation
     await setupMocks(page);
 
-
-    await page.goto('/project/navtest2');
+    await page.goto('/');
 
     // Wait for Vue app to mount
     await page.waitForSelector('.app-container');
 
-    // Wait for project info bar (Phase 2: don't wait for config-cards-container as it needs config API mocks)
-    await page.waitForSelector('.project-info-bar', { timeout: 10000 });
+    // Wait for project grid to load
+    await page.waitForSelector('.project-grid', { timeout: 10000 });
 
-    // Click User Config nav link
-    const userConfigLink = page.locator('.app-nav a[href="/user"]');
-    await expect(userConfigLink).toBeVisible();
+    // Click User card (purple card with user icon)
+    const userCard = page.locator('.user-card');
+    await expect(userCard).toBeVisible();
 
     // Verify hover state works
-    await userConfigLink.hover();
+    await userCard.hover();
 
     // Click and verify navigation
-    await userConfigLink.click();
+    await userCard.click();
     await page.waitForURL('/user');
     expect(page.url()).toContain('/user');
   });

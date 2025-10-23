@@ -16,8 +16,8 @@ const { test, expect } = require('@playwright/test');
  * Phase 2 (Vue SPA) Architecture:
  * - URLs: /project/:id (Vue Router, not /project-detail.html?id=X)
  * - API: Vite proxy → Express backend
- * - Selectors: .app-nav (not .breadcrumbs), .project-grid, .config-card
- * - Navigation: Client-side (no page reloads)
+ * - Selectors: .breadcrumbs (on detail pages), .project-grid, .config-card
+ * - Navigation: Client-side (no page reloads), breadcrumbs for back navigation
  * - State: Pinia stores
  *
  * Uses Playwright's built-in screenshot comparison to detect unintended visual changes.
@@ -845,11 +845,11 @@ test.describe('300.004: Visual Regression - Dashboard Components', () => {
 
     // Navigate to detail page using Vue Router
     await page.goto(`/project/${projectId}`);
-    await page.waitForSelector('.app-nav', { timeout: 10000 });
+    await page.waitForSelector('.breadcrumbs', { timeout: 10000 });
 
-    // Capture navigation component (replaces breadcrumbs in Phase 2)
-    const appNav = page.locator('.app-nav');
-    await expect(appNav).toHaveScreenshot('navigation-component.png', {
+    // Capture breadcrumbs component (Phase 2 navigation)
+    const breadcrumbs = page.locator('.breadcrumbs');
+    await expect(breadcrumbs).toHaveScreenshot('breadcrumbs-component.png', {
       maxDiffPixels: 50
     });
   });
@@ -1222,15 +1222,15 @@ test.describe('300.006: Visual Regression - Interactive States', () => {
 
     // Navigate to detail page using Vue Router
     await page.goto(`/project/${projectId}`);
-    await page.waitForSelector('.app-nav', { timeout: 10000 });
+    await page.waitForSelector('.breadcrumbs', { timeout: 10000 });
 
-    // Hover over Dashboard nav link
-    const navLink = page.locator('.app-nav a').first();
-    await navLink.hover();
+    // Hover over Dashboard breadcrumb link
+    const breadcrumbLink = page.locator('.breadcrumb-link');
+    await breadcrumbLink.hover();
     await page.waitForTimeout(200);
 
     // Capture hover state
-    await expect(navLink).toHaveScreenshot('navigation-link-hover.png', {
+    await expect(breadcrumbLink).toHaveScreenshot('breadcrumb-link-hover.png', {
       maxDiffPixels: 30
     });
   });

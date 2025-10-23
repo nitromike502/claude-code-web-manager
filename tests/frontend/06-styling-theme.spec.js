@@ -217,9 +217,9 @@ test.describe('06.004: Responsive Design', () => {
     const header = page.locator('.app-header');
     await expect(header).toBeVisible();
 
-    // Check if navigation is responsive
-    const nav = page.locator('.app-nav');
-    await expect(nav).toBeVisible();
+    // Check if project grid is responsive
+    const projectGrid = page.locator('.project-grid');
+    await expect(projectGrid).toBeVisible();
 
     // Verify main content is visible
     const main = page.locator('.app-main');

@@ -151,8 +151,8 @@ test.describe('E2E Flow: Theme Toggle & Persistence', () => {
     const finalTheme = await html.getAttribute('data-theme');
     expect(finalTheme).toBe('dark');
 
-    // Navigate back to dashboard
-    await page.click('.app-nav a[href="/"]');
+    // Navigate back to dashboard using breadcrumb link
+    await page.click('.breadcrumb-link');
     await page.waitForURL('/');
 
     // Verify theme still dark on dashboard
@@ -267,8 +267,8 @@ test.describe('E2E Flow: Theme Toggle & Persistence', () => {
     await page.waitForTimeout(100);
     expect(await html.getAttribute('data-theme')).toBe('dark');
 
-    // Return to dashboard
-    await page.click('.app-nav a[href="/"]');
+    // Return to dashboard using breadcrumb link
+    await page.click('.breadcrumb-link');
     await page.waitForURL('/');
 
     // Verify dark mode persisted

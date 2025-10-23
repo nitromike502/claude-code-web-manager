@@ -82,6 +82,8 @@ async function parseCommand(filePath, baseDir, scope = 'project') {
       namespace: namespace,
       description: description,
       tools: tools,
+      color: data.color || null,
+      argumentHint: data['argument-hint'] || null,
       content: commandContent.trim(),
       filePath: filePath,
       scope: scope,

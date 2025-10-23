@@ -176,10 +176,10 @@ test.describe('101.001: E2E Flow: First-Time User - Project Discovery', () => {
     // and cannot look up the original project name without accessing the projects store
     await expect(projectInfoBar).toContainText('homeuserprojectsmyapp');
 
-    // Verify navigation header is present
-    const appNav = page.locator('.app-nav');
-    await expect(appNav).toBeVisible();
-    await expect(appNav.locator('a').first()).toContainText('Dashboard');
+    // Verify breadcrumbs navigation is present
+    const breadcrumbs = page.locator('.breadcrumbs');
+    await expect(breadcrumbs).toBeVisible();
+    await expect(breadcrumbs.locator('.breadcrumb-link')).toContainText('Dashboard');
 
     // Verify configuration cards are visible
     const cards = page.locator('.config-card');
@@ -191,8 +191,8 @@ test.describe('101.001: E2E Flow: First-Time User - Project Discovery', () => {
     await expect(page.locator('.config-card.hooks-card')).toBeVisible();
     await expect(page.locator('.config-card.mcp-card')).toBeVisible();
 
-    // STEP 6: User navigates back to dashboard via nav link
-    const dashboardLink = appNav.locator('a').first();
+    // STEP 6: User navigates back to dashboard via breadcrumb link
+    const dashboardLink = page.locator('.breadcrumb-link');
     await dashboardLink.click();
 
     // Verify we're back on the dashboard
@@ -542,8 +542,8 @@ test.describe('101.001: E2E Flow: First-Time User - Project Discovery', () => {
     await page.waitForURL(/\/project\/cleanproject/, { timeout: 10000 });
     await page.waitForSelector('.project-detail', { timeout: 10000 });
 
-    // Navigate back via navigation link
-    const dashboardLink = page.locator('.app-nav a').first();
+    // Navigate back via breadcrumb link
+    const dashboardLink = page.locator('.breadcrumb-link');
     await dashboardLink.click();
     await page.waitForURL('/');
 
