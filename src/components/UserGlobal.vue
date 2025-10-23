@@ -251,11 +251,23 @@
           <div v-if="selectedType === 'agents'">
             <p><strong>Name:</strong> {{ selectedItem.name }}</p>
             <p><strong>Description:</strong> {{ selectedItem.description }}</p>
+            <p v-if="selectedItem.tools && selectedItem.tools.length > 0">
+              <strong>Allowed Tools:</strong> {{ selectedItem.tools.join(', ') }}
+            </p>
+            <p v-else-if="selectedItem.tools && selectedItem.tools.length === 0">
+              <strong>Allowed Tools:</strong> None specified
+            </p>
           </div>
           <div v-else-if="selectedType === 'commands'">
             <p><strong>Name:</strong> {{ selectedItem.name }}</p>
             <p><strong>Description:</strong> {{ selectedItem.description }}</p>
             <p v-if="selectedItem.namespace"><strong>Namespace:</strong> {{ selectedItem.namespace }}</p>
+            <p v-if="selectedItem.tools && selectedItem.tools.length > 0">
+              <strong>Allowed Tools:</strong> {{ selectedItem.tools.join(', ') }}
+            </p>
+            <p v-else-if="selectedItem.tools && selectedItem.tools.length === 0">
+              <strong>Allowed Tools:</strong> None specified
+            </p>
           </div>
           <div v-else-if="selectedType === 'hooks'">
             <p><strong>Event:</strong> {{ selectedItem.event }}</p>
@@ -276,9 +288,9 @@
       </div>
 
       <div class="sidebar-footer">
-        <button @click="copyToClipboard" class="action-btn">
-          <i class="pi pi-copy"></i>
-          Copy All
+        <button @click="sidebarVisible = false" class="action-btn close-action-btn">
+          <i class="pi pi-times"></i>
+          Close
         </button>
       </div>
     </div>
@@ -347,6 +359,12 @@ export default {
     })
 
     const typeColor = computed(() => {
+      // For agents, use the defined color if available
+      if (selectedType.value === 'agents' && selectedItem.value?.color) {
+        return selectedItem.value.color
+      }
+
+      // Otherwise use default type colors
       const colors = {
         agents: 'var(--color-agents)',
         commands: 'var(--color-commands)',
@@ -449,25 +467,6 @@ export default {
       }
     }
 
-    const copyToClipboard = async () => {
-      let content = ''
-      if (selectedItem.value?.frontmatter) {
-        content += `---\n${JSON.stringify(selectedItem.value.frontmatter, null, 2)}\n---\n\n`
-      }
-      if (selectedItem.value?.content) {
-        content += selectedItem.value.content
-      }
-      if (!content && selectedItem.value) {
-        content = JSON.stringify(selectedItem.value, null, 2)
-      }
-
-      try {
-        await navigator.clipboard.writeText(content)
-        console.log('Copied to clipboard')
-      } catch (err) {
-        console.error('Failed to copy:', err)
-      }
-    }
 
     onMounted(() => {
       loadUserData()
@@ -501,8 +500,7 @@ export default {
       typeColor,
       showDetail,
       navigatePrev,
-      navigateNext,
-      copyToClipboard
+      navigateNext
     }
   }
 }
@@ -553,11 +551,9 @@ export default {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  padding: 0.75rem 0;
   margin-bottom: 2rem;
-  padding: 0.75rem 1rem;
-  background: var(--surface-ground);
-  border: 1px solid var(--surface-border);
-  border-radius: 6px;
+  border-bottom: 1px solid var(--surface-border);
   font-size: 0.9rem;
 }
 
