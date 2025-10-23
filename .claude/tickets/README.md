@@ -1,8 +1,16 @@
 # Bug Tickets & Epic
 
+⚠️ **DEPRECATED** - This directory is for reference only.
+
 **EPIC-001** - Phase 2 Migration Bug Fixes (all 16 bugs grouped as one coordinated effort)
 
-All 16 bugs from the Phase 2 migration build review are documented here as structured tickets, organized under a master Epic for efficient `/swarm` orchestration.
+All 16 bugs from the Phase 2 migration build review have been moved to `docs/tickets/` and are organized under a master Epic for efficient `/swarm` orchestration.
+
+📁 **Current Locations:**
+- **EPIC-001:** `docs/tickets/EPIC-001-phase2-migration-bugfixes.md`
+- **BUG-001 through BUG-016:** `docs/tickets/bugs/`
+
+This README is retained for historical reference only.
 
 ## Epic
 
