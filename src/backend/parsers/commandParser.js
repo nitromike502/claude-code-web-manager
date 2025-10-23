@@ -66,10 +66,22 @@ async function parseCommand(filePath, baseDir, scope = 'project') {
       }
     }
 
+    // Handle tools field - can be string or array
+    let tools = [];
+    if (data.tools) {
+      if (typeof data.tools === 'string') {
+        // Split by comma and trim
+        tools = data.tools.split(',').map(t => t.trim()).filter(Boolean);
+      } else if (Array.isArray(data.tools)) {
+        tools = data.tools;
+      }
+    }
+
     return {
       name: data.name || filename,
       namespace: namespace,
       description: description,
+      tools: tools,
       content: commandContent.trim(),
       filePath: filePath,
       scope: scope,

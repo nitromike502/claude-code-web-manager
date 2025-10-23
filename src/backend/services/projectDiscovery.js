@@ -80,6 +80,17 @@ async function getProjectAgents(projectPath) {
             });
           }
 
+          // Handle tools field - can be string or array
+          let tools = [];
+          if (parsed.frontmatter.tools) {
+            if (typeof parsed.frontmatter.tools === 'string') {
+              // Split by comma and trim
+              tools = parsed.frontmatter.tools.split(',').map(t => t.trim()).filter(Boolean);
+            } else if (Array.isArray(parsed.frontmatter.tools)) {
+              tools = parsed.frontmatter.tools;
+            }
+          }
+
           agents.push({
             name: file.replace('.md', ''),
             file: file,
@@ -87,6 +98,8 @@ async function getProjectAgents(projectPath) {
             frontmatter: parsed.frontmatter,
             content: parsed.content,
             description: parsed.frontmatter.description || '',
+            tools: tools.length > 0 ? tools : null,
+            color: parsed.frontmatter.color || null,
             hasParseError: parsed.hasError || false
           });
         }
@@ -145,6 +158,17 @@ async function getProjectCommands(projectPath) {
           // Command name is derived from file path (e.g., "git/commit.md" -> "git/commit")
           const commandName = relFile.replace('.md', '');
 
+          // Handle tools field - can be string or array
+          let tools = [];
+          if (parsed.frontmatter.tools) {
+            if (typeof parsed.frontmatter.tools === 'string') {
+              // Split by comma and trim
+              tools = parsed.frontmatter.tools.split(',').map(t => t.trim()).filter(Boolean);
+            } else if (Array.isArray(parsed.frontmatter.tools)) {
+              tools = parsed.frontmatter.tools;
+            }
+          }
+
           commands.push({
             name: commandName,
             file: relFile,
@@ -152,6 +176,7 @@ async function getProjectCommands(projectPath) {
             frontmatter: parsed.frontmatter,
             content: parsed.content,
             description: parsed.frontmatter.description || '',
+            tools: tools.length > 0 ? tools : null,
             hasParseError: parsed.hasError || false
           });
         }
@@ -438,6 +463,17 @@ async function getUserAgents() {
             });
           }
 
+          // Handle tools field - can be string or array
+          let tools = [];
+          if (parsed.frontmatter.tools) {
+            if (typeof parsed.frontmatter.tools === 'string') {
+              // Split by comma and trim
+              tools = parsed.frontmatter.tools.split(',').map(t => t.trim()).filter(Boolean);
+            } else if (Array.isArray(parsed.frontmatter.tools)) {
+              tools = parsed.frontmatter.tools;
+            }
+          }
+
           agents.push({
             name: file.replace('.md', ''),
             file: file,
@@ -445,6 +481,8 @@ async function getUserAgents() {
             frontmatter: parsed.frontmatter,
             content: parsed.content,
             description: parsed.frontmatter.description || '',
+            tools: tools.length > 0 ? tools : null,
+            color: parsed.frontmatter.color || null,
             hasParseError: parsed.hasError || false
           });
         }
@@ -501,6 +539,17 @@ async function getUserCommands() {
 
           const commandName = relFile.replace('.md', '');
 
+          // Handle tools field - can be string or array
+          let tools = [];
+          if (parsed.frontmatter.tools) {
+            if (typeof parsed.frontmatter.tools === 'string') {
+              // Split by comma and trim
+              tools = parsed.frontmatter.tools.split(',').map(t => t.trim()).filter(Boolean);
+            } else if (Array.isArray(parsed.frontmatter.tools)) {
+              tools = parsed.frontmatter.tools;
+            }
+          }
+
           commands.push({
             name: commandName,
             file: relFile,
@@ -508,6 +557,7 @@ async function getUserCommands() {
             frontmatter: parsed.frontmatter,
             content: parsed.content,
             description: parsed.frontmatter.description || '',
+            tools: tools.length > 0 ? tools : null,
             hasParseError: parsed.hasError || false
           });
         }
