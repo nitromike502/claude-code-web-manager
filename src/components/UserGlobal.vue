@@ -1,15 +1,6 @@
 <template>
   <div class="user-global">
     <div class="main-content">
-      <!-- User Info Bar -->
-      <div class="user-info-bar">
-        <div class="user-info-title">
-          <i class="pi pi-user"></i>
-          <span>User Configurations</span>
-        </div>
-        <div class="user-info-subtitle">~/.claude</div>
-      </div>
-
       <!-- Breadcrumbs -->
       <div class="breadcrumbs">
         <router-link to="/" class="breadcrumb-link">
@@ -18,6 +9,15 @@
         </router-link>
         <i class="pi pi-chevron-right breadcrumb-separator"></i>
         <span class="breadcrumb-current">User Configurations</span>
+      </div>
+
+      <!-- User Info Bar -->
+      <div class="user-info-bar">
+        <div class="user-info-title">
+          <i class="pi pi-user"></i>
+          <span>User Configurations</span>
+        </div>
+        <div class="user-info-subtitle">~/.claude</div>
       </div>
 
       <!-- Loading State -->
@@ -552,9 +552,10 @@ export default {
   align-items: center;
   gap: 0.5rem;
   padding: 0.75rem 0;
-  margin-bottom: 2rem;
   border-bottom: 1px solid var(--surface-border);
   font-size: 0.9rem;
+  max-width: 960px;
+  margin: 0 auto 2rem auto;
 }
 
 .breadcrumb-link {

@@ -1,15 +1,6 @@
 <template>
   <div class="project-detail">
     <div class="main-content">
-      <!-- Project Info Bar -->
-      <div class="project-info-bar">
-        <div class="project-info-title">
-          <i class="pi pi-folder"></i>
-          <span>{{ projectName }}</span>
-        </div>
-        <div class="project-info-subtitle">{{ projectPath }}</div>
-      </div>
-
       <!-- Breadcrumbs -->
       <div class="breadcrumbs">
         <router-link to="/" class="breadcrumb-link">
@@ -18,6 +9,15 @@
         </router-link>
         <i class="pi pi-chevron-right breadcrumb-separator"></i>
         <span class="breadcrumb-current">{{ projectName }}</span>
+      </div>
+
+      <!-- Project Info Bar -->
+      <div class="project-info-bar">
+        <div class="project-info-title">
+          <i class="pi pi-folder"></i>
+          <span>{{ projectName }}</span>
+        </div>
+        <div class="project-info-subtitle">{{ projectPath }}</div>
       </div>
 
       <!-- Loading State -->
@@ -641,9 +641,10 @@ export default {
   align-items: center;
   gap: 0.5rem;
   padding: 0.75rem 0;
-  margin-bottom: 2rem;
   border-bottom: 1px solid var(--surface-border);
   font-size: 0.9rem;
+  max-width: 960px;
+  margin: 0 auto 2rem auto;
 }
 
 .breadcrumb-link {
