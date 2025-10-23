@@ -395,6 +395,10 @@ function detectSubagentCall(event) {
  * Truncate text to max length
  */
 function truncate(text, maxLength = 200) {
+  // Handle non-string inputs
+  if (typeof text !== 'string') {
+    text = String(text);
+  }
   if (text.length <= maxLength) return text;
   return text.substring(0, maxLength) + '...';
 }
@@ -502,9 +506,12 @@ function buildTimeline(events, options, metadata) {
       const tools = extractToolCalls(event);
 
       // Extract text content (non-tool parts) - already extracted above
-      let textContent = content
-        .replace(/<function_calls>[\s\S]*?<\/antml:function_calls>/g, '')
-        .trim();
+      let textContent = '';
+      if (typeof content === 'string') {
+        textContent = content
+          .replace(/<function_calls>[\s\S]*?<\/antml:function_calls>/g, '')
+          .trim();
+      }
 
       if (options.verbosity === 'minimal' && tools.length > 0) {
         // In minimal mode, only show tool summary
