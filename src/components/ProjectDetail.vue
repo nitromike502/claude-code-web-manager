@@ -268,7 +268,7 @@
           <div v-if="selectedType === 'agents'">
             <p><strong>Name:</strong> {{ selectedItem.name }}</p>
             <p><strong>Description:</strong> {{ selectedItem.description }}</p>
-            <p v-if="selectedItem.color"><strong>Color:</strong> {{ selectedItem.color }}</p>
+            <p><strong>Color:</strong> {{ selectedItem.color || 'Not specified' }}</p>
             <p v-if="selectedItem.tools && selectedItem.tools.length > 0">
               <strong>Allowed Tools:</strong> {{ selectedItem.tools.join(', ') }}
             </p>

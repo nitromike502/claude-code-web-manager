@@ -1,15 +1,40 @@
 # Claude Code Manager - Session Summary (October 23, 2025)
 
 ## Session Overview
-- **Date:** October 23, 2025
+- **Date:** October 23-24, 2025
 - **Branch:** `phase-2`
-- **Commits:** 7 commits completed
+- **Commits:** 8 commits completed
 - **Tests:** 320+ tests passing (270 backend Jest, 50+ frontend E2E/visual)
-- **Status:** EPIC-002 complete, 7 new bugs identified, EPIC-003 ready to start
+- **Status:** EPIC-002 complete, 7 new bugs identified, EPIC-003 BUG-027 COMPLETE ✅, 6 remaining bugs in queue
 
 ---
 
 ## Work Completed This Session
+
+### ✅ EPIC-003 First Bug COMPLETE: BUG-027 Agent Color Display (October 24, 2025)
+
+**Commit:** `6df3601` - "fix: display agent color in sidebar [BUG-027]"
+
+**Changes:**
+- ProjectDetail.vue: Added agent color display to sidebar metadata (line 271)
+- UserGlobal.vue: Added agent color display to sidebar metadata (line 254)
+- Both components now show color value or "Not specified" as fallback
+- Bonus: Also fixed BUG-029 (agent tools now display in sidebar)
+
+**Tests:**
+- Added [Test 04.004.001] Agent color in ProjectDetail sidebar
+- Added [Test 04.004.002] Agent color in UserGlobal sidebar
+- Added [Test 04.004.003] Agent tools in ProjectDetail sidebar
+- Added [Test 04.004.004] Agent tools in UserGlobal sidebar
+- All 17 tests in file 04-component-rendering.spec.js passing ✅
+
+**Verification:**
+- ✅ Manual user testing on Vite dev server (port 5173)
+- ✅ All Playwright E2E tests passing (Chromium)
+- ✅ All 270+ Jest backend tests passing
+- ✅ Code committed, documentation updated, changes pushed to origin/phase-2
+
+---
 
 ### ✅ EPIC-002 Complete: Phase 2 Data Display Bugs (10 bugs fixed)
 
@@ -375,6 +400,23 @@ git push origin phase-2  # Push changes
 4. **Test After Approval:** Tests should be created only after user confirms the fix works, ensuring tests will pass
 
 5. **Test Prevents Regression:** Adding tests after each fix ensures bugs don't reappear in future changes
+
+## Workflow Improvements (Discovered October 24, 2025)
+
+### Build & Deployment
+- **Only Rebuild on Deploy:** Don't rebuild `/dist` after every ticket. Use Vite dev server (port 5173) for all development and testing
+- **Port 5173 for Development:** Use Vite dev server, NOT port 8420 (backend serves stale production build)
+- **Stale Build Risk:** Old `/dist` builds being served can cause bugs to appear "fixed" in dev but "broken" for users
+
+### Testing Strategy
+- **Chromium Only:** Run Playwright tests with `--project=chromium` flag during development to avoid unnecessary multi-browser overhead
+- **Single File Tests:** When updating tests in a single file, run only that file's tests (e.g., `npx playwright test tests/frontend/04-component-rendering.spec.js`) for faster feedback
+- **Flexible Selectors:** Use flexible CSS selectors with `hasText` filter instead of specific text-based selectors for more robust tests
+
+### Documentation & Commit Workflow
+- **Update Docs First:** Update bug tickets, epics, and session summaries BEFORE committing code
+- **Documentation Before Code:** Ensure all related documentation is current and accurate before creating commits
+- **Final Approval Last:** Wait for explicit user approval before creating any commits - don't auto-commit after tests pass
 
 ---
 

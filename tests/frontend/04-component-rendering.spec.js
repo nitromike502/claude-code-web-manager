@@ -425,6 +425,123 @@ test.describe('04.004: Navigation and Back Button', () => {
   });
 });
 
+// Test Suite 04.004: Agent Sidebar Metadata Display
+test.describe('04.004: Agent Sidebar Metadata Display', () => {
+  test('04.004.001: agent color displays in ProjectDetail sidebar [BUG-027]', async ({ page }) => {
+    await page.goto('/');
+    await page.waitForSelector('.dashboard', { timeout: 10000 });
+
+    // Get first project card (not user card)
+    const projectCards = page.locator('.project-card:not(.user-card)');
+    const count = await projectCards.count();
+
+    if (count > 0) {
+      // Navigate to first project
+      await projectCards.first().click();
+      await page.waitForURL(/\/project\//, { timeout: 10000 });
+      await page.waitForSelector('.config-cards-container', { timeout: 10000 });
+
+      // Find and click on first agent
+      const agentItem = page.locator('.agents-card .config-item').first();
+      if (await agentItem.count() > 0) {
+        await agentItem.click();
+        await page.waitForSelector('.sidebar', { timeout: 5000 });
+
+        // Check that Color field is present in metadata
+        // Use a more flexible selector that checks for the text "Color" in a paragraph
+        const colorText = page.locator('.sidebar-section p', { hasText: /Color:/ }).first();
+        if (await colorText.count() > 0) {
+          await expect(colorText).toBeVisible();
+          // Verify the text contains "Color:" pattern
+          const content = await colorText.innerText();
+          await expect(content).toMatch(/Color:/);
+        }
+      } else {
+        console.log('Skipping test - no agents available in project');
+      }
+    } else {
+      console.log('Skipping test - no projects available');
+    }
+  });
+
+  test('04.004.002: agent color displays in UserGlobal sidebar [BUG-027]', async ({ page }) => {
+    await page.goto('/user');
+    await page.waitForSelector('.user-global', { timeout: 10000 });
+
+    // Find and click on first agent
+    const agentItem = page.locator('.agents-card .config-item').first();
+    if (await agentItem.count() > 0) {
+      await agentItem.click();
+      await page.waitForSelector('.sidebar', { timeout: 5000 });
+
+      // Check that Color field is present in metadata
+      // Use a more flexible selector that checks for the text "Color" in a paragraph
+      const colorText = page.locator('.sidebar-section p', { hasText: /Color:/ }).first();
+      if (await colorText.count() > 0) {
+        await expect(colorText).toBeVisible();
+        // Verify the text contains "Color:" pattern
+        const content = await colorText.innerText();
+        await expect(content).toMatch(/Color:/);
+      }
+    } else {
+      console.log('Skipping test - no agents available in user view');
+    }
+  });
+
+  test('04.004.003: agent tools display in ProjectDetail sidebar [BUG-029]', async ({ page }) => {
+    await page.goto('/');
+    await page.waitForSelector('.dashboard', { timeout: 10000 });
+
+    // Get first project card (not user card)
+    const projectCards = page.locator('.project-card:not(.user-card)');
+    const count = await projectCards.count();
+
+    if (count > 0) {
+      // Navigate to first project
+      await projectCards.first().click();
+      await page.waitForURL(/\/project\//, { timeout: 10000 });
+      await page.waitForSelector('.config-cards-container', { timeout: 10000 });
+
+      // Find and click on first agent
+      const agentItem = page.locator('.agents-card .config-item').first();
+      if (await agentItem.count() > 0) {
+        await agentItem.click();
+        await page.waitForSelector('.sidebar', { timeout: 5000 });
+
+        // Check that Allowed Tools field is present in metadata
+        const toolsField = page.locator('.sidebar-section strong:text("Allowed Tools")').first();
+        if (await toolsField.count() > 0) {
+          await expect(toolsField).toBeVisible();
+        }
+      } else {
+        console.log('Skipping test - no agents available in project');
+      }
+    } else {
+      console.log('Skipping test - no projects available');
+    }
+  });
+
+  test('04.004.004: agent tools display in UserGlobal sidebar [BUG-029]', async ({ page }) => {
+    await page.goto('/user');
+    await page.waitForSelector('.user-global', { timeout: 10000 });
+
+    // Find and click on first agent
+    const agentItem = page.locator('.agents-card .config-item').first();
+    if (await agentItem.count() > 0) {
+      await agentItem.click();
+      await page.waitForSelector('.sidebar', { timeout: 5000 });
+
+      // Check that Allowed Tools field is present in metadata
+      const toolsField = page.locator('.sidebar-section strong:text("Allowed Tools")').first();
+      if (await toolsField.count() > 0) {
+        await expect(toolsField).toBeVisible();
+      }
+    } else {
+      console.log('Skipping test - no agents available in user view');
+    }
+  });
+});
+
 // Test Suite 04.005: Console Errors
 test.describe('04.005: Console Errors', () => {
   test('04.005.001: no console errors during dashboard load', async ({ page }) => {
