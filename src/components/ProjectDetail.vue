@@ -321,7 +321,7 @@
 </template>
 
 <script>
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { projectsAPI } from '../frontend/js/api'
 
@@ -556,8 +556,24 @@ export default {
       loadProjectData()
     })
 
+    // Watch for sidebar visibility to manage body scroll
+    watch(() => sidebarVisible.value, (newVal) => {
+      if (newVal) {
+        // Disable body scroll when sidebar opens
+        document.body.style.overflow = 'hidden'
+      } else {
+        // Re-enable body scroll when sidebar closes
+        document.body.style.overflow = ''
+      }
+    })
+
     onMounted(() => {
       loadProjectData()
+    })
+
+    // Cleanup: restore body scroll when component unmounts
+    onBeforeUnmount(() => {
+      document.body.style.overflow = ''
     })
 
     return {

@@ -298,7 +298,7 @@
 </template>
 
 <script>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue'
 import { userAPI } from '../frontend/js/api'
 
 export default {
@@ -470,6 +470,22 @@ export default {
 
     onMounted(() => {
       loadUserData()
+    })
+
+    // Watch for sidebar visibility to manage body scroll
+    watch(() => sidebarVisible.value, (newVal) => {
+      if (newVal) {
+        // Disable body scroll when sidebar opens
+        document.body.style.overflow = 'hidden'
+      } else {
+        // Re-enable body scroll when sidebar closes
+        document.body.style.overflow = ''
+      }
+    })
+
+    // Cleanup: restore body scroll when component unmounts
+    onBeforeUnmount(() => {
+      document.body.style.overflow = ''
     })
 
     return {
