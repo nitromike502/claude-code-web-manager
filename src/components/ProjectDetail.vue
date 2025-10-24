@@ -297,8 +297,10 @@
           </div>
           <div v-else-if="selectedType === 'mcp'">
             <p><strong>Name:</strong> {{ selectedItem.name }}</p>
-            <p><strong>Transport:</strong> {{ selectedItem.transport }}</p>
-            <p v-if="selectedItem.command"><strong>Command:</strong> {{ selectedItem.command }}</p>
+            <p v-if="selectedItem.transport || selectedItem.transportType"><strong>Transport:</strong> {{ selectedItem.transport || selectedItem.transportType }}</p>
+            <p v-if="selectedItem.command"><strong>Command:</strong> <code>{{ selectedItem.command }}</code></p>
+            <p v-if="selectedItem.args && selectedItem.args.length > 0"><strong>Arguments:</strong> {{ selectedItem.args.join(' ') }}</p>
+            <p v-if="selectedItem.enabled === false"><strong>Status:</strong> Disabled</p>
           </div>
         </div>
 
@@ -514,7 +516,7 @@ export default {
       loadingMCP.value = true
       try {
         const data = await projectsAPI.getMCP(projectId.value)
-        mcpServers.value = data.mcpServers || []
+        mcpServers.value = data.mcp || []
         return data
       } catch (err) {
         console.error('Error loading MCP servers:', err)
