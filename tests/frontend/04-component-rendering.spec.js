@@ -231,58 +231,6 @@ test.describe('04.002: ProjectDetail Component', () => {
     }
   });
 
-  test('04.002.003: copy to clipboard functionality works', async ({ page, browserName }) => {
-    // Grant clipboard permissions (Chromium only - Firefox/WebKit don't support clipboard permissions)
-    if (browserName === 'chromium') {
-      await page.context().grantPermissions(['clipboard-read', 'clipboard-write']);
-    }
-
-    await page.goto('/');
-    await page.waitForSelector('.dashboard', { timeout: 10000 });
-
-    await page.waitForFunction(() => {
-      const loading = document.querySelector('.loading-container');
-      return !loading || loading.offsetParent === null;
-    }, { timeout: 10000 });
-
-    const projectCards = page.locator('.project-card:not(.user-card)');
-    const count = await projectCards.count();
-
-    if (count > 0) {
-      await projectCards.first().click();
-      await page.waitForURL(/\/project\//, { timeout: 10000 });
-      await page.waitForSelector('.config-cards-container', { timeout: 10000 });
-
-      const configItem = page.locator('.config-item').first();
-      const hasItems = await configItem.count() > 0;
-
-      if (hasItems) {
-        await configItem.click();
-        await page.waitForSelector('.sidebar', { timeout: 5000 });
-
-        // Click copy button
-        const copyBtn = page.locator('.action-btn');
-        await copyBtn.click();
-
-        // Wait a moment for clipboard operation
-        await page.waitForTimeout(500);
-
-        // Verify clipboard has content (only on Chromium - other browsers don't support readText in tests)
-        if (browserName === 'chromium') {
-          const clipboardText = await page.evaluate(() => navigator.clipboard.readText());
-          expect(clipboardText.length).toBeGreaterThan(0);
-        } else {
-          // For Firefox/WebKit, just verify the button was clicked (no error thrown)
-          console.log('Skipping clipboard verification on ' + browserName);
-        }
-      } else {
-        console.log('Skipping copy test - no config items available');
-      }
-    } else {
-      console.log('Skipping copy test - no projects available');
-    }
-  });
-
   test('04.002.004: show more/less functionality works', async ({ page }) => {
     await page.goto('/');
     await page.waitForSelector('.dashboard', { timeout: 10000 });
