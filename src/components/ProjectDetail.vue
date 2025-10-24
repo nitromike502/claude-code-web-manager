@@ -291,8 +291,9 @@
           </div>
           <div v-else-if="selectedType === 'hooks'">
             <p><strong>Event:</strong> {{ selectedItem.event }}</p>
-            <p><strong>Pattern:</strong> {{ selectedItem.pattern }}</p>
-            <p v-if="selectedItem.command"><strong>Command:</strong> {{ selectedItem.command }}</p>
+            <p v-if="selectedItem.type"><strong>Type:</strong> {{ selectedItem.type }}</p>
+            <p v-if="selectedItem.matcher"><strong>Matcher:</strong> {{ selectedItem.matcher }}</p>
+            <p v-if="selectedItem.command"><strong>Command:</strong> <code>{{ selectedItem.command }}</code></p>
           </div>
           <div v-else-if="selectedType === 'mcp'">
             <p><strong>Name:</strong> {{ selectedItem.name }}</p>
@@ -1102,6 +1103,15 @@ export default {
 
 .sidebar-section strong {
   color: var(--text-primary);
+}
+
+.sidebar-section code {
+  background: var(--surface-ground);
+  padding: 0.2rem 0.4rem;
+  border-radius: 3px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.85rem;
+  color: var(--primary-color);
 }
 
 .content-preview {
