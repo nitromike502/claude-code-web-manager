@@ -16,7 +16,77 @@
 
 ---
 
-## Current Open Bugs - Priority Order
+## 🚀 PRIORITY: Phase 2 Extension - Component Refactoring
+
+### Overview
+**NEW INITIATIVE** - High-impact architecture improvement to enable faster Phase 3+ development
+
+**Goal:** Extract reusable components from ProjectDetail.vue and UserGlobal.vue
+- Current code duplication: **60%+ (1900 LOC)**
+- Target duplication: **< 30% (500 LOC)**
+- Code reduction: **~1400 LOC (70%)**
+
+**Status:** Planning complete, 22 tickets created, ready for implementation
+**Timeline:** 3-4 hours (can be done in 1-2 sessions)
+**Priority:** HIGH (Foundation for Phase 3 Subagent CRUD)
+
+### Why This Comes Before Bug Fixes
+
+1. **Enables Better Bug Fixes:** Extracted components make future fixes faster and more reliable
+2. **Reduces Technical Debt:** Addresses core duplication before adding new features
+3. **Unblocks Phase 3:** Required architecture for CRUD operations
+4. **Low Risk:** Well-defined patterns, incremental approach, comprehensive test coverage
+
+### Phase 2.1 Scope (4 Stories, 16 Tasks)
+
+**Story 2.1: Extract Core Card Components** (60-90 min)
+- TASK-2.1.1: Create ConfigCard component (30 min)
+- TASK-2.1.2: Create ConfigItemList component (20 min)
+- TASK-2.1.3: Refactor ProjectDetail cards (15 min)
+- TASK-2.1.4: Refactor UserGlobal cards (10 min)
+- TASK-2.1.5: Testing & validation (15 min)
+
+**Story 2.2: Extract Sidebar Component** (45-60 min)
+- TASK-2.2.1: Create ConfigDetailSidebar (25 min)
+- TASK-2.2.2: Extract MetadataDisplay logic (15 min)
+- TASK-2.2.3: Refactor ProjectDetail sidebar (10 min)
+- TASK-2.2.4: Refactor UserGlobal sidebar (10 min)
+
+**Story 2.3: Extract Utility Components** (30-45 min)
+- TASK-2.3.1: Create LoadingState component (10 min)
+- TASK-2.3.2: Create EmptyState component (10 min)
+- TASK-2.3.3: Create BreadcrumbNavigation (10 min)
+- TASK-2.3.4: Update imports (5 min)
+
+**Story 2.4: Testing & Documentation** (30-45 min)
+- TASK-2.4.1: Component unit tests (20 min)
+- TASK-2.4.2: Integration tests (15 min)
+- TASK-2.4.3: Documentation & cleanup (10 min)
+
+### Documentation
+- **PRD:** `docs/prd/PRD-Phase2-Extension-Component-Refactoring.md`
+- **Epic:** `docs/tickets/phase-2-extension/EPIC-4.md`
+- **Stories:** `docs/tickets/phase-2-extension/STORY-2.X.md` (4 files)
+- **Tasks:** `docs/tickets/phase-2-extension/TASK-2.X.Y.md` (16 files)
+
+### Success Criteria
+- [ ] ConfigCard component working with all 4 config types
+- [ ] ConfigDetailSidebar displays metadata for all types
+- [ ] Code duplication reduced to < 30%
+- [ ] All 313+ existing tests passing
+- [ ] 8-12 new component tests added
+- [ ] 100% test pass rate maintained
+
+### Next Actions
+1. Create feature branch: `git checkout -b feature/phase-2-extension-component-refactoring`
+2. Start with Story 2.1 (Card components)
+3. Complete one story per session
+4. Test after each story before proceeding
+5. Create PR after all 4 stories complete
+
+---
+
+## Current Open Bugs - Priority Order (After Phase 2.1)
 
 ### 🔴 HIGH PRIORITY (Similar pattern to recently fixed issues)
 
