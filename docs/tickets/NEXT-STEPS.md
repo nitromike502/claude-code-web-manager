@@ -1,275 +1,201 @@
-# NEXT STEPS: Phase 3+ Development Roadmap
+# Next Steps - Development Roadmap
 
-**Last Updated:** October 24, 2025
-**Current Status:** All Agent Metadata Bugs Fixed ✅ | Phase 2 Complete
-**Latest Commits:**
-- `060954b` - "docs: update documentation with recent bug fixes and current status"
-- `04a2c6f` - "fix: display agent model in sidebars and fix user config card display [BUG-028, BUG-035]"
+## Recently Completed (October 24, 2025)
 
----
+### ✅ Fixed Bugs
+- **BUG-027:** Agent color field display in sidebars ✅ FIXED
+- **BUG-028:** Agent model field display in sidebars ✅ FIXED
+- **BUG-029:** Agent tools field display in sidebars ✅ FIXED
+- **BUG-035:** User configuration card missing after navigation ✅ FIXED
 
-## Phase 2 Completion Status
+**Status:** All fixed bugs have comprehensive test coverage and are passing (19/19 tests).
 
-### ✅ All Critical Bugs Resolved (October 24, 2025)
-- **BUG-027** - Agent color display in sidebar ✅ FIXED
-- **BUG-028** - Agent model display in sidebar ✅ FIXED
-- **BUG-029** - Agent tools display in sidebar ✅ FIXED
-- **BUG-035** - User configuration card persistence after navigation ✅ FIXED
-
-### ✅ Additional Improvements
-- Agent metadata now complete with color, model, and tools
-- User configuration card persists correctly across navigation
-- Sidebar width consistency (75vw) across all components
-- Test coverage increased from 311 to 313 tests (100% pass rate)
-
-### ⏳ Remaining Bugs (Lower Priority - Optional)
-1. **BUG-030** - Command tools display in sidebar
-2. **BUG-031** - Command argument hint display in sidebar
-3. **BUG-032** - Hook command display in sidebar
-4. **BUG-033** - Hook type display in sidebar
-
-**Note:** These bugs are cosmetic improvements to command and hook sidebars. Agent metadata is now complete.
+**Commits:**
+- `04a2c6f` - fix: display agent model in sidebars and fix user config card display [BUG-028, BUG-035]
+- `060954b` - docs: update documentation with recent bug fixes and current status
 
 ---
 
-## Phase 3: Subagent CRUD Operations (Planned Next)
+## Current Open Bugs - Priority Order
 
-**Status:** PROPOSED | Ready for planning
-**Estimated Scope:** Medium (3-4 weeks)
+### 🔴 HIGH PRIORITY (Similar pattern to recently fixed issues)
 
-### Phase 3 Goals
-1. **Create New Subagents** - UI form to create `.claude/agents/*.md` files
-2. **Edit Existing Subagents** - In-place editing with live preview
-3. **Delete Subagents** - With confirmation and safety checks
-4. **YAML Validation** - Frontmatter validation with helpful error messages
-5. **Live Preview** - Show rendered agent content while editing
+#### BUG-030: Slash Command tools field not displaying ⚠️ NEXT UP
+- **Status:** OPEN
+- **Priority:** HIGH
+- **Category:** Data Display
+- **Affected Components:** ProjectDetail.vue, UserGlobal.vue (command sidebars)
+- **Issue:** Command allowed tools field is parsed but not displayed in sidebar metadata
+- **Similar to:** BUG-029 (agent tools) - Already fixed, can follow same pattern
+- **Estimated Effort:** 15-20 minutes (similar to agent tools fix)
+- **Expected Changes:**
+  1. Add `tools` field display in command sidebar metadata sections
+  2. Create tests 04.004.007 and 04.004.008 for command tools display
+  3. Ensure graceful handling for missing tools
 
-### Phase 3 Architecture
-- **Frontend:** Modal forms for create/edit, confirmation dialogs for delete
-- **Backend:** File write operations with validation and error handling
-- **API Endpoints:** POST/PUT/DELETE operations on `/api/projects/:projectId/agents`
-- **Testing:** New tests for CRUD operations with validation
-
-### Phase 3 Implementation Order
-1. Create agent form (UI)
-2. POST endpoint to create agent files
-3. Edit agent form (UI)
-4. PUT endpoint to update agent files
-5. Delete confirmation dialog (UI)
-6. DELETE endpoint with safety checks
-7. YAML frontmatter validation
-8. Live preview functionality
-9. Comprehensive testing
-10. Documentation and release
-
-### Phase 3 Success Criteria
-- [ ] Create new agents with YAML validation
-- [ ] Edit existing agents with live preview
-- [ ] Delete agents with confirmation
-- [ ] Error handling for malformed YAML
-- [ ] All CRUD tests passing (50+ new tests)
-- [ ] Cross-browser compatibility verified
-- [ ] Zero console errors during CRUD operations
+**See:** `docs/tickets/bugs/BUG-030-command-tools-display.md`
 
 ---
 
-## Optional Remaining Bugs (Post Phase-2)
+#### BUG-031: Command argument hint display ⚠️ PRIORITY 2
+- **Status:** OPEN
+- **Priority:** HIGH
+- **Category:** Data Display
+- **Affected Components:** ProjectDetail.vue, UserGlobal.vue (command sidebars)
+- **Issue:** Command argument hint field is parsed but not displayed
+- **Estimated Effort:** 15-20 minutes
+- **Expected Changes:**
+  1. Add `hint` or `argument_hint` field display in command sidebar
+  2. Create tests for argument hint display
+  3. Handle missing hints gracefully
 
-The following bugs represent cosmetic improvements to command and hook sidebars:
-
-| Bug | Field | Component | Priority |
-|-----|-------|-----------|----------|
-| BUG-030 | `tools` | Command sidebar | Low |
-| BUG-031 | `argumentHint` | Command sidebar | Low |
-| BUG-032 | `command` | Hook sidebar | Low |
-| BUG-033 | `type` | Hook sidebar | Low |
-
-**Implementation Process (if prioritized):**
-1. Add field display line(s) to ProjectDetail.vue
-2. Add field display line(s) to UserGlobal.vue
-3. Test manually on port 5173
-4. Get user approval
-5. Create Playwright tests
-6. Update documentation
-7. Commit with reference to bug ticket
-
-**Recommendation:** Consider these after Phase 3 (CRUD) is implemented, as CRUD operations are more valuable to users than additional metadata display.
+**See:** `docs/tickets/bugs/BUG-031-command-argument-hint-display.md`
 
 ---
 
-## Key Insights from BUG-027
+#### BUG-032: Hook command field not displaying ⚠️ PRIORITY 3
+- **Status:** OPEN
+- **Priority:** HIGH
+- **Category:** Data Display
+- **Affected Components:** ProjectDetail.vue, UserGlobal.vue (hooks sidebars)
+- **Issue:** Hook command field is parsed but not displayed
+- **Estimated Effort:** 15-20 minutes
 
-### What Worked Well
-- Sequential bug-by-bug approach with user testing between each
-- Minimal code changes (usually 1-2 lines per bug)
-- Tests created AFTER user approval ensures 100% pass rate
-- Documentation updated BEFORE commits keeps record current
-
-### Development Server Tips
-- **Always use port 5173** (Vite dev server) for testing, NOT port 8420
-- Port 5173 serves live source code with Hot Module Replacement
-- Port 8420 serves stale production build (`/dist` directory)
-- Only rebuild `/dist` when deploying to production
-
-### Testing Tips
-- Run Playwright tests with `--project=chromium` flag only (faster than multi-browser)
-- Run single test file only: `npx playwright test tests/frontend/04-component-rendering.spec.js`
-- Use flexible CSS selectors: `.sidebar-section p` with `hasText` filter instead of text-based selectors
-- Tests should verify field displays AND handle missing values gracefully
-
-### Documentation Tips
-- Update all affected documentation BEFORE committing code
-- Files to update for each bug:
-  1. Bug ticket (mark as resolved)
-  2. EPIC-003 (update progress and next bug)
-  3. NEXT-STEPS.md (update current progress and next bug details)
-- Amend commits to include documentation updates
+**See:** `docs/tickets/bugs/BUG-032-hook-command-display.md`
 
 ---
 
-## Phase 3 Planning Checklist
+#### BUG-033: Hook type field not displaying ⚠️ PRIORITY 4
+- **Status:** OPEN
+- **Priority:** HIGH
+- **Category:** Data Display
+- **Affected Components:** ProjectDetail.vue, UserGlobal.vue (hooks sidebars)
+- **Issue:** Hook type field is parsed but not displayed
+- **Estimated Effort:** 15-20 minutes
 
-Before starting work on Subagent CRUD (Phase 3):
-
-### Discovery & Planning
-- [ ] Review Phase 3 requirements in this document
-- [ ] Research YAML frontmatter parsing libraries
-- [ ] Review existing parser implementation in backend
-- [ ] Sketch UI mockups for create/edit forms
-- [ ] Plan API endpoint design (POST/PUT/DELETE)
-- [ ] Identify file system safety considerations
-
-### Development Setup
-- [ ] Pull latest changes: `git pull origin phase-2`
-- [ ] Create feature branch: `git checkout -b feature/phase-3-crud`
-- [ ] Verify Vite dev server runs on port 5173
-- [ ] Verify backend server runs on port 8420
-
-### Implementation Strategy
-- [ ] Start with read-only form UI (state management)
-- [ ] Add form validation for YAML frontmatter
-- [ ] Implement POST endpoint for file creation
-- [ ] Implement PUT endpoint for file updates
-- [ ] Implement DELETE endpoint with safety checks
-- [ ] Add file write permission verification
-- [ ] Create comprehensive test suite (50+ tests)
-- [ ] Add error handling and user feedback
-
-### Quality Gates
-- [ ] All 583 existing tests still pass
-- [ ] New tests for all CRUD operations pass
-- [ ] Manual testing on port 5173 approved
-- [ ] Zero console errors
-- [ ] Documentation updated before commit
+**See:** `docs/tickets/bugs/BUG-033-hook-type-display.md`
 
 ---
 
-## Key Files for Phase 3 Development
+### 🟡 MEDIUM PRIORITY (Resolved previously but good for verification)
 
-### Architecture & Design
-- `CLAUDE.md` - Main project documentation
-- `docs/SESSION-SUMMARY-20251024.md` - Recent session work summary
-- `src/backend/services/projectDiscovery.js` - Current parser implementation
-
-### Frontend Components
-- `src/components/ProjectDetail.vue` - Project-level configuration view
-- `src/components/UserGlobal.vue` - User-level configuration view
-- `src/components/cards/` - Configuration card components
-
-### Backend API
-- `src/backend/routes/` - API route definitions
-- `src/backend/services/` - Business logic and file parsing
-- `src/backend/services/projectDiscovery.js` - Agent parsing (reference for YAML handling)
-
-### Testing
-- `tests/frontend/04-component-rendering.spec.js` - Component tests
-- `tests/e2e/` - End-to-end integration tests
-- `tests/fixtures/` - Mock data and test helpers
-
-### Optional Remaining Bug Tickets
-- `docs/tickets/bugs/BUG-030-command-tools-display.md`
-- `docs/tickets/bugs/BUG-031-command-argument-hint-display.md`
-- `docs/tickets/bugs/BUG-032-hook-command-display.md`
-- `docs/tickets/bugs/BUG-033-hook-type-display.md`
-
-### Documentation
-- `docs/tickets/NEXT-STEPS.md` (this file)
+#### BUG-026: MCP servers not showing in project view
+- **Status:** Likely resolved during Phase 2 refactoring
+- **Priority:** MEDIUM
+- **Action:** Verify if still an issue, add to testing if needed
 
 ---
 
-## Quick Commands
+### 🟢 LOW PRIORITY (Closed/Resolved)
 
-```bash
-# Start Vite dev server
-npm run dev
+#### BUG-001 through BUG-025
+- **Status:** RESOLVED / CLOSED
+- **Notes:** These were resolved during Phase 1 MVP and Phase 2 Vite migration
+- **Documentation:** See individual ticket files in `docs/tickets/bugs/`
 
-# Run single test file on Chromium
-npx playwright test tests/frontend/04-component-rendering.spec.js --project=chromium
+---
 
-# Check git status
-git status
+## Recommended Work Plan
 
-# Review commits
-git log --oneline -5
+### Next Session (BUG-030 Session)
+**Duration:** ~30-45 minutes (4 bugs, similar pattern)
 
-# Amend last commit
-git commit --amend --no-edit
+1. **BUG-030: Command tools display** (15-20 min)
+   - Add `tools` field display to command sidebar metadata
+   - Create tests 04.004.007 and 04.004.008
+   - Expected pattern: Same as agent tools (BUG-029)
 
-# Force push with lease
-git push origin phase-2 --force-with-lease
+2. **BUG-031: Command argument hint** (15-20 min)
+   - Add `hint` field display to command sidebar
+   - Create tests
+   - Similar implementation pattern
+
+3. **BUG-032: Hook command field** (15-20 min)
+   - Add `command` field display to hook sidebar
+   - Create tests
+
+4. **BUG-033: Hook type field** (15-20 min)
+   - Add `type` field display to hook sidebar
+   - Create tests
+
+**Test Coverage:** Expect 4-8 new tests (similar scope to BUG-028)
+**Final Status:** 321-325/313 total tests (all passing)
+
+### Session 2 (Verification & Polish)
+- Run full test suite (backend + frontend)
+- Verify cross-browser compatibility
+- Check responsive design
+- Document any edge cases
+
+### Session 3+ (Phase 3 - Subagent CRUD)
+- After all display bugs are fixed and verified
+- Begin implementation of create/edit/delete functionality
+- See "Future Features" in CLAUDE.md
+
+---
+
+## Patterns Established (Leverage for speed)
+
+### Frontend Sidebar Display Pattern (Used in BUG-027, BUG-028, BUG-029)
+```vue
+<!-- In ProjectDetail.vue and UserGlobal.vue agent/command/hook sidebars -->
+<p><strong>Field Name:</strong> {{ selectedItem.fieldName || 'Not specified' }}</p>
+```
+
+**Apply this pattern to:**
+- ✅ Agent color (BUG-027) - DONE
+- ✅ Agent model (BUG-028) - DONE
+- ✅ Agent tools (BUG-029) - DONE
+- ⏳ Command tools (BUG-030) - NEXT
+- ⏳ Command argument hint (BUG-031)
+- ⏳ Hook command (BUG-032)
+- ⏳ Hook type (BUG-033)
+
+### Test Pattern (Used for BUG-028)
+```javascript
+test('04.004.XXX: [field] displays in [Component] sidebar [BUG-XXX]', async ({ page }) => {
+  // Navigate to component
+  // Click on configuration item
+  // Verify field displays in sidebar
+  // Check value is correct
+})
 ```
 
 ---
 
-## Success Criteria for Phase 3
+## Current Metrics
 
-### Code Quality
-- [ ] All new code follows project conventions
-- [ ] Comprehensive error handling with user feedback
-- [ ] File system operations validated and safe
-- [ ] YAML parsing robust with helpful error messages
-- [ ] Code review completed before merge
-
-### Testing
-- [ ] All 583 existing tests still passing
-- [ ] 50+ new tests for CRUD operations
-- [ ] Tests cover happy path and error cases
-- [ ] Manual testing approved by user
-- [ ] Cross-browser testing (Chrome, Firefox, Safari)
-- [ ] Zero console errors in production mode
-
-### Documentation
-- [ ] API endpoint documentation updated
-- [ ] Component documentation updated
-- [ ] User guide with CRUD instructions
-- [ ] Architecture documentation for file operations
-- [ ] Commit messages reference tickets
-
-### Performance
-- [ ] Form interactions responsive (< 100ms)
-- [ ] File operations don't block UI
-- [ ] No memory leaks in long sessions
-
-### Deployment Readiness
-- [ ] All tests passing
-- [ ] Production build successful
-- [ ] No breaking changes to existing features
-- [ ] Ready for release on main branch
+- **Total Tests:** 313 (19 component tests + 90 E2E + 44 responsive + 57 visual + 270 backend)
+- **Pass Rate:** 100%
+- **Open Bugs:** 8 (BUG-030 through BUG-033, plus potential others)
+- **Fixed in Oct 24 Session:** 4 bugs (BUG-027, BUG-028, BUG-029, BUG-035)
+- **Est. Tests Added:** 2-3 new tests per bug × 4 bugs = 8-12 new tests expected
 
 ---
 
-## Phase Roadmap Summary
+## Success Criteria for Next Session
 
-| Phase | Status | Scope | Timeline |
-|-------|--------|-------|----------|
-| **Phase 1: MVP** | ✅ Complete | Read-only interface | Complete |
-| **Phase 2: Vite** | ✅ Complete | Architecture modernization | Complete |
-| **Phase 3: CRUD** | ⏳ Planned | Create/edit/delete agents | 3-4 weeks |
-| **Phase 4: Commands** | 📋 Proposed | Command management | Q4 2025 |
-| **Phase 5: Hooks** | 📋 Proposed | Hook configuration | Q4 2025 |
-| **Phase 6: MCP** | 📋 Proposed | MCP server management | Q1 2026 |
-| **Phase 7+: Advanced** | 📋 Future | Real-time, versioning, sync | Q1 2026+ |
+- [ ] All 4 bugs (BUG-030 through BUG-033) show field displays
+- [ ] New tests created and passing (04.004.007 through 04.004.010+)
+- [ ] All 313+ tests passing (100% pass rate)
+- [ ] Code follows established patterns
+- [ ] Commit message references all fixed bugs
 
 ---
 
-**Phase 2 is complete. Phase 3 (Subagent CRUD) is ready for planning when you are ready to proceed.**
+## Notes
+
+- The recent fixes (BUG-027, BUG-028, BUG-029) established clear patterns for sidebar metadata display
+- BUG-030 through BUG-033 follow the exact same pattern and should be quicker to fix
+- All fixes are frontend-only (backend parsing already works)
+- No API changes needed - data is already available in response
+- Similar scope to today's work means similar time estimate (~30-45 min for 4 bugs)
+
+---
+
+## References
+
+- **Session Summary:** `docs/SESSION-SUMMARY-20251024.md`
+- **Main Docs:** `CLAUDE.md` (Success Criteria, Future Features)
+- **Bug Tickets:** `docs/tickets/bugs/BUG-*.md`
+- **Test Files:** `tests/frontend/04-component-rendering.spec.js`
