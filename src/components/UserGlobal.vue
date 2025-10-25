@@ -252,6 +252,7 @@
             <p><strong>Name:</strong> {{ selectedItem.name }}</p>
             <p><strong>Description:</strong> {{ selectedItem.description }}</p>
             <p><strong>Color:</strong> {{ selectedItem.color || 'Not specified' }}</p>
+            <p><strong>Model:</strong> {{ selectedItem.model || 'inherit' }}</p>
             <p v-if="selectedItem.tools && selectedItem.tools.length > 0">
               <strong>Allowed Tools:</strong> {{ selectedItem.tools.join(', ') }}
             </p>
@@ -816,7 +817,9 @@ export default {
   position: fixed;
   right: 0;
   top: 0;
-  width: 500px;
+  width: 75vw;
+  min-width: 500px;
+  max-width: 75vw;
   height: 100vh;
   background: var(--surface-card);
   border-left: 1px solid var(--surface-border);

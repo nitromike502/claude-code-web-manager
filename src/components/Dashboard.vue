@@ -183,6 +183,9 @@ export default {
     onMounted(async () => {
       if (!projectsStore.projects.length) {
         await loadProjects()
+      } else {
+        // Always load user config even if projects already loaded
+        await loadUserConfig()
       }
 
       window.addEventListener('header-search', (e) => {

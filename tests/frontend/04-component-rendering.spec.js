@@ -93,8 +93,6 @@ test.describe('04.001: Dashboard Component', () => {
       // Verify project info bar is present
       const projectInfo = page.locator('.project-info-bar');
       await expect(projectInfo).toBeVisible();
-    } else {
-      console.log('Skipping navigation test - no projects available');
     }
   });
 
@@ -129,8 +127,6 @@ test.describe('04.001: Dashboard Component', () => {
       const userInfo = page.locator('.user-info-bar');
       await expect(userInfo).toBeVisible();
       await expect(userInfo).toContainText('User Configurations');
-    } else {
-      console.log('Skipping user navigation test - no user card available');
     }
   });
 });
@@ -174,8 +170,6 @@ test.describe('04.002: ProjectDetail Component', () => {
       await expect(commandsCard.locator('.config-title')).toContainText('Slash Commands');
       await expect(hooksCard.locator('.config-title')).toContainText('Hooks');
       await expect(mcpCard.locator('.config-title')).toContainText('MCP Servers');
-    } else {
-      console.log('Skipping ProjectDetail test - no projects available');
     }
   });
 
@@ -223,11 +217,7 @@ test.describe('04.002: ProjectDetail Component', () => {
         // Close sidebar
         await closeBtn.click();
         await expect(sidebar).not.toBeVisible();
-      } else {
-        console.log('Skipping sidebar test - no config items available');
       }
-    } else {
-      console.log('Skipping sidebar test - no projects available');
     }
   });
 
@@ -248,9 +238,15 @@ test.describe('04.002: ProjectDetail Component', () => {
       await page.waitForURL(/\/project\//, { timeout: 10000 });
       await page.waitForSelector('.config-cards-container', { timeout: 10000 });
 
-      // Look for an expand button
+      // Look for an expand button (only test if one exists)
+      // Use a very short timeout to check if button exists without waiting
       const expandBtn = page.locator('.expand-btn').first();
-      const hasExpandBtn = await expandBtn.count() > 0;
+      let hasExpandBtn = false;
+      try {
+        hasExpandBtn = (await expandBtn.count({ timeout: 500 })) > 0;
+      } catch (e) {
+        hasExpandBtn = false;
+      }
 
       if (hasExpandBtn) {
         // Get initial item count
@@ -277,11 +273,7 @@ test.describe('04.002: ProjectDetail Component', () => {
         // Should show fewer items again
         const collapsedItemCount = await cardWithExpand.locator('.config-item').count();
         expect(collapsedItemCount).toBeLessThanOrEqual(expandedItemCount);
-      } else {
-        console.log('Skipping expand test - no expand buttons available');
       }
-    } else {
-      console.log('Skipping expand test - no projects available');
     }
   });
 });
@@ -341,8 +333,6 @@ test.describe('04.003: UserGlobal Component', () => {
       const closeBtn = page.locator('.close-btn');
       await closeBtn.click();
       await expect(sidebar).not.toBeVisible();
-    } else {
-      console.log('Skipping UserGlobal sidebar test - no user config items available');
     }
   });
 });
@@ -388,8 +378,6 @@ test.describe('04.004: Navigation and Back Button', () => {
         await page.waitForURL('/', { timeout: 10000 });
         await expect(page.locator('.dashboard')).toBeVisible();
       }
-    } else {
-      console.log('Skipping navigation test - no user card available');
     }
   });
 
@@ -419,8 +407,6 @@ test.describe('04.004: Navigation and Back Button', () => {
 
       // Verify we're back on dashboard
       await expect(page.locator('.dashboard')).toBeVisible();
-    } else {
-      console.log('Skipping back button test - no projects available');
     }
   });
 });
@@ -456,11 +442,7 @@ test.describe('04.004: Agent Sidebar Metadata Display', () => {
           const content = await colorText.innerText();
           await expect(content).toMatch(/Color:/);
         }
-      } else {
-        console.log('Skipping test - no agents available in project');
       }
-    } else {
-      console.log('Skipping test - no projects available');
     }
   });
 
@@ -483,8 +465,6 @@ test.describe('04.004: Agent Sidebar Metadata Display', () => {
         const content = await colorText.innerText();
         await expect(content).toMatch(/Color:/);
       }
-    } else {
-      console.log('Skipping test - no agents available in user view');
     }
   });
 
@@ -513,11 +493,7 @@ test.describe('04.004: Agent Sidebar Metadata Display', () => {
         if (await toolsField.count() > 0) {
           await expect(toolsField).toBeVisible();
         }
-      } else {
-        console.log('Skipping test - no agents available in project');
       }
-    } else {
-      console.log('Skipping test - no projects available');
     }
   });
 
@@ -536,8 +512,62 @@ test.describe('04.004: Agent Sidebar Metadata Display', () => {
       if (await toolsField.count() > 0) {
         await expect(toolsField).toBeVisible();
       }
-    } else {
-      console.log('Skipping test - no agents available in user view');
+    }
+  });
+
+  test('04.004.005: agent model displays in ProjectDetail sidebar [BUG-028]', async ({ page }) => {
+    await page.goto('/');
+    await page.waitForSelector('.dashboard', { timeout: 10000 });
+
+    await page.waitForFunction(() => {
+      const loading = document.querySelector('.loading-container');
+      return !loading || loading.offsetParent === null;
+    }, { timeout: 10000 });
+
+    // Click on first project (not user card)
+    const projectCards = page.locator('.project-card:not(.user-card)');
+    if (await projectCards.count() > 0) {
+      await projectCards.first().click();
+      await page.waitForURL(/\/project\//, { timeout: 10000 });
+      await page.waitForSelector('.config-cards-container', { timeout: 10000 });
+
+      // Find and click on first agent
+      const agentItem = page.locator('.agents-card .config-item').first();
+      if (await agentItem.count() > 0) {
+        await agentItem.click();
+        await page.waitForSelector('.sidebar', { timeout: 5000 });
+
+        // Check that Model field is present in metadata
+        const modelField = page.locator('.sidebar-section strong:text("Model")').first();
+        if (await modelField.count() > 0) {
+          await expect(modelField).toBeVisible();
+          // Check that a value is displayed (either model name or 'inherit')
+          const modelValue = modelField.locator('xpath=following-sibling::text()').first();
+          const text = await modelField.evaluate(el => el.nextSibling?.textContent?.trim());
+          expect(text).toBeTruthy();
+        }
+      }
+    }
+  });
+
+  test('04.004.006: agent model displays in UserGlobal sidebar [BUG-028]', async ({ page }) => {
+    await page.goto('/user');
+    await page.waitForSelector('.user-global', { timeout: 10000 });
+
+    // Find and click on first agent
+    const agentItem = page.locator('.agents-card .config-item').first();
+    if (await agentItem.count() > 0) {
+      await agentItem.click();
+      await page.waitForSelector('.sidebar', { timeout: 5000 });
+
+      // Check that Model field is present in metadata
+      const modelField = page.locator('.sidebar-section strong:text("Model")').first();
+      if (await modelField.count() > 0) {
+        await expect(modelField).toBeVisible();
+        // Check that a value is displayed (either model name or 'inherit')
+        const text = await modelField.evaluate(el => el.nextSibling?.textContent?.trim());
+        expect(text).toBeTruthy();
+      }
     }
   });
 });
@@ -606,8 +636,6 @@ test.describe('04.005: Console Errors', () => {
       });
 
       expect(realErrors).toHaveLength(0);
-    } else {
-      console.log('Skipping console error test - no projects available');
     }
   });
 

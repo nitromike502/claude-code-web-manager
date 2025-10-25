@@ -100,6 +100,7 @@ async function getProjectAgents(projectPath) {
             description: parsed.frontmatter.description || '',
             tools: tools.length > 0 ? tools : null,
             color: parsed.frontmatter.color || null,
+            model: parsed.frontmatter.model || 'inherit',
             hasParseError: parsed.hasError || false
           });
         }
@@ -483,6 +484,7 @@ async function getUserAgents() {
             description: parsed.frontmatter.description || '',
             tools: tools.length > 0 ? tools : null,
             color: parsed.frontmatter.color || null,
+            model: parsed.frontmatter.model || 'inherit',
             hasParseError: parsed.hasError || false
           });
         }
