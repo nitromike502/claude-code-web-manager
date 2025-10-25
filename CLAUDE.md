@@ -100,13 +100,13 @@ manager/
 
 ### Testing
 - **Backend Tests:** 270 Jest tests (100% pass rate)
-- **Frontend Tests:** 311 Playwright tests (100% pass rate)
+- **Frontend Tests:** 313 Playwright tests (100% pass rate)
   - 90 E2E integration tests (Tests 100, 101, 102, 105)
-  - 120 Component tests (Tests 01-06, 23)
+  - 122 Component tests (Tests 01-06, 23) - includes new BUG-028 tests (04.004.005, 04.004.006)
   - 44 Responsive design tests (Test 200)
   - 57 Visual regression tests (Test 300)
   - Cross-browser: Chromium, Firefox, WebKit
-- **Total Test Coverage:** 581 tests (100% pass rate)
+- **Total Test Coverage:** 583 tests (100% pass rate)
 
 ## Data Sources
 
@@ -252,7 +252,7 @@ See `/home/claude/manager/.claude/templates/test-template.md` for detailed guide
 - [x] Card color scheme (green/blue/orange/purple)
 - [x] "Show more" functionality for configuration lists
 - [x] API integration with all configuration endpoints
-- [x] Automated test suite passing (Playwright - 311/311 tests, 100% pass rate)
+- [x] Automated test suite passing (Playwright - 313/313 tests, 100% pass rate)
 - [x] Detail sidebar for viewing full content
 - [x] Sidebar content rendering (markdown parsing, syntax highlighting)
 - [x] Sidebar navigation (copy to clipboard, keyboard shortcuts)
@@ -263,10 +263,25 @@ See `/home/claude/manager/.claude/templates/test-template.md` for detailed guide
 - [x] Cross-browser compatibility verified (Chrome, Firefox, Safari)
 - [x] Responsive design verified (mobile, tablet, desktop)
 - [x] End-to-end integration testing complete
+- [x] Agent model field display in sidebars [BUG-028 - Fixed]
+- [x] Agent color field display in sidebars [BUG-027 - Fixed]
+- [x] Agent tools field display in sidebars [BUG-029 - Fixed]
+- [x] User configuration card persistent after navigation [BUG-035 - Fixed]
+- [x] Sidebar width consistency (75vw) across components
+
+## Current Status & Priorities
+
+### Recent Bug Fixes (October 24, 2025)
+- **BUG-027:** Agent color field now displays in sidebars ✅
+- **BUG-028:** Agent model field now displays in sidebars ✅
+- **BUG-029:** Agent tools field now displays in sidebars ✅
+- **BUG-035:** User configuration card now persists after navigation ✅
+
+All bugs were resolved with comprehensive test coverage. Remaining known issues are tracked in `/docs/tickets/bugs/` directory.
 
 ## Future Features (Phase 3+)
 
-With Phase 1 MVP and Phase 2 Vite migration complete, future phases will build on this solid foundation:
+With Phase 1 MVP and Phase 2 Vite migration complete with 100% test coverage and all critical bugs resolved, future phases will build on this solid foundation:
 
 ### Phase 3 - Subagent CRUD (Planned)
 - Create, edit, and delete subagent definitions
