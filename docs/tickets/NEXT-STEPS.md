@@ -1,87 +1,90 @@
-# NEXT STEPS: EPIC-003 Sequential Bug Fixes
+# NEXT STEPS: Phase 3+ Development Roadmap
 
 **Last Updated:** October 24, 2025
-**Current Status:** BUG-027 & BUG-029 Complete ✅ | 5 Bugs Remaining
-**Commit:** `9dadb52` - "fix: display agent color in sidebar [BUG-027]"
+**Current Status:** All Agent Metadata Bugs Fixed ✅ | Phase 2 Complete
+**Latest Commits:**
+- `060954b` - "docs: update documentation with recent bug fixes and current status"
+- `04a2c6f` - "fix: display agent model in sidebars and fix user config card display [BUG-028, BUG-035]"
 
 ---
 
-## Current Progress
+## Phase 2 Completion Status
 
-### ✅ Completed
-- **BUG-027** - Agent color display in sidebar (COMPLETE)
-- **BUG-029** - Agent tools display in sidebar (COMPLETE - fixed as bonus with BUG-027)
+### ✅ All Critical Bugs Resolved (October 24, 2025)
+- **BUG-027** - Agent color display in sidebar ✅ FIXED
+- **BUG-028** - Agent model display in sidebar ✅ FIXED
+- **BUG-029** - Agent tools display in sidebar ✅ FIXED
+- **BUG-035** - User configuration card persistence after navigation ✅ FIXED
 
-### ⏳ Remaining (In Queue)
-1. **BUG-028** - Agent model display in sidebar
-2. **BUG-030** - Command tools display in sidebar
-3. **BUG-031** - Command argument hint display in sidebar
-4. **BUG-032** - Hook command display in sidebar
-5. **BUG-033** - Hook type display in sidebar
+### ✅ Additional Improvements
+- Agent metadata now complete with color, model, and tools
+- User configuration card persists correctly across navigation
+- Sidebar width consistency (75vw) across all components
+- Test coverage increased from 311 to 313 tests (100% pass rate)
 
----
+### ⏳ Remaining Bugs (Lower Priority - Optional)
+1. **BUG-030** - Command tools display in sidebar
+2. **BUG-031** - Command argument hint display in sidebar
+3. **BUG-032** - Hook command display in sidebar
+4. **BUG-033** - Hook type display in sidebar
 
-## Next Bug to Fix: BUG-028 (Agent Model Display)
-
-### Quick Reference
-- **Ticket:** `/home/claude/manager/docs/tickets/bugs/BUG-028-agent-model-display.md`
-- **Field:** `model` (e.g., `model: claude-sonnet-4`)
-- **Components to Update:**
-  - `/home/claude/manager/src/components/ProjectDetail.vue` (line ~272, after color field)
-  - `/home/claude/manager/src/components/UserGlobal.vue` (line ~255, after color field)
-- **Backend Parser:** `/home/claude/manager/src/backend/parsers/subagentParser.js` (line 64)
-
-### Workflow for BUG-028
-
-**Step 1: Investigate**
-- Read BUG-028 ticket to confirm requirements
-- Check that backend is returning `model` field in API response
-- Verify `selectedItem.model` is available in frontend components
-
-**Step 2: Code Changes** (Minimal, focused)
-- Add one line to ProjectDetail.vue agent metadata section:
-  ```vue
-  <p><strong>Model:</strong> {{ selectedItem.model || 'inherit' }}</p>
-  ```
-- Add same line to UserGlobal.vue agent metadata section
-- Show "inherit" as fallback (default value)
-
-**Step 3: Manual User Testing** (Port 5173)
-- Run: `npm run dev` (Vite dev server)
-- Navigate to any project or user global config
-- Click on an agent to open sidebar
-- Verify model field displays with correct value or "inherit" fallback
-- Test both with agents that have model defined and without
-
-**Step 4: Create Tests** (After user approval)
-- Add to `tests/frontend/04-component-rendering.spec.js`:
-  - Test 04.004.005: Agent model displays in ProjectDetail sidebar [BUG-028]
-  - Test 04.004.006: Agent model displays in UserGlobal sidebar [BUG-028]
-- Run: `npx playwright test tests/frontend/04-component-rendering.spec.js --project=chromium`
-- Verify all tests pass
-
-**Step 5: Workflow Before Commit**
-1. ✅ Update bug ticket to mark BUG-028 as resolved
-2. ✅ Update EPIC-003 to show BUG-028 complete, BUG-030 as next
-3. ✅ Update NEXT-STEPS.md with new progress
-4. ✅ Get user final approval
-5. ✅ Amend commit and force push
+**Note:** These bugs are cosmetic improvements to command and hook sidebars. Agent metadata is now complete.
 
 ---
 
-## Pattern for All Remaining Bugs
+## Phase 3: Subagent CRUD Operations (Planned Next)
 
-All 5 remaining bugs follow the SAME pattern as BUG-027:
+**Status:** PROPOSED | Ready for planning
+**Estimated Scope:** Medium (3-4 weeks)
 
-| Bug | Field | Component | Fallback |
+### Phase 3 Goals
+1. **Create New Subagents** - UI form to create `.claude/agents/*.md` files
+2. **Edit Existing Subagents** - In-place editing with live preview
+3. **Delete Subagents** - With confirmation and safety checks
+4. **YAML Validation** - Frontmatter validation with helpful error messages
+5. **Live Preview** - Show rendered agent content while editing
+
+### Phase 3 Architecture
+- **Frontend:** Modal forms for create/edit, confirmation dialogs for delete
+- **Backend:** File write operations with validation and error handling
+- **API Endpoints:** POST/PUT/DELETE operations on `/api/projects/:projectId/agents`
+- **Testing:** New tests for CRUD operations with validation
+
+### Phase 3 Implementation Order
+1. Create agent form (UI)
+2. POST endpoint to create agent files
+3. Edit agent form (UI)
+4. PUT endpoint to update agent files
+5. Delete confirmation dialog (UI)
+6. DELETE endpoint with safety checks
+7. YAML frontmatter validation
+8. Live preview functionality
+9. Comprehensive testing
+10. Documentation and release
+
+### Phase 3 Success Criteria
+- [ ] Create new agents with YAML validation
+- [ ] Edit existing agents with live preview
+- [ ] Delete agents with confirmation
+- [ ] Error handling for malformed YAML
+- [ ] All CRUD tests passing (50+ new tests)
+- [ ] Cross-browser compatibility verified
+- [ ] Zero console errors during CRUD operations
+
+---
+
+## Optional Remaining Bugs (Post Phase-2)
+
+The following bugs represent cosmetic improvements to command and hook sidebars:
+
+| Bug | Field | Component | Priority |
 |-----|-------|-----------|----------|
-| BUG-028 | `model` | Agent sidebar | `inherit` |
-| BUG-030 | `tools` | Command sidebar | empty array |
-| BUG-031 | `argumentHint` | Command sidebar | none |
-| BUG-032 | `command` | Hook sidebar | none |
-| BUG-033 | `type` | Hook sidebar | none |
+| BUG-030 | `tools` | Command sidebar | Low |
+| BUG-031 | `argumentHint` | Command sidebar | Low |
+| BUG-032 | `command` | Hook sidebar | Low |
+| BUG-033 | `type` | Hook sidebar | Low |
 
-**Process for each bug:**
+**Implementation Process (if prioritized):**
 1. Add field display line(s) to ProjectDetail.vue
 2. Add field display line(s) to UserGlobal.vue
 3. Test manually on port 5173
@@ -89,6 +92,8 @@ All 5 remaining bugs follow the SAME pattern as BUG-027:
 5. Create Playwright tests
 6. Update documentation
 7. Commit with reference to bug ticket
+
+**Recommendation:** Consider these after Phase 3 (CRUD) is implemented, as CRUD operations are more valuable to users than additional metadata display.
 
 ---
 
@@ -122,44 +127,73 @@ All 5 remaining bugs follow the SAME pattern as BUG-027:
 
 ---
 
-## Session Preparation Checklist
+## Phase 3 Planning Checklist
 
-Before starting work on next bug:
+Before starting work on Subagent CRUD (Phase 3):
 
+### Discovery & Planning
+- [ ] Review Phase 3 requirements in this document
+- [ ] Research YAML frontmatter parsing libraries
+- [ ] Review existing parser implementation in backend
+- [ ] Sketch UI mockups for create/edit forms
+- [ ] Plan API endpoint design (POST/PUT/DELETE)
+- [ ] Identify file system safety considerations
+
+### Development Setup
 - [ ] Pull latest changes: `git pull origin phase-2`
-- [ ] Review BUG-028 ticket
-- [ ] Verify Vite dev server is running on port 5173
-- [ ] Create focused plan for this bug only
-- [ ] Make code changes (minimal, single field)
-- [ ] Test manually (approve before moving to tests)
-- [ ] Create Playwright tests
-- [ ] Update documentation
-- [ ] Get final approval
-- [ ] Commit with amend and force push
+- [ ] Create feature branch: `git checkout -b feature/phase-3-crud`
+- [ ] Verify Vite dev server runs on port 5173
+- [ ] Verify backend server runs on port 8420
+
+### Implementation Strategy
+- [ ] Start with read-only form UI (state management)
+- [ ] Add form validation for YAML frontmatter
+- [ ] Implement POST endpoint for file creation
+- [ ] Implement PUT endpoint for file updates
+- [ ] Implement DELETE endpoint with safety checks
+- [ ] Add file write permission verification
+- [ ] Create comprehensive test suite (50+ tests)
+- [ ] Add error handling and user feedback
+
+### Quality Gates
+- [ ] All 583 existing tests still pass
+- [ ] New tests for all CRUD operations pass
+- [ ] Manual testing on port 5173 approved
+- [ ] Zero console errors
+- [ ] Documentation updated before commit
 
 ---
 
-## Files to Reference
+## Key Files for Phase 3 Development
 
-### Bug Tickets
-- `docs/tickets/bugs/BUG-028-agent-model-display.md`
+### Architecture & Design
+- `CLAUDE.md` - Main project documentation
+- `docs/SESSION-SUMMARY-20251024.md` - Recent session work summary
+- `src/backend/services/projectDiscovery.js` - Current parser implementation
+
+### Frontend Components
+- `src/components/ProjectDetail.vue` - Project-level configuration view
+- `src/components/UserGlobal.vue` - User-level configuration view
+- `src/components/cards/` - Configuration card components
+
+### Backend API
+- `src/backend/routes/` - API route definitions
+- `src/backend/services/` - Business logic and file parsing
+- `src/backend/services/projectDiscovery.js` - Agent parsing (reference for YAML handling)
+
+### Testing
+- `tests/frontend/04-component-rendering.spec.js` - Component tests
+- `tests/e2e/` - End-to-end integration tests
+- `tests/fixtures/` - Mock data and test helpers
+
+### Optional Remaining Bug Tickets
 - `docs/tickets/bugs/BUG-030-command-tools-display.md`
 - `docs/tickets/bugs/BUG-031-command-argument-hint-display.md`
 - `docs/tickets/bugs/BUG-032-hook-command-display.md`
 - `docs/tickets/bugs/BUG-033-hook-type-display.md`
 
-### Components to Update
-- `src/components/ProjectDetail.vue` (agent/command/hook/mcp sidebars)
-- `src/components/UserGlobal.vue` (agent/command/hook/mcp sidebars)
-
-### Test Files
-- `tests/frontend/04-component-rendering.spec.js` (add tests for each bug)
-
-### Epic Tracking
-- `docs/tickets/EPIC-003-agent-color-display.md` (update progress)
-
 ### Documentation
-- `docs/tickets/NEXT-STEPS.md` (this file - update after each bug)
+- `docs/tickets/NEXT-STEPS.md` (this file)
 
 ---
 
@@ -187,16 +221,55 @@ git push origin phase-2 --force-with-lease
 
 ---
 
-## Success Criteria for Each Bug
+## Success Criteria for Phase 3
 
-- [ ] Code changes are minimal (1-3 lines per component)
+### Code Quality
+- [ ] All new code follows project conventions
+- [ ] Comprehensive error handling with user feedback
+- [ ] File system operations validated and safe
+- [ ] YAML parsing robust with helpful error messages
+- [ ] Code review completed before merge
+
+### Testing
+- [ ] All 583 existing tests still passing
+- [ ] 50+ new tests for CRUD operations
+- [ ] Tests cover happy path and error cases
 - [ ] Manual testing approved by user
-- [ ] Playwright tests all passing
-- [ ] No console errors
-- [ ] Documentation updated before commit
-- [ ] Commit references bug ticket
-- [ ] Changes pushed to origin/phase-2
+- [ ] Cross-browser testing (Chrome, Firefox, Safari)
+- [ ] Zero console errors in production mode
+
+### Documentation
+- [ ] API endpoint documentation updated
+- [ ] Component documentation updated
+- [ ] User guide with CRUD instructions
+- [ ] Architecture documentation for file operations
+- [ ] Commit messages reference tickets
+
+### Performance
+- [ ] Form interactions responsive (< 100ms)
+- [ ] File operations don't block UI
+- [ ] No memory leaks in long sessions
+
+### Deployment Readiness
+- [ ] All tests passing
+- [ ] Production build successful
+- [ ] No breaking changes to existing features
+- [ ] Ready for release on main branch
 
 ---
 
-**Ready to begin BUG-028 when you give the go-ahead!**
+## Phase Roadmap Summary
+
+| Phase | Status | Scope | Timeline |
+|-------|--------|-------|----------|
+| **Phase 1: MVP** | ✅ Complete | Read-only interface | Complete |
+| **Phase 2: Vite** | ✅ Complete | Architecture modernization | Complete |
+| **Phase 3: CRUD** | ⏳ Planned | Create/edit/delete agents | 3-4 weeks |
+| **Phase 4: Commands** | 📋 Proposed | Command management | Q4 2025 |
+| **Phase 5: Hooks** | 📋 Proposed | Hook configuration | Q4 2025 |
+| **Phase 6: MCP** | 📋 Proposed | MCP server management | Q1 2026 |
+| **Phase 7+: Advanced** | 📋 Future | Real-time, versioning, sync | Q1 2026+ |
+
+---
+
+**Phase 2 is complete. Phase 3 (Subagent CRUD) is ready for planning when you are ready to proceed.**
